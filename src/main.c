@@ -49,6 +49,7 @@ typedef struct {
     TTF_Font *body;
     TTF_Font *small;
     TTF_Font *metric;
+    TTF_Font *table;
     RsApp *app;
     RsSeasonSnapshot season;
     RsStandings standings;
@@ -166,6 +167,7 @@ static void format_time(int64_t value, char *out, size_t size) {
 }
 
 static void format_event_time(const Runtime *rt,const RsEvent *event,int64_t value,char *out,size_t size){if(!rs_app_track_time(rt->app)){format_time(value,out,size);return;}time_t raw=(time_t)(value+rs_track_utc_offset(event->circuit_id,value));struct tm track;gmtime_r(&raw,&track);strftime(out,size,"%d %b %Y  %H:%M",&track);for(char *p=out;*p;p++)if(*p>='a'&&*p<='z')*p=(char)(*p-'a'+'A');}
+static void format_event_short_time(const Runtime *rt,const RsEvent *event,int64_t value,char *out,size_t size){time_t raw=(time_t)(value+(rs_app_track_time(rt->app)?rs_track_utc_offset(event->circuit_id,value):0));struct tm result;if(rs_app_track_time(rt->app))gmtime_r(&raw,&result);else localtime_r(&raw,&result);strftime(out,size,"%d %b  %H:%M",&result);for(char *p=out;*p;p++)if(*p>='a'&&*p<='z')*p=(char)(*p-'a'+'A');}
 
 static void draw_header(Runtime *rt) {
     const char *tabs[] = {"NEXT", "CALENDAR", "STANDINGS"};
@@ -242,17 +244,19 @@ static void draw_calendar(Runtime *rt) {
     int cursor = rs_app_cursor(rt->app);
     int first = cursor > 7 ? cursor - 7 : 0;
     int row;
-    char line[180], date_text[64];
+    char line[180], date_text[64],round_text[8];
     snprintf(line,sizeof(line),"%d RACE CALENDAR",rt->season.season);
     draw_text(rt, rt->heading, line, 42, 122, WHITE);
+    draw_text(rt,rt->small,"RD",52,170,MUTED);draw_text(rt,rt->small,"COUNTRY",108,170,MUTED);draw_text(rt,rt->small,"VENUE",284,170,MUTED);draw_text(rt,rt->small,rs_app_track_time(rt->app)?"RACE / TRACK TIME":"RACE / YOUR TIME",530,170,MUTED);
     for (row = 0; row < 10 && first + row < (int)rt->season.event_count; row++) {
         const RsEvent *event = &rt->season.events[first + row];
         const RsSession *race = &event->sessions[event->session_count - 1];
-        int y = 190 + row * 48;
-        if (first + row == cursor) fill(rt, 38, y - 5, 948, 42, (SDL_Color){44, 46, 53, 255});
+        int top = 190 + row * 47;
+        SDL_Color color=first+row==cursor?WHITE:MUTED;
+        if (first + row == cursor) fill(rt, 38, top, 948, 40, (SDL_Color){44, 46, 53, 255});
         format_event_time(rt,event,race->starts_at_utc, date_text, sizeof(date_text));
-        snprintf(line, sizeof(line), "%02d   %-18s  %-28s  %s", event->round, event->country, event->locality, date_text);
-        draw_text(rt, rt->body, line, 52, y, first + row == cursor ? WHITE : MUTED);
+        snprintf(round_text,sizeof(round_text),"%02d",event->round);
+        draw_text_right_center_y(rt,rt->table,round_text,78,top,40,color);draw_text_center_y(rt,rt->table,event->country,108,top,40,color);draw_text_center_y(rt,rt->table,event->locality,284,top,40,color);draw_text_center_y(rt,rt->table,date_text,530,top,40,color);
     }
 }
 
@@ -326,6 +330,7 @@ static void draw_profile_chart(Runtime *rt, const RsProfile *profile, bool point
 }
 
 static int split_history(char *text,char **items,int capacity){int count=0;char *save=NULL,*item=strtok_r(text,"|",&save);while(item&&count<capacity){items[count++]=item;item=strtok_r(NULL,"|",&save);}return count;}
+static void draw_recent_winners(Runtime *rt,const RsCircuitReference *ref){char text[384],*save=NULL,*item;int row=0;snprintf(text,sizeof(text),"%s",ref->recent_winners);item=strtok_r(text,",",&save);while(item&&row<4){while(*item==' ')item++;draw_text(rt,rt->small,item,650,462+row*28,WHITE);item=strtok_r(NULL,",",&save);row++;}}
 static void draw_history_log(Runtime *rt,const RsCircuitReference *ref,int cursor){char winners[3072],poles[3072],*winner_items[96],*pole_items[96],line[64];int winner_count,pole_count,pages,page,row;snprintf(winners,sizeof(winners),"%s",ref->all_winners);snprintf(poles,sizeof(poles),"%s",ref->all_poles);winner_count=split_history(winners,winner_items,96);pole_count=split_history(poles,pole_items,96);pages=((winner_count>pole_count?winner_count:pole_count)+7)/8;if(pages<1)pages=1;page=(cursor-1)%pages;snprintf(line,sizeof(line),"VENUE ARCHIVE  /  PAGE %d OF %d  /  UP DOWN",page+1,pages);draw_text(rt,rt->small,line,126,140,RED);draw_text(rt,rt->heading,"WINNERS & POLES",124,168,WHITE);draw_text(rt,rt->small,"RACE WINNER",126,230,MUTED);draw_text(rt,rt->small,"POLE POSITION",520,230,MUTED);for(row=0;row<8;row++){int index=page*8+row,y=266+row*42;if(index<winner_count)draw_text(rt,rt->body,winner_items[index],126,y,WHITE);if(index<pole_count)draw_text(rt,rt->body,pole_items[index],520,y,WHITE);}}
 
 static void draw_detail(Runtime *rt) {
@@ -340,15 +345,14 @@ static void draw_detail(Runtime *rt) {
          draw_text(rt, rt->small, "HISTORY  /  X NEXT VIEW", 126, 140, RED);
          draw_text(rt, rt->heading, event->circuit_name, 124, 168, WHITE);
          if (ref) {
-            snprintf(line,sizeof(line),"%.3f KM    %d TURNS    %s",ref->length_km,ref->turns,ref->direction); draw_text(rt,rt->body,line,126,230,WHITE);
-            snprintf(line,sizeof(line),"FIRST CHAMPIONSHIP RACE %d    %d RACES HELD",ref->first_year,ref->races); draw_text(rt,rt->small,line,126,274,MUTED);
-            snprintf(line,sizeof(line),"RACE LAP RECORD  %s  /  %s  /  %d",ref->lap_record,ref->record_driver,ref->record_year); draw_text(rt,rt->body,line,126,320,WHITE);
-            snprintf(line,sizeof(line),"MOST WINS  %s    MOST POLES  %s",ref->most_wins,ref->most_poles);draw_text(rt,rt->small,line,126,360,WHITE);
-            draw_text(rt,rt->small,"RECENT WINNERS  /  DOWN FULL ARCHIVE",126,388,MUTED);
-            snprintf(line,sizeof(line),"%s",ref->recent_winners); draw_text(rt,rt->small,line,126,408,WHITE);
+            snprintf(line,sizeof(line),"%.3f KM    %d TURNS    %s",ref->length_km,ref->turns,ref->direction); draw_text(rt,rt->body,line,126,222,WHITE);
+            snprintf(line,sizeof(line),"FIRST RACE %d    %d CHAMPIONSHIP EVENTS",ref->first_year,ref->races); draw_text(rt,rt->small,line,126,258,MUTED);
+            fill(rt,116,294,486,76,(SDL_Color){29,31,36,255});draw_text(rt,rt->small,"RACE LAP RECORD",132,307,MUTED);snprintf(line,sizeof(line),"%s",ref->lap_record);draw_text(rt,rt->heading,line,132,326,WHITE);snprintf(line,sizeof(line),"%s  /  %d",ref->record_driver,ref->record_year);draw_text_right_center_y(rt,rt->small,line,584,326,32,WHITE);
+            fill(rt,116,386,232,58,(SDL_Color){24,26,31,255});fill(rt,358,386,244,58,(SDL_Color){24,26,31,255});draw_text(rt,rt->small,"MOST WINS",128,394,MUTED);draw_text(rt,rt->small,ref->most_wins,128,418,WHITE);draw_text(rt,rt->small,"MOST POLES",370,394,MUTED);draw_text(rt,rt->small,ref->most_poles,370,418,WHITE);
+            draw_text(rt,rt->small,"RECENT WINNERS",650,432,MUTED);draw_recent_winners(rt,ref);draw_text(rt,rt->small,"DOWN  FULL VENUE ARCHIVE",650,584,RED);
          }
-         {size_t session_index;draw_text(rt,rt->small,"WEEKEND SCHEDULE",126,438,MUTED);for(session_index=0;session_index<event->session_count;session_index++){char when[64];const RsSession *session=&event->sessions[session_index];format_event_time(rt,event,session->starts_at_utc,when,sizeof(when));snprintf(line,sizeof(line),"%-19s  %s  /  %s",session_name(session->kind),when,session->starts_at_utc<=now_utc(rt)?"COMPLETE":"UPCOMING");draw_text(rt,rt->small,line,126,462+(int)session_index*27,session->starts_at_utc<=now_utc(rt)?MUTED:WHITE);}}
-         draw_track(rt,event,(SDL_Rect){620,150,290,290});
+         {size_t session_index;draw_text(rt,rt->small,"WEEKEND SCHEDULE",126,458,MUTED);draw_text(rt,rt->small,"SESSION",126,482,MUTED);draw_text(rt,rt->small,"DATE / TIME",286,482,MUTED);draw_text(rt,rt->small,"STATUS",492,482,MUTED);for(session_index=0;session_index<event->session_count;session_index++){char when[40];const RsSession *session=&event->sessions[session_index];int y=510+(int)session_index*25;SDL_Color color=session->starts_at_utc<=now_utc(rt)?MUTED:WHITE;format_event_short_time(rt,event,session->starts_at_utc,when,sizeof(when));draw_text(rt,rt->small,session_name(session->kind),126,y,color);draw_text(rt,rt->small,when,286,y,color);draw_text(rt,rt->small,session->starts_at_utc<=now_utc(rt)?"COMPLETE":"UPCOMING",492,y,color);}}
+         draw_track(rt,event,(SDL_Rect){650,158,240,240});
          }
         }else{
          RsResultKind kind=rs_app_detail_mode(rt->app)==RS_DETAIL_RACE?RS_RESULT_RACE:rs_app_detail_mode(rt->app)==RS_DETAIL_QUALIFYING?RS_RESULT_QUALIFYING:RS_RESULT_SPRINT;
@@ -557,11 +561,14 @@ static RsAction map_event(const SDL_Event *event) {
     return RS_ACTION_NONE;
 }
 
+static RsAction named_action(const char *name){if(!strcmp(name,"UP"))return RS_ACTION_UP;if(!strcmp(name,"DOWN"))return RS_ACTION_DOWN;if(!strcmp(name,"LEFT"))return RS_ACTION_LEFT;if(!strcmp(name,"RIGHT"))return RS_ACTION_RIGHT;if(!strcmp(name,"A"))return RS_ACTION_A;if(!strcmp(name,"B"))return RS_ACTION_B;if(!strcmp(name,"X"))return RS_ACTION_X;if(!strcmp(name,"L1"))return RS_ACTION_L1;if(!strcmp(name,"R1"))return RS_ACTION_R1;if(!strcmp(name,"L2"))return RS_ACTION_L2;if(!strcmp(name,"R2"))return RS_ACTION_R2;if(!strcmp(name,"SELECT"))return RS_ACTION_SELECT;if(!strcmp(name,"START"))return RS_ACTION_START;return RS_ACTION_NONE;}
+static void dispatch_action_list(RsApp *app,char *list){char *save=NULL,*name=strtok_r(list,",",&save);while(name){RsAction action=named_action(name);if(action!=RS_ACTION_NONE)rs_app_dispatch(app,action);name=strtok_r(NULL,",",&save);}}
+
 int main(int argc, char **argv) {
     Runtime rt = {0};
     SDL_Event event;
     const char *screenshot = NULL;
-    const char *screen=NULL,*detail=NULL; int selected=0;
+    const char *screen=NULL,*detail=NULL,*actions=NULL; int selected=0;
     int offline = 0, i;
     snprintf(rt.assets, sizeof(rt.assets), "assets");
     snprintf(rt.data_dir, sizeof(rt.data_dir), "data");
@@ -573,6 +580,7 @@ int main(int argc, char **argv) {
         else if (!strcmp(argv[i],"--screen")&&i+1<argc)screen=argv[++i];
         else if (!strcmp(argv[i],"--detail")&&i+1<argc)detail=argv[++i];
         else if (!strcmp(argv[i],"--select")&&i+1<argc)selected=atoi(argv[++i]);
+        else if (!strcmp(argv[i],"--actions")&&i+1<argc)actions=argv[++i];
         else if (!strcmp(argv[i], "--offline")) offline = 1;
     }
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) != 0 || TTF_Init() != 0 || curl_global_init(CURL_GLOBAL_DEFAULT) != 0) return 1;
@@ -582,7 +590,7 @@ int main(int argc, char **argv) {
     {
         char path[1024];
         snprintf(path, sizeof(path), "%s/fonts/BarlowCondensed-SemiBold.ttf", rt.assets);
-        rt.display = TTF_OpenFont(path, 86); rt.heading = TTF_OpenFont(path, 42); rt.small = TTF_OpenFont(path, 17);rt.metric=TTF_OpenFont(path,28);
+        rt.display = TTF_OpenFont(path, 86); rt.heading = TTF_OpenFont(path, 42); rt.small = TTF_OpenFont(path, 17);rt.metric=TTF_OpenFont(path,28);rt.table=TTF_OpenFont(path,23);
         snprintf(path, sizeof(path), "%s/fonts/Inter.ttf", rt.assets);
         rt.body = TTF_OpenFont(path, 22);
     }
@@ -597,7 +605,7 @@ int main(int argc, char **argv) {
         snprintf(path,sizeof(path),"%s/reference/profiles.tsv",rt.assets);
         if (!rs_profiles_load(path,&rt.profiles)) return 2;
     }
-    if (!rt.window || !rt.renderer || !rt.display || !rt.heading || !rt.body || !rt.small || !rt.metric || !rt.app || !load_data(&rt)) return 2;
+    if (!rt.window || !rt.renderer || !rt.display || !rt.heading || !rt.body || !rt.small || !rt.metric || !rt.table || !rt.app || !load_data(&rt)) return 2;
     load_favorites(&rt);
     load_settings(&rt);
     rt.haptic_available=initialize_haptics();
@@ -606,8 +614,9 @@ int main(int argc, char **argv) {
     if(screen){if(!strcmp(screen,"calendar"))rs_app_dispatch(rt.app,RS_ACTION_R1);else if(!strcmp(screen,"standings")){rs_app_dispatch(rt.app,RS_ACTION_R1);rs_app_dispatch(rt.app,RS_ACTION_R1);}}
     while(selected-->0)rs_app_dispatch(rt.app,RS_ACTION_DOWN);
     if(detail){int cycles=!strcmp(detail,"race")?1:!strcmp(detail,"qualifying")?2:!strcmp(detail,"sprint")?3:0;rs_app_dispatch(rt.app,RS_ACTION_A);while(cycles-->0)rs_app_dispatch(rt.app,RS_ACTION_X);}
+    if(actions){char action_list[256];snprintf(action_list,sizeof(action_list),"%s",actions);dispatch_action_list(rt.app,action_list);}
     render(&rt);
-    if (screenshot) { SDL_Surface *shot = SDL_CreateRGBSurfaceWithFormat(0, SCREEN_W, SCREEN_H, 32, SDL_PIXELFORMAT_ARGB8888);
+    if (screenshot) { SDL_Surface *shot;int warmup;for(warmup=0;warmup<3;warmup++){SDL_Delay(16);render(&rt);}shot = SDL_CreateRGBSurfaceWithFormat(0, SCREEN_W, SCREEN_H, 32, SDL_PIXELFORMAT_ARGB8888);
         SDL_RenderReadPixels(rt.renderer, NULL, SDL_PIXELFORMAT_ARGB8888, shot->pixels, shot->pitch); SDL_SaveBMP(shot, screenshot); SDL_FreeSurface(shot); rs_app_dispatch(rt.app, RS_ACTION_MENU); }
     while (rs_app_running(rt.app)) {
         while (SDL_PollEvent(&event)) {
@@ -627,7 +636,7 @@ int main(int argc, char **argv) {
         SDL_Delay(16);
     }
     if(rt.refresh.thread) SDL_WaitThread(rt.refresh.thread,NULL);
-    TTF_CloseFont(rt.display); TTF_CloseFont(rt.heading); TTF_CloseFont(rt.body); TTF_CloseFont(rt.small);TTF_CloseFont(rt.metric);
+    TTF_CloseFont(rt.display); TTF_CloseFont(rt.heading); TTF_CloseFont(rt.body); TTF_CloseFont(rt.small);TTF_CloseFont(rt.metric);TTF_CloseFont(rt.table);
     SDL_DestroyMutex(rt.refresh.mutex); rs_app_destroy(rt.app); SDL_DestroyRenderer(rt.renderer); SDL_DestroyWindow(rt.window);
     curl_global_cleanup(); TTF_Quit(); SDL_Quit();
     return 0;
