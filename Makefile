@@ -57,6 +57,7 @@ nextui-release: tg5040
 	cp assets/icons/raceslate.png build/tg5040/stage/nextui/Tools/tg5040/.media/RaceSlate.png
 	cp -R assets/fonts assets/circuits assets/baseline assets/reference build/tg5040/stage/nextui/Tools/tg5040/RaceSlate.pak/res/
 	cp assets/cacert.pem THIRD_PARTY_NOTICES.md build/tg5040/stage/nextui/Tools/tg5040/RaceSlate.pak/res/
+	cp -R licenses build/tg5040/stage/nextui/Tools/tg5040/RaceSlate.pak/res/
 	@for lib in libSDL2-2.0.so.0 libSDL2_ttf-2.0.so.0 libfreetype.so.6 libbz2.so.1.0 libssl.so.1.1 libcrypto.so.1.1 libz.so.1; do src=$$(find "$(TG5040_SDK_USR)/lib" -maxdepth 1 -name "$$lib" -print -quit); test -n "$$src" && cp -L "$$src" build/tg5040/stage/nextui/Tools/tg5040/RaceSlate.pak/lib/tg5040/; done
 	cp -L "$$($(TG5040_CC) -print-file-name=libgcc_s.so.1)" build/tg5040/stage/nextui/Tools/tg5040/RaceSlate.pak/lib/tg5040/libgcc_s.so.1
 	chmod +x build/tg5040/stage/nextui/Tools/tg5040/RaceSlate.pak/launch.sh build/tg5040/stage/nextui/Tools/tg5040/RaceSlate.pak/bin/tg5040/raceslate

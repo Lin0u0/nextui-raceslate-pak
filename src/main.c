@@ -336,10 +336,11 @@ static void draw_detail(Runtime *rt) {
             snprintf(line,sizeof(line),"%.3f KM    %d TURNS    %s",ref->length_km,ref->turns,ref->direction); draw_text(rt,rt->body,line,126,230,WHITE);
             snprintf(line,sizeof(line),"FIRST CHAMPIONSHIP RACE %d    %d RACES HELD",ref->first_year,ref->races); draw_text(rt,rt->small,line,126,274,MUTED);
             snprintf(line,sizeof(line),"RACE LAP RECORD  %s  /  %s  /  %d",ref->lap_record,ref->record_driver,ref->record_year); draw_text(rt,rt->body,line,126,320,WHITE);
-            draw_text(rt,rt->small,"RECENT WINNERS",126,362,MUTED);
-            snprintf(line,sizeof(line),"%s",ref->recent_winners); draw_text(rt,rt->small,line,126,388,WHITE);
+            snprintf(line,sizeof(line),"MOST WINS  %s    MOST POLES  %s",ref->most_wins,ref->most_poles);draw_text(rt,rt->small,line,126,360,WHITE);
+            draw_text(rt,rt->small,"RECENT WINNERS",126,388,MUTED);
+            snprintf(line,sizeof(line),"%s",ref->recent_winners); draw_text(rt,rt->small,line,126,408,WHITE);
          }
-         {size_t session_index;draw_text(rt,rt->small,"WEEKEND SCHEDULE",126,430,MUTED);for(session_index=0;session_index<event->session_count;session_index++){char when[64];const RsSession *session=&event->sessions[session_index];format_event_time(rt,event,session->starts_at_utc,when,sizeof(when));snprintf(line,sizeof(line),"%-19s  %s  /  %s",session_name(session->kind),when,session->starts_at_utc<=now_utc(rt)?"COMPLETE":"UPCOMING");draw_text(rt,rt->small,line,126,458+(int)session_index*27,session->starts_at_utc<=now_utc(rt)?MUTED:WHITE);}}
+         {size_t session_index;draw_text(rt,rt->small,"WEEKEND SCHEDULE",126,438,MUTED);for(session_index=0;session_index<event->session_count;session_index++){char when[64];const RsSession *session=&event->sessions[session_index];format_event_time(rt,event,session->starts_at_utc,when,sizeof(when));snprintf(line,sizeof(line),"%-19s  %s  /  %s",session_name(session->kind),when,session->starts_at_utc<=now_utc(rt)?"COMPLETE":"UPCOMING");draw_text(rt,rt->small,line,126,462+(int)session_index*27,session->starts_at_utc<=now_utc(rt)?MUTED:WHITE);}}
          draw_track(rt,event);
         }else{
          RsResultKind kind=rs_app_detail_mode(rt->app)==RS_DETAIL_RACE?RS_RESULT_RACE:rs_app_detail_mode(rt->app)==RS_DETAIL_QUALIFYING?RS_RESULT_QUALIFYING:RS_RESULT_SPRINT;
