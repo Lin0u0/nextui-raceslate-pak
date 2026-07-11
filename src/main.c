@@ -86,9 +86,14 @@ static void draw_text(Runtime *rt, TTF_Font *font, const char *text, int x, int 
     if (texture) { SDL_RenderCopy(rt->renderer, texture, NULL, &target); SDL_DestroyTexture(texture); }
 }
 
-static void draw_text_right(Runtime *rt, TTF_Font *font, const char *text, int right, int y, SDL_Color color) {
-    int width = 0;
-    if (text && TTF_SizeUTF8(font, text, &width, NULL) == 0) draw_text(rt, font, text, right - width, y, color);
+static void draw_text_center_y(Runtime *rt, TTF_Font *font, const char *text, int x, int top, int height, SDL_Color color) {
+    int text_height = 0;
+    if (text && TTF_SizeUTF8(font, text, NULL, &text_height) == 0) draw_text(rt, font, text, x, top + (height - text_height) / 2, color);
+}
+
+static void draw_text_right_center_y(Runtime *rt, TTF_Font *font, const char *text, int right, int top, int height, SDL_Color color) {
+    int width = 0, text_height = 0;
+    if (text && TTF_SizeUTF8(font, text, &width, &text_height) == 0) draw_text(rt, font, text, right - width, top + (height - text_height) / 2, color);
 }
 
 static void format_points(double points, char *output, size_t capacity) {
@@ -317,7 +322,7 @@ static void draw_detail(Runtime *rt) {
          const char *title=kind==RS_RESULT_RACE?"RACE CLASSIFICATION":kind==RS_RESULT_QUALIFYING?"QUALIFYING CLASSIFICATION":"SPRINT CLASSIFICATION";
          draw_text(rt,rt->small,"RESULTS  /  X NEXT VIEW",126,140,RED);draw_text(rt,rt->heading,title,124,168,WHITE);
          if(!classification)draw_text(rt,rt->body,"RESULT UNAVAILABLE",126,244,MUTED);
-         else for(row=0;row<10&&first+row<(int)classification->entry_count;row++){const RsClassificationEntry *e=&classification->entries[first+row];int y=228+row*38;SDL_Color text_color=first+row==cursor?WHITE:MUTED;char position[8],points[24];if(first+row==cursor)fill(rt,116,y-3,790,34,(SDL_Color){44,46,53,255});fill(rt,126,y+2,4,18,team_color(e->constructor_id));snprintf(position,sizeof(position),"%02d",e->position);format_points(e->points,points,sizeof(points));draw_text_right(rt,rt->small,position,166,y,text_color);draw_text(rt,rt->small,e->driver_code,188,y,text_color);draw_text(rt,rt->small,e->driver_name,244,y,text_color);draw_text(rt,rt->small,e->constructor_name,470,y,team_color(e->constructor_id));draw_text_right(rt,rt->small,points,718,y,text_color);draw_text(rt,rt->small,"PTS",728,y,MUTED);draw_text(rt,rt->small,e->status,774,y,text_color);}
+         else for(row=0;row<10&&first+row<(int)classification->entry_count;row++){const RsClassificationEntry *e=&classification->entries[first+row];int y=228+row*38,row_top=y-3,row_height=34;SDL_Color text_color=first+row==cursor?WHITE:MUTED;char position[8],points[24];if(first+row==cursor)fill(rt,116,row_top,790,row_height,(SDL_Color){44,46,53,255});fill(rt,126,row_top+(row_height-18)/2,4,18,team_color(e->constructor_id));snprintf(position,sizeof(position),"%02d",e->position);format_points(e->points,points,sizeof(points));draw_text_right_center_y(rt,rt->small,position,166,row_top,row_height,text_color);draw_text_center_y(rt,rt->small,e->driver_code,188,row_top,row_height,text_color);draw_text_center_y(rt,rt->small,e->driver_name,244,row_top,row_height,text_color);draw_text_center_y(rt,rt->small,e->constructor_name,470,row_top,row_height,team_color(e->constructor_id));draw_text_right_center_y(rt,rt->small,points,718,row_top,row_height,text_color);draw_text_center_y(rt,rt->small,"PTS",728,row_top,row_height,MUTED);draw_text_center_y(rt,rt->small,e->status,774,row_top,row_height,text_color);}
         }
     } else if (rs_app_route(rt->app) == RS_ROUTE_STANDINGS) {
         int index=rs_app_cursor(rt->app); char line[256];
@@ -529,9 +534,9 @@ int main(int argc, char **argv) {
     {
         char path[1024];
         snprintf(path, sizeof(path), "%s/fonts/BarlowCondensed-SemiBold.ttf", rt.assets);
-        rt.display = TTF_OpenFont(path, 86); rt.heading = TTF_OpenFont(path, 42);
+        rt.display = TTF_OpenFont(path, 86); rt.heading = TTF_OpenFont(path, 42); rt.small = TTF_OpenFont(path, 17);
         snprintf(path, sizeof(path), "%s/fonts/Inter.ttf", rt.assets);
-        rt.body = TTF_OpenFont(path, 22); rt.small = TTF_OpenFont(path, 15);
+        rt.body = TTF_OpenFont(path, 22);
     }
     rt.app = rs_app_create();
     rt.refresh.mutex = SDL_CreateMutex();
