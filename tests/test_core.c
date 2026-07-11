@@ -1,0 +1,89 @@
+#include "rs_season.h"
+#include "rs_app.h"
+#include "rs_standings.h"
+
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+static char *read_file(const char *path) {
+    FILE *file = fopen(path, "rb");
+    long size;
+    char *bytes;
+    assert(file);
+    assert(fseek(file, 0, SEEK_END) == 0);
+    size = ftell(file);
+    assert(size >= 0);
+    rewind(file);
+    bytes = malloc((size_t)size + 1);
+    assert(bytes);
+    assert(fread(bytes, 1, (size_t)size, file) == (size_t)size);
+    bytes[size] = '\0';
+    fclose(file);
+    return bytes;
+}
+
+static void user_sees_the_next_session_from_a_jolpica_schedule(const char *fixtures) {
+    char path[512];
+    char *json;
+    RsSeasonSnapshot snapshot;
+    const RsSession *next;
+
+    snprintf(path, sizeof(path), "%s/jolpica_schedule.json", fixtures);
+    json = read_file(path);
+    assert(rs_season_decode_schedule(json, &snapshot));
+    assert(snapshot.season == 2026);
+    assert(snapshot.event_count == 2);
+
+    next = rs_season_next_session(&snapshot, 1775797200); /* 2026-04-10 05:00Z */
+    assert(next);
+    assert(next->kind == RS_SESSION_PRACTICE_1);
+    assert(next->starts_at_utc == 1775804400);
+    assert(snapshot.events[1].round == 2);
+    assert(snapshot.events[1].is_sprint_weekend);
+    free(json);
+}
+
+static void brick_controls_navigate_the_public_app_state(void) {
+    RsApp *app = rs_app_create();
+    assert(app);
+    assert(rs_app_route(app) == RS_ROUTE_NEXT);
+    rs_app_dispatch(app, RS_ACTION_R1);
+    assert(rs_app_route(app) == RS_ROUTE_CALENDAR);
+    rs_app_dispatch(app, RS_ACTION_R1);
+    assert(rs_app_route(app) == RS_ROUTE_STANDINGS);
+    rs_app_dispatch(app, RS_ACTION_X);
+    assert(rs_app_standings_mode(app) == RS_STANDINGS_CONSTRUCTORS);
+    rs_app_dispatch(app, RS_ACTION_L1);
+    assert(rs_app_route(app) == RS_ROUTE_CALENDAR);
+    rs_app_dispatch(app, RS_ACTION_START);
+    assert(rs_app_overlay(app) == RS_OVERLAY_ABOUT);
+    rs_app_dispatch(app, RS_ACTION_B);
+    assert(rs_app_overlay(app) == RS_OVERLAY_NONE);
+    rs_app_dispatch(app, RS_ACTION_MENU);
+    assert(!rs_app_running(app));
+    rs_app_destroy(app);
+}
+
+static void user_sees_complete_driver_standings(const char *fixtures) {
+    char path[512];
+    char *json;
+    RsStandings standings;
+    snprintf(path, sizeof(path), "%s/driver_standings.json", fixtures);
+    json = read_file(path);
+    assert(rs_standings_decode_drivers(json, &standings));
+    assert(standings.driver_count >= 20);
+    assert(standings.drivers[0].position == 1);
+    assert(standings.drivers[0].points >= 0.0);
+    assert(standings.drivers[0].family_name[0] != '\0');
+    free(json);
+}
+
+int main(int argc, char **argv) {
+    assert(argc == 2);
+    user_sees_the_next_session_from_a_jolpica_schedule(argv[1]);
+    brick_controls_navigate_the_public_app_state();
+    user_sees_complete_driver_standings(argv[1]);
+    puts("ok: core behavior");
+    return 0;
+}
