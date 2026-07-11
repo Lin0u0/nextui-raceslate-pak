@@ -6,7 +6,7 @@
 typedef struct RsApp RsApp;
 
 typedef enum { RS_ROUTE_NEXT, RS_ROUTE_CALENDAR, RS_ROUTE_STANDINGS } RsRoute;
-typedef enum { RS_OVERLAY_NONE, RS_OVERLAY_ABOUT, RS_OVERLAY_DETAIL } RsOverlay;
+typedef enum { RS_OVERLAY_NONE, RS_OVERLAY_ABOUT, RS_OVERLAY_DETAIL, RS_OVERLAY_DISCLAIMER } RsOverlay;
 typedef enum { RS_STANDINGS_DRIVERS, RS_STANDINGS_CONSTRUCTORS } RsStandingsMode;
 typedef enum { RS_DETAIL_HISTORY, RS_DETAIL_RACE, RS_DETAIL_QUALIFYING, RS_DETAIL_SPRINT } RsDetailMode;
 typedef enum {
@@ -29,5 +29,8 @@ bool rs_app_take_acknowledgement_request(RsApp *app);
 RsDetailMode rs_app_detail_mode(const RsApp *app);
 int rs_app_detail_cursor(const RsApp *app);
 bool rs_app_track_time(const RsApp *app);
+void rs_app_show_disclaimer(RsApp *app);
+int rs_app_settings_cursor(const RsApp *app);
+bool rs_app_take_settings_action(RsApp *app);
 
 #endif

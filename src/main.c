@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 
 #define SCREEN_W 1024
 #define SCREEN_H 768
@@ -62,6 +63,7 @@ typedef struct {
     char favorite_driver[48];
     char favorite_constructor[48];
     bool first_launch;
+    bool haptics;
     int64_t now_override;
 } Runtime;
 
@@ -279,9 +281,10 @@ static void draw_standings(Runtime *rt) {
 
 static void draw_about(Runtime *rt) {
     fill(rt, 160, 116, 704, 536, (SDL_Color){18, 20, 24, 252});
-    draw_text(rt, rt->heading, rt->first_launch ? "WELCOME TO RACESLATE" : "ABOUT RACESLATE", 204, 154, WHITE);
+    draw_text(rt, rt->heading, rt->first_launch ? "WELCOME TO RACESLATE" : "SETTINGS & ABOUT", 204, 154, WHITE);
     draw_text(rt, rt->body, "An unofficial, non-commercial season companion.", 204, 222, WHITE);
     draw_text(rt, rt->small, "Not associated with Formula 1, FIA, teams, drivers, or circuits.", 204, 264, MUTED);
+    if(!rt->first_launch){int cursor=rs_app_settings_cursor(rt->app),row;const char *labels[3]={rt->haptics?"HAPTICS                         ON":"HAPTICS                         OFF","CLEAR DOWNLOADED CACHE","LICENSES & ATTRIBUTION"};for(row=0;row<3;row++){int y=310+row*48;if(row==cursor)fill(rt,196,y-7,632,40,(SDL_Color){44,46,53,255});draw_text(rt,rt->body,labels[row],212,y,row==cursor?WHITE:MUTED);}draw_text(rt,rt->small,"A SELECT   B CLOSE",204,574,RED);return;}
     draw_text(rt, rt->small, "Race data: Jolpica-F1  /  CC BY-NC-SA 4.0", 204, 328, WHITE);
     draw_text(rt, rt->small, "Circuit assets: F1DB  /  CC BY 4.0", 204, 364, WHITE);
     draw_text(rt, rt->small, "Weather: Open-Meteo  /  CC BY 4.0", 204, 400, WHITE);
@@ -369,7 +372,7 @@ static void render(Runtime *rt) {
     fill(rt, 38, 710, 948, 1, (SDL_Color){55, 58, 65, 255});
     draw_text(rt, rt->small, rt->status, 42, 724, MUTED);
     draw_text(rt, rt->small, rs_app_route(rt->app)==RS_ROUTE_NEXT?"X TIMEZONE   L1/R1 PAGE   Y REFRESH   START SETTINGS   MENU EXIT":"L1/R1 PAGE   D-PAD NAV   Y REFRESH   START SETTINGS   MENU EXIT", 494, 724, MUTED);
-    if (rs_app_overlay(rt->app) == RS_OVERLAY_ABOUT) draw_about(rt);
+    if (rs_app_overlay(rt->app) == RS_OVERLAY_ABOUT||rs_app_overlay(rt->app)==RS_OVERLAY_DISCLAIMER) draw_about(rt);
     else if (rs_app_overlay(rt->app) == RS_OVERLAY_DETAIL) draw_detail(rt);
     SDL_RenderPresent(rt->renderer);
 }
@@ -438,6 +441,11 @@ static void acknowledge_disclaimer(Runtime *rt) {
     if(rs_store_write_atomic(path,"RaceSlate disclaimer acknowledged\n")){rt->first_launch=false;snprintf(rt->status,sizeof(rt->status),"WELCOME — BASELINE DATA READY");}
     else snprintf(rt->status,sizeof(rt->status),"ACKNOWLEDGEMENT COULD NOT BE SAVED");
 }
+
+static void pulse_haptic(const Runtime *rt){FILE *file;if(!rt->haptics)return;file=fopen("/sys/class/gpio/gpio227/value","w");if(!file)return;fputs("1",file);fflush(file);SDL_Delay(24);rewind(file);fputs("0",file);fclose(file);}
+static void save_settings(Runtime *rt){char path[1024],text[32];snprintf(path,sizeof(path),"%s/settings.txt",rt->data_dir);snprintf(text,sizeof(text),"haptics=%d\n",rt->haptics?1:0);rs_store_write_atomic(path,text);}
+static void load_settings(Runtime *rt){char path[1024],*text;rt->haptics=true;snprintf(path,sizeof(path),"%s/settings.txt",rt->data_dir);text=rs_store_read(path);if(text){if(strstr(text,"haptics=0"))rt->haptics=false;free(text);}}
+static void perform_settings_action(Runtime *rt){int cursor=rs_app_settings_cursor(rt->app);char path[1024];if(cursor==0){rt->haptics=!rt->haptics;save_settings(rt);snprintf(rt->status,sizeof(rt->status),"HAPTICS %s",rt->haptics?"ENABLED":"DISABLED");pulse_haptic(rt);}else if(cursor==1){snprintf(path,sizeof(path),"%s/snapshot.json",rt->data_dir);unlink(path);snprintf(path,sizeof(path),"%s/weather.json",rt->data_dir);unlink(path);snprintf(rt->status,sizeof(rt->status),"DOWNLOADED CACHE CLEARED · BASELINE KEPT");pulse_haptic(rt);}else snprintf(rt->status,sizeof(rt->status),"JOLPICA CC BY-NC-SA · F1DB/OPEN-METEO CC BY · FONTS OFL");}
 
 static int refresh_thread(void *context) {
     RefreshTask *task = context;
@@ -575,7 +583,8 @@ int main(int argc, char **argv) {
     }
     if (!rt.window || !rt.renderer || !rt.display || !rt.heading || !rt.body || !rt.small || !rt.metric || !rt.app || !load_data(&rt)) return 2;
     load_favorites(&rt);
-    {char path[1024];char *ack;snprintf(path,sizeof(path),"%s/acknowledged",rt.data_dir);ack=rs_store_read(path);rt.first_launch=ack==NULL&&!screenshot;free(ack);if(rt.first_launch)rs_app_dispatch(rt.app,RS_ACTION_START);}
+    load_settings(&rt);
+    {char path[1024];char *ack;snprintf(path,sizeof(path),"%s/acknowledged",rt.data_dir);ack=rs_store_read(path);rt.first_launch=ack==NULL&&!screenshot;free(ack);if(rt.first_launch)rs_app_show_disclaimer(rt.app);}
     if (offline) snprintf(rt.status,sizeof(rt.status),"OFFLINE BASELINE DATA");
     if(screen){if(!strcmp(screen,"calendar"))rs_app_dispatch(rt.app,RS_ACTION_R1);else if(!strcmp(screen,"standings")){rs_app_dispatch(rt.app,RS_ACTION_R1);rs_app_dispatch(rt.app,RS_ACTION_R1);}}
     while(selected-->0)rs_app_dispatch(rt.app,RS_ACTION_DOWN);
@@ -591,7 +600,8 @@ int main(int argc, char **argv) {
         if (rs_app_take_refresh_request(rt.app)) start_refresh(&rt);
         if (rs_app_take_favorite_request(rt.app)) save_selected_favorite(&rt);
         if (rs_app_take_acknowledgement_request(rt.app) && rt.first_launch) acknowledge_disclaimer(&rt);
-        if (rt.first_launch && rs_app_overlay(rt.app) == RS_OVERLAY_NONE) rs_app_dispatch(rt.app,RS_ACTION_START);
+        if(rs_app_take_settings_action(rt.app))perform_settings_action(&rt);
+        if (rt.first_launch && rs_app_overlay(rt.app) == RS_OVERLAY_NONE) rs_app_show_disclaimer(rt.app);
         SDL_LockMutex(rt.refresh.mutex);
         if (rt.refresh.ready) { if (rt.refresh.success) { rt.season = rt.refresh.season; rt.standings = rt.refresh.standings; if(rt.refresh.weather.count)rt.weather = rt.refresh.weather; rt.results=rt.refresh.results;rs_profiles_rebuild_series(&rt.profiles,&rt.results); }
             snprintf(rt.status, sizeof(rt.status), "%s", rt.refresh.status); rt.refresh.ready = 0; if(rt.refresh.thread){SDL_DetachThread(rt.refresh.thread);rt.refresh.thread=NULL;} }
