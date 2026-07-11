@@ -185,6 +185,9 @@ static void draw_header(Runtime *rt) {
     fill(rt, 38, 92, 948, 1, (SDL_Color){55, 58, 65, 255});
 }
 
+typedef struct {const char *key;const char *label;} FooterHint;
+static void draw_footer_hints(Runtime *rt){static const FooterHint next_hints[]={{"X","TIMEZONE"},{"L1/R1","PAGE"},{"Y","REFRESH"},{"START","SETTINGS"},{"MENU","EXIT"}};static const FooterHint list_hints[]={{"L1/R1","PAGE"},{"D-PAD","NAV"},{"Y","REFRESH"},{"START","SETTINGS"},{"MENU","EXIT"}};const FooterHint *hints=rs_app_route(rt->app)==RS_ROUTE_NEXT?next_hints:list_hints;int count=5,index,total=0,x;for(index=0;index<count;index++){int key_width=0,label_width=0;TTF_SizeUTF8(rt->small,hints[index].key,&key_width,NULL);TTF_SizeUTF8(rt->small,hints[index].label,&label_width,NULL);total+=key_width+5+label_width+(index+1<count?18:0);}x=986-total;for(index=0;index<count;index++){int width=0;draw_text(rt,rt->small,hints[index].key,x,724,RED);TTF_SizeUTF8(rt->small,hints[index].key,&width,NULL);x+=width+5;draw_text(rt,rt->small,hints[index].label,x,724,MUTED);TTF_SizeUTF8(rt->small,hints[index].label,&width,NULL);x+=width+18;}}
+
 static void draw_track(Runtime *rt, const RsEvent *event, SDL_Rect target) {
     char path[1024];
     SDL_Surface *surface;
@@ -386,7 +389,7 @@ static void render(Runtime *rt) {
     else draw_standings(rt);
     fill(rt, 38, 710, 948, 1, (SDL_Color){55, 58, 65, 255});
     draw_text(rt, rt->small, rt->status, 42, 724, MUTED);
-    draw_text(rt, rt->small, rs_app_route(rt->app)==RS_ROUTE_NEXT?"X TIMEZONE   L1/R1 PAGE   Y REFRESH   START SETTINGS   MENU EXIT":"L1/R1 PAGE   D-PAD NAV   Y REFRESH   START SETTINGS   MENU EXIT", 494, 724, MUTED);
+    draw_footer_hints(rt);
     if (rs_app_overlay(rt->app) == RS_OVERLAY_ABOUT||rs_app_overlay(rt->app)==RS_OVERLAY_DISCLAIMER) draw_about(rt);
     else if (rs_app_overlay(rt->app) == RS_OVERLAY_DETAIL) draw_detail(rt);
 }
@@ -617,7 +620,7 @@ int main(int argc, char **argv) {
     if(detail){int cycles=!strcmp(detail,"race")?1:!strcmp(detail,"qualifying")?2:!strcmp(detail,"sprint")?3:0;rs_app_dispatch(rt.app,RS_ACTION_A);while(cycles-->0)rs_app_dispatch(rt.app,RS_ACTION_X);}
     if(actions){char action_list[256];snprintf(action_list,sizeof(action_list),"%s",actions);dispatch_action_list(rt.app,action_list);}
     render(&rt);
-    if (screenshot) { SDL_Surface *shot;render(&rt);shot = SDL_CreateRGBSurfaceWithFormat(0, SCREEN_W, SCREEN_H, 32, SDL_PIXELFORMAT_ARGB8888);
+    if (screenshot) { SDL_Surface *shot=SDL_CreateRGBSurfaceWithFormat(0, SCREEN_W, SCREEN_H, 32, SDL_PIXELFORMAT_ARGB8888);
         SDL_RenderReadPixels(rt.renderer, NULL, SDL_PIXELFORMAT_ARGB8888, shot->pixels, shot->pitch); SDL_SaveBMP(shot, screenshot); SDL_FreeSurface(shot); rs_app_dispatch(rt.app, RS_ACTION_MENU); }
     else SDL_RenderPresent(rt.renderer);
     while (rs_app_running(rt.app)) {
