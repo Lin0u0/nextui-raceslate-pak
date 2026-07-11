@@ -231,12 +231,12 @@ static void draw_next(Runtime *rt) {
         const RsWeatherPoint *weather = rs_weather_nearest(&rt->weather, next->starts_at_utc);
         fill(rt, 620, 558, 366, 92, PANEL);
         snprintf(line,sizeof(line),"SESSION FORECAST  /  OPEN-METEO  /  %s",weather?(rt->weather_live?"LIVE":"CACHED"):(rt->weather.count?"OUT OF RANGE":"NO DATA"));
-        draw_text(rt, rt->small, line, 640, 572, MUTED);
+        draw_text(rt, rt->small, line, 640, 570, MUTED);
         if (weather) {
-            draw_text(rt,rt->small,"TEMP",640,601,MUTED);snprintf(line, sizeof(line), "%.1f°C",weather->temperature_c);draw_text(rt,rt->metric,line,640,619,WHITE);
-            draw_text(rt,rt->small,"RAIN",758,601,MUTED);snprintf(line, sizeof(line), "%d%%",weather->rain_probability);draw_text(rt,rt->metric,line,758,619,WHITE);
-            draw_text(rt,rt->small,"WIND KM/H",856,601,MUTED);snprintf(line, sizeof(line), "%.1f",weather->wind_kmh);draw_text(rt,rt->metric,line,856,619,WHITE);
-        } else draw_text(rt, rt->metric, "UNAVAILABLE  /  PRESS Y", 640, 608, MUTED);
+            draw_text(rt,rt->small,"TEMP",640,594,MUTED);snprintf(line, sizeof(line), "%.1f°C",weather->temperature_c);draw_text(rt,rt->metric,line,640,610,WHITE);
+            draw_text(rt,rt->small,"RAIN",758,594,MUTED);snprintf(line, sizeof(line), "%d%%",weather->rain_probability);draw_text(rt,rt->metric,line,758,610,WHITE);
+            draw_text(rt,rt->small,"WIND KM/H",856,594,MUTED);snprintf(line, sizeof(line), "%.1f",weather->wind_kmh);draw_text(rt,rt->metric,line,856,610,WHITE);
+        } else draw_text(rt, rt->metric, "UNAVAILABLE  /  PRESS Y", 640, 606, MUTED);
     }
 }
 
@@ -246,12 +246,12 @@ static void draw_calendar(Runtime *rt) {
     int row;
     char line[180], date_text[64],round_text[8];
     snprintf(line,sizeof(line),"%d RACE CALENDAR",rt->season.season);
-    draw_text(rt, rt->heading, line, 42, 122, WHITE);
-    draw_text(rt,rt->small,"RD",52,170,MUTED);draw_text(rt,rt->small,"COUNTRY",108,170,MUTED);draw_text(rt,rt->small,"VENUE",284,170,MUTED);draw_text(rt,rt->small,rs_app_track_time(rt->app)?"RACE / TRACK TIME":"RACE / YOUR TIME",530,170,MUTED);
+    draw_text(rt, rt->heading, line, 42, 112, WHITE);
+    fill(rt,38,174,948,26,(SDL_Color){18,20,24,255});draw_text(rt,rt->small,"RD",52,177,MUTED);draw_text(rt,rt->small,"COUNTRY",108,177,MUTED);draw_text(rt,rt->small,"VENUE",284,177,MUTED);draw_text(rt,rt->small,rs_app_track_time(rt->app)?"RACE / TRACK TIME":"RACE / YOUR TIME",530,177,MUTED);
     for (row = 0; row < 10 && first + row < (int)rt->season.event_count; row++) {
         const RsEvent *event = &rt->season.events[first + row];
         const RsSession *race = &event->sessions[event->session_count - 1];
-        int top = 190 + row * 47;
+        int top = 204 + row * 44;
         SDL_Color color=first+row==cursor?WHITE:MUTED;
         if (first + row == cursor) fill(rt, 38, top, 948, 40, (SDL_Color){44, 46, 53, 255});
         format_event_time(rt,event,race->starts_at_utc, date_text, sizeof(date_text));
@@ -264,25 +264,25 @@ static void draw_standings(Runtime *rt) {
     int cursor = rs_app_cursor(rt->app);
     int first = cursor > 8 ? cursor - 8 : 0;
     int row;
-    char line[180];
     bool constructors = rs_app_standings_mode(rt->app) == RS_STANDINGS_CONSTRUCTORS;
-    draw_text(rt, rt->heading, constructors ? "CONSTRUCTOR STANDINGS" : "DRIVER STANDINGS", 42, 122, WHITE);
-    draw_text(rt, rt->small, "X  SWITCH TABLE", 800, 139, MUTED);
+    draw_text(rt, rt->heading, constructors ? "CONSTRUCTOR STANDINGS" : "DRIVER STANDINGS", 42, 112, WHITE);
+    draw_text(rt, rt->small, "X  SWITCH TABLE", 846, 138, MUTED);
+    fill(rt,38,174,948,26,(SDL_Color){18,20,24,255});draw_text(rt,rt->small,"POS",52,177,MUTED);
+    if(constructors){draw_text(rt,rt->small,"CONSTRUCTOR",108,177,MUTED);draw_text(rt,rt->small,"WINS",650,177,MUTED);draw_text(rt,rt->small,"POINTS",812,177,MUTED);}else{draw_text(rt,rt->small,"CODE",108,177,MUTED);draw_text(rt,rt->small,"DRIVER",176,177,MUTED);draw_text(rt,rt->small,"CONSTRUCTOR",430,177,MUTED);draw_text(rt,rt->small,"POINTS",812,177,MUTED);}
     for (row = 0; row < 11; row++) {
         int index = first + row;
-        int y = 188 + row * 45;
+        int top = 204 + row * 40;
+        char position[8],points[24],wins[24];SDL_Color color=index==cursor?WHITE:MUTED;
         if ((!constructors && index >= (int)rt->standings.driver_count) ||
             (constructors && index >= (int)rt->standings.constructor_count)) break;
-        if (index == cursor) fill(rt, 38, y - 5, 948, 40, (SDL_Color){44, 46, 53, 255});
+        if (index == cursor) fill(rt, 38, top, 948, 36, (SDL_Color){44, 46, 53, 255});
         if (constructors) {
             const RsConstructorStanding *entry = &rt->standings.constructors[index];
-            snprintf(line, sizeof(line), "%s %02d   %-40s  %7.0f PTS   %d WINS", !strcmp(entry->id,rt->favorite_constructor)?"*":" ", entry->position, entry->name, entry->points, entry->wins);
+            snprintf(position,sizeof(position),"%02d",entry->position);format_points(entry->points,points,sizeof(points));snprintf(wins,sizeof(wins),"%d",entry->wins);if(!strcmp(entry->id,rt->favorite_constructor))draw_text_center_y(rt,rt->table,"*",42,top,36,RED);draw_text_right_center_y(rt,rt->table,position,78,top,36,color);draw_text_center_y(rt,rt->table,entry->name,108,top,36,color);draw_text_right_center_y(rt,rt->table,wins,700,top,36,color);draw_text_right_center_y(rt,rt->table,points,870,top,36,color);
         } else {
             const RsDriverStanding *entry = &rt->standings.drivers[index];
-            snprintf(line, sizeof(line), "%s %02d   %-3s  %-20s  %-22s  %7.0f PTS", !strcmp(entry->id,rt->favorite_driver)?"*":" ", entry->position, entry->code,
-                     entry->family_name, entry->constructor_name, entry->points);
+            snprintf(position,sizeof(position),"%02d",entry->position);format_points(entry->points,points,sizeof(points));if(!strcmp(entry->id,rt->favorite_driver))draw_text_center_y(rt,rt->table,"*",42,top,36,RED);draw_text_right_center_y(rt,rt->table,position,78,top,36,color);draw_text_center_y(rt,rt->table,entry->code,108,top,36,color);draw_text_center_y(rt,rt->table,entry->family_name,176,top,36,color);draw_text_center_y(rt,rt->table,entry->constructor_name,430,top,36,color);draw_text_right_center_y(rt,rt->table,points,870,top,36,color);
         }
-        draw_text(rt, rt->body, line, 52, y, index == cursor ? WHITE : MUTED);
     }
 }
 
@@ -331,7 +331,7 @@ static void draw_profile_chart(Runtime *rt, const RsProfile *profile, bool point
 
 static int split_history(char *text,char **items,int capacity){int count=0;char *save=NULL,*item=strtok_r(text,"|",&save);while(item&&count<capacity){items[count++]=item;item=strtok_r(NULL,"|",&save);}return count;}
 static void draw_recent_winners(Runtime *rt,const RsCircuitReference *ref){char text[384],*save=NULL,*item;int row=0;snprintf(text,sizeof(text),"%s",ref->recent_winners);item=strtok_r(text,",",&save);while(item&&row<4){while(*item==' ')item++;draw_text(rt,rt->small,item,650,462+row*28,WHITE);item=strtok_r(NULL,",",&save);row++;}}
-static void draw_history_log(Runtime *rt,const RsCircuitReference *ref,int cursor){char winners[3072],poles[3072],*winner_items[96],*pole_items[96],line[64];int winner_count,pole_count,pages,page,row;snprintf(winners,sizeof(winners),"%s",ref->all_winners);snprintf(poles,sizeof(poles),"%s",ref->all_poles);winner_count=split_history(winners,winner_items,96);pole_count=split_history(poles,pole_items,96);pages=((winner_count>pole_count?winner_count:pole_count)+7)/8;if(pages<1)pages=1;page=(cursor-1)%pages;snprintf(line,sizeof(line),"VENUE ARCHIVE  /  PAGE %d OF %d  /  UP DOWN",page+1,pages);draw_text(rt,rt->small,line,126,140,RED);draw_text(rt,rt->heading,"WINNERS & POLES",124,168,WHITE);draw_text(rt,rt->small,"RACE WINNER",126,230,MUTED);draw_text(rt,rt->small,"POLE POSITION",520,230,MUTED);for(row=0;row<8;row++){int index=page*8+row,y=266+row*42;if(index<winner_count)draw_text(rt,rt->body,winner_items[index],126,y,WHITE);if(index<pole_count)draw_text(rt,rt->body,pole_items[index],520,y,WHITE);}}
+static void draw_history_log(Runtime *rt,const RsCircuitReference *ref,int cursor){char winners[3072],poles[3072],*winner_items[96],*pole_items[96],line[64];int winner_count,pole_count,pages,page,row;snprintf(winners,sizeof(winners),"%s",ref->all_winners);snprintf(poles,sizeof(poles),"%s",ref->all_poles);winner_count=split_history(winners,winner_items,96);pole_count=split_history(poles,pole_items,96);pages=((winner_count>pole_count?winner_count:pole_count)+7)/8;if(pages<1)pages=1;page=(cursor-1)%pages;snprintf(line,sizeof(line),"VENUE ARCHIVE  /  PAGE %d OF %d  /  UP DOWN",page+1,pages);draw_text(rt,rt->small,line,126,140,RED);draw_text(rt,rt->heading,"WINNERS & POLES",124,168,WHITE);draw_text(rt,rt->small,"YEAR",126,230,MUTED);draw_text(rt,rt->small,"RACE WINNER",220,230,MUTED);draw_text(rt,rt->small,"POLE POSITION",550,230,MUTED);for(row=0;row<8;row++){int index=page*8+row,y=266+row*42;const char *winner=index<winner_count?winner_items[index]:NULL,*pole=index<pole_count?pole_items[index]:NULL,*winner_name=winner,*pole_name=pole;char year[8]="—";if(winner&&strlen(winner)>5&&winner[4]==' '){memcpy(year,winner,4);year[4]='\0';winner_name=winner+5;}if(pole&&strlen(pole)>5&&pole[4]==' ')pole_name=pole+5;draw_text(rt,rt->table,year,126,y,MUTED);if(winner_name)draw_text(rt,rt->table,winner_name,220,y,WHITE);if(pole_name)draw_text(rt,rt->table,pole_name,550,y,WHITE);}}
 
 static void draw_detail(Runtime *rt) {
     fill(rt, 86, 108, 852, 574, (SDL_Color){18, 20, 24, 252});
@@ -347,7 +347,7 @@ static void draw_detail(Runtime *rt) {
          if (ref) {
             snprintf(line,sizeof(line),"%.3f KM    %d TURNS    %s",ref->length_km,ref->turns,ref->direction); draw_text(rt,rt->body,line,126,222,WHITE);
             snprintf(line,sizeof(line),"FIRST RACE %d    %d CHAMPIONSHIP EVENTS",ref->first_year,ref->races); draw_text(rt,rt->small,line,126,258,MUTED);
-            fill(rt,116,294,486,76,(SDL_Color){29,31,36,255});draw_text(rt,rt->small,"RACE LAP RECORD",132,307,MUTED);snprintf(line,sizeof(line),"%s",ref->lap_record);draw_text(rt,rt->heading,line,132,326,WHITE);snprintf(line,sizeof(line),"%s  /  %d",ref->record_driver,ref->record_year);draw_text_right_center_y(rt,rt->small,line,584,326,32,WHITE);
+            fill(rt,116,294,486,76,(SDL_Color){29,31,36,255});draw_text(rt,rt->small,"RACE LAP RECORD",132,307,MUTED);snprintf(line,sizeof(line),"%s",ref->lap_record);draw_text(rt,rt->metric,line,132,329,WHITE);snprintf(line,sizeof(line),"%s  /  %d",ref->record_driver,ref->record_year);draw_text_right_center_y(rt,rt->small,line,584,326,32,WHITE);
             fill(rt,116,386,232,58,(SDL_Color){24,26,31,255});fill(rt,358,386,244,58,(SDL_Color){24,26,31,255});draw_text(rt,rt->small,"MOST WINS",128,394,MUTED);draw_text(rt,rt->small,ref->most_wins,128,418,WHITE);draw_text(rt,rt->small,"MOST POLES",370,394,MUTED);draw_text(rt,rt->small,ref->most_poles,370,418,WHITE);
             draw_text(rt,rt->small,"RECENT WINNERS",650,432,MUTED);draw_recent_winners(rt,ref);draw_text(rt,rt->small,"DOWN  FULL VENUE ARCHIVE",650,584,RED);
          }
@@ -360,7 +360,7 @@ static void draw_detail(Runtime *rt) {
          const char *title=kind==RS_RESULT_RACE?"RACE CLASSIFICATION":kind==RS_RESULT_QUALIFYING?"QUALIFYING CLASSIFICATION":"SPRINT CLASSIFICATION";
          draw_text(rt,rt->small,"RESULTS  /  X NEXT VIEW",126,140,RED);draw_text(rt,rt->heading,title,124,168,WHITE);
          if(!classification)draw_text(rt,rt->body,"RESULT UNAVAILABLE",126,244,MUTED);
-         else {draw_text(rt,rt->small,"POS   DRIVER       CONSTRUCTOR",126,220,MUTED);draw_text(rt,rt->small,kind==RS_RESULT_QUALIFYING?"LAP TIME":"TIME / GAP",786,220,MUTED);for(row=0;row<10&&first+row<(int)classification->entry_count;row++){const RsClassificationEntry *e=&classification->entries[first+row];int y=248+row*38,row_top=y-3,row_height=34;SDL_Color text_color=first+row==cursor?WHITE:MUTED;char position[8],points[24],result[64];if(first+row==cursor)fill(rt,116,row_top,790,row_height,(SDL_Color){44,46,53,255});fill(rt,126,row_top+(row_height-18)/2,4,18,team_color(e->constructor_id));snprintf(position,sizeof(position),"%02d",e->position);format_points(e->points,points,sizeof(points));classification_result(classification,(size_t)(first+row),result,sizeof(result));draw_text_right_center_y(rt,rt->small,position,166,row_top,row_height,text_color);draw_text_center_y(rt,rt->small,e->driver_code,198,row_top,row_height,text_color);draw_text_center_y(rt,rt->small,e->constructor_name,286,row_top,row_height,team_color(e->constructor_id));draw_text_right_center_y(rt,rt->small,points,670,row_top,row_height,text_color);draw_text_center_y(rt,rt->small,"PTS",680,row_top,row_height,MUTED);draw_text_right_center_y(rt,rt->small,result,890,row_top,row_height,text_color);}}
+         else {draw_text_right_center_y(rt,rt->small,"POS",166,214,24,MUTED);draw_text_center_y(rt,rt->small,"DRIVER",198,214,24,MUTED);draw_text_center_y(rt,rt->small,"CONSTRUCTOR",286,214,24,MUTED);draw_text_right_center_y(rt,rt->small,"PTS",670,214,24,MUTED);draw_text_right_center_y(rt,rt->small,kind==RS_RESULT_QUALIFYING?"LAP TIME":"TIME / GAP",890,214,24,MUTED);for(row=0;row<10&&first+row<(int)classification->entry_count;row++){const RsClassificationEntry *e=&classification->entries[first+row];int y=248+row*38,row_top=y-3,row_height=34;SDL_Color text_color=first+row==cursor?WHITE:MUTED;char position[8],points[24],result[64];if(first+row==cursor)fill(rt,116,row_top,790,row_height,(SDL_Color){44,46,53,255});fill(rt,126,row_top+(row_height-18)/2,4,18,team_color(e->constructor_id));snprintf(position,sizeof(position),"%02d",e->position);format_points(e->points,points,sizeof(points));classification_result(classification,(size_t)(first+row),result,sizeof(result));draw_text_right_center_y(rt,rt->small,position,166,row_top,row_height,text_color);draw_text_center_y(rt,rt->small,e->driver_code,198,row_top,row_height,text_color);draw_text_center_y(rt,rt->small,e->constructor_name,286,row_top,row_height,team_color(e->constructor_id));draw_text_right_center_y(rt,rt->small,points,670,row_top,row_height,text_color);draw_text_right_center_y(rt,rt->small,result,890,row_top,row_height,text_color);}}
         }
     } else if (rs_app_route(rt->app) == RS_ROUTE_STANDINGS) {
         int index=rs_app_cursor(rt->app); char line[256];
@@ -387,7 +387,6 @@ static void render(Runtime *rt) {
     draw_text(rt, rt->small, rs_app_route(rt->app)==RS_ROUTE_NEXT?"X TIMEZONE   L1/R1 PAGE   Y REFRESH   START SETTINGS   MENU EXIT":"L1/R1 PAGE   D-PAD NAV   Y REFRESH   START SETTINGS   MENU EXIT", 494, 724, MUTED);
     if (rs_app_overlay(rt->app) == RS_OVERLAY_ABOUT||rs_app_overlay(rt->app)==RS_OVERLAY_DISCLAIMER) draw_about(rt);
     else if (rs_app_overlay(rt->app) == RS_OVERLAY_DETAIL) draw_detail(rt);
-    SDL_RenderPresent(rt->renderer);
 }
 
 static char *load_preferred(const char *data_dir, const char *assets, const char *name) {
@@ -616,8 +615,9 @@ int main(int argc, char **argv) {
     if(detail){int cycles=!strcmp(detail,"race")?1:!strcmp(detail,"qualifying")?2:!strcmp(detail,"sprint")?3:0;rs_app_dispatch(rt.app,RS_ACTION_A);while(cycles-->0)rs_app_dispatch(rt.app,RS_ACTION_X);}
     if(actions){char action_list[256];snprintf(action_list,sizeof(action_list),"%s",actions);dispatch_action_list(rt.app,action_list);}
     render(&rt);
-    if (screenshot) { SDL_Surface *shot;int warmup;for(warmup=0;warmup<3;warmup++){SDL_Delay(16);render(&rt);}shot = SDL_CreateRGBSurfaceWithFormat(0, SCREEN_W, SCREEN_H, 32, SDL_PIXELFORMAT_ARGB8888);
+    if (screenshot) { SDL_Surface *shot;render(&rt);shot = SDL_CreateRGBSurfaceWithFormat(0, SCREEN_W, SCREEN_H, 32, SDL_PIXELFORMAT_ARGB8888);
         SDL_RenderReadPixels(rt.renderer, NULL, SDL_PIXELFORMAT_ARGB8888, shot->pixels, shot->pitch); SDL_SaveBMP(shot, screenshot); SDL_FreeSurface(shot); rs_app_dispatch(rt.app, RS_ACTION_MENU); }
+    else SDL_RenderPresent(rt.renderer);
     while (rs_app_running(rt.app)) {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) rs_app_dispatch(rt.app, RS_ACTION_MENU);
@@ -633,6 +633,7 @@ int main(int argc, char **argv) {
             snprintf(rt.status, sizeof(rt.status), "%s", rt.refresh.status); rt.refresh.ready = 0; if(rt.refresh.thread){SDL_DetachThread(rt.refresh.thread);rt.refresh.thread=NULL;} }
         SDL_UnlockMutex(rt.refresh.mutex);
         render(&rt);
+        SDL_RenderPresent(rt.renderer);
         SDL_Delay(16);
     }
     if(rt.refresh.thread) SDL_WaitThread(rt.refresh.thread,NULL);
