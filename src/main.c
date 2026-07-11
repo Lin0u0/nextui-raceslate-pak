@@ -6,6 +6,7 @@
 #include "rs_store.h"
 #include "rs_weather.h"
 #include "rs_reference.h"
+#include "cJSON.h"
 
 #include <SDL.h>
 #include <SDL_ttf.h>
@@ -21,6 +22,7 @@
 
 typedef struct {
     SDL_mutex *mutex;
+    SDL_Thread *thread;
     int running;
     int ready;
     int success;
@@ -44,6 +46,7 @@ typedef struct {
     RsStandings standings;
     RsWeatherSnapshot weather;
     RsReferenceCatalog reference;
+    uint32_t last_refresh_at;
     RefreshTask refresh;
     char assets[768];
     char data_dir[768];
@@ -174,7 +177,8 @@ static void draw_calendar(Runtime *rt) {
     int first = cursor > 7 ? cursor - 7 : 0;
     int row;
     char line[180], date_text[64];
-    draw_text(rt, rt->heading, "2026 RACE CALENDAR", 42, 122, WHITE);
+    snprintf(line,sizeof(line),"%d RACE CALENDAR",rt->season.season);
+    draw_text(rt, rt->heading, line, 42, 122, WHITE);
     for (row = 0; row < 10 && first + row < (int)rt->season.event_count; row++) {
         const RsEvent *event = &rt->season.events[first + row];
         const RsSession *race = &event->sessions[event->session_count - 1];
@@ -278,9 +282,14 @@ static char *load_preferred(const char *data_dir, const char *assets, const char
 }
 
 static bool load_data(Runtime *rt) {
-    char *schedule = load_preferred(rt->data_dir, rt->assets, "schedule.json");
-    char *drivers = load_preferred(rt->data_dir, rt->assets, "driver_standings.json");
-    char *constructors = load_preferred(rt->data_dir, rt->assets, "constructor_standings.json");
+    char snapshot_path[1024]; char *snapshot_bytes; cJSON *snapshot=NULL; char *schedule=NULL,*drivers=NULL,*constructors=NULL;
+    snprintf(snapshot_path,sizeof(snapshot_path),"%s/snapshot.json",rt->data_dir);
+    snapshot_bytes=rs_store_read(snapshot_path);
+    if(snapshot_bytes){snapshot=cJSON_Parse(snapshot_bytes);free(snapshot_bytes);}
+    if(snapshot){const cJSON *s=cJSON_GetObjectItemCaseSensitive(snapshot,"schedule"),*d=cJSON_GetObjectItemCaseSensitive(snapshot,"drivers"),*c=cJSON_GetObjectItemCaseSensitive(snapshot,"constructors");if(cJSON_IsObject(s)&&cJSON_IsObject(d)&&cJSON_IsObject(c)){schedule=cJSON_PrintUnformatted(s);drivers=cJSON_PrintUnformatted(d);constructors=cJSON_PrintUnformatted(c);}}
+    if(!schedule)schedule=load_preferred(rt->data_dir, rt->assets, "schedule.json");
+    if(!drivers)drivers=load_preferred(rt->data_dir, rt->assets, "driver_standings.json");
+    if(!constructors)constructors=load_preferred(rt->data_dir, rt->assets, "constructor_standings.json");
     char *weather = load_preferred(rt->data_dir, rt->assets, "weather.json");
     RsStandings constructor_data;
     bool ok = schedule && drivers && constructors && rs_season_decode_schedule(schedule, &rt->season) &&
@@ -291,7 +300,7 @@ static bool load_data(Runtime *rt) {
         memcpy(rt->standings.constructors, constructor_data.constructors, sizeof(constructor_data.constructors));
         if (weather) rs_weather_decode(weather, &rt->weather);
     }
-    free(schedule); free(drivers); free(constructors); free(weather);
+    free(schedule); free(drivers); free(constructors); free(weather); cJSON_Delete(snapshot);
     return ok;
 }
 
@@ -301,12 +310,15 @@ static int refresh_thread(void *context) {
     RsSeasonSnapshot season;
     RsStandings driver_data, constructor_data;
     RsWeatherSnapshot weather = {0};
-    bool ok = rs_http_get_https("https://api.jolpi.ca/ergast/f1/2026.json?limit=100", task->ca_file, &schedule) &&
-              rs_http_get_https("https://api.jolpi.ca/ergast/f1/2026/driverstandings.json?limit=100", task->ca_file, &drivers) &&
-              rs_http_get_https("https://api.jolpi.ca/ergast/f1/2026/constructorstandings.json?limit=100", task->ca_file, &constructors) &&
-              rs_season_decode_schedule(schedule.bytes, &season) &&
-              rs_standings_decode_drivers(drivers.bytes, &driver_data) &&
-              rs_standings_decode_constructors(constructors.bytes, &constructor_data);
+    bool ok = rs_http_get_https("https://api.jolpi.ca/ergast/f1/current.json?limit=100", task->ca_file, &schedule) &&
+              rs_season_decode_schedule(schedule.bytes, &season);
+    if (ok) {
+        char url[256];
+        snprintf(url,sizeof(url),"https://api.jolpi.ca/ergast/f1/%d/driverstandings.json?limit=100",season.season);
+        ok=rs_http_get_https(url,task->ca_file,&drivers)&&rs_standings_decode_drivers(drivers.bytes,&driver_data);
+        snprintf(url,sizeof(url),"https://api.jolpi.ca/ergast/f1/%d/constructorstandings.json?limit=100",season.season);
+        ok=ok&&rs_http_get_https(url,task->ca_file,&constructors)&&rs_standings_decode_constructors(constructors.bytes,&constructor_data);
+    }
     if (ok) {
         const RsSession *next = rs_season_next_session(&season, (int64_t)time(NULL));
         const RsEvent *event = event_for_session(&season, next);
@@ -322,10 +334,9 @@ static int refresh_thread(void *context) {
         }
     }
     if (ok) {
-        char path[1024];
-        snprintf(path, sizeof(path), "%s/schedule.json", task->data_dir); ok = rs_store_write_atomic(path, schedule.bytes);
-        snprintf(path, sizeof(path), "%s/driver_standings.json", task->data_dir); ok = ok && rs_store_write_atomic(path, drivers.bytes);
-        snprintf(path, sizeof(path), "%s/constructor_standings.json", task->data_dir); ok = ok && rs_store_write_atomic(path, constructors.bytes);
+        char path[1024]; size_t length=schedule.length+drivers.length+constructors.length+64; char *generation=malloc(length);
+        if(!generation)ok=false;
+        else{snprintf(generation,length,"{\"schedule\":%s,\"drivers\":%s,\"constructors\":%s}",schedule.bytes,drivers.bytes,constructors.bytes);snprintf(path,sizeof(path),"%s/snapshot.json",task->data_dir);ok=rs_store_write_atomic(path,generation);free(generation);}
     }
     SDL_LockMutex(task->mutex);
     if (ok) {
@@ -345,10 +356,15 @@ static int refresh_thread(void *context) {
 }
 
 static void start_refresh(Runtime *rt) {
-    if (rt->refresh.running) return;
-    rt->refresh.running = 1; rt->refresh.ready = 0;
+    uint32_t now=SDL_GetTicks();
+    SDL_LockMutex(rt->refresh.mutex);
+    if (rt->refresh.running) { SDL_UnlockMutex(rt->refresh.mutex); return; }
+    if (rt->last_refresh_at && now-rt->last_refresh_at<60000) { snprintf(rt->status,sizeof(rt->status),"REFRESH COOLDOWN — LAST REQUEST WAS RECENT"); SDL_UnlockMutex(rt->refresh.mutex); return; }
+    rt->refresh.running = 1; rt->refresh.ready = 0; rt->last_refresh_at=now;
+    SDL_UnlockMutex(rt->refresh.mutex);
     snprintf(rt->status, sizeof(rt->status), "REFRESHING VERIFIED HTTPS DATA…");
-    SDL_CreateThread(refresh_thread, "raceslate-refresh", &rt->refresh);
+    rt->refresh.thread=SDL_CreateThread(refresh_thread, "raceslate-refresh", &rt->refresh);
+    if(!rt->refresh.thread){SDL_LockMutex(rt->refresh.mutex);rt->refresh.running=0;SDL_UnlockMutex(rt->refresh.mutex);snprintf(rt->status,sizeof(rt->status),"REFRESH WORKER COULD NOT START");}
 }
 
 static RsAction map_event(const SDL_Event *event) {
@@ -414,7 +430,7 @@ int main(int argc, char **argv) {
         if (!rs_reference_load(path,&rt.reference)) return 2;
     }
     if (!rt.window || !rt.renderer || !rt.display || !rt.heading || !rt.body || !rt.small || !rt.app || !load_data(&rt)) return 2;
-    if (!offline) start_refresh(&rt);
+    if (offline) snprintf(rt.status,sizeof(rt.status),"OFFLINE BASELINE DATA");
     render(&rt);
     if (screenshot) { SDL_Surface *shot = SDL_CreateRGBSurfaceWithFormat(0, SCREEN_W, SCREEN_H, 32, SDL_PIXELFORMAT_ARGB8888);
         SDL_RenderReadPixels(rt.renderer, NULL, SDL_PIXELFORMAT_ARGB8888, shot->pixels, shot->pitch); SDL_SaveBMP(shot, screenshot); SDL_FreeSurface(shot); rs_app_dispatch(rt.app, RS_ACTION_MENU); }
@@ -426,11 +442,12 @@ int main(int argc, char **argv) {
         if (rs_app_take_refresh_request(rt.app)) start_refresh(&rt);
         SDL_LockMutex(rt.refresh.mutex);
         if (rt.refresh.ready) { if (rt.refresh.success) { rt.season = rt.refresh.season; rt.standings = rt.refresh.standings; rt.weather = rt.refresh.weather; }
-            snprintf(rt.status, sizeof(rt.status), "%s", rt.refresh.status); rt.refresh.ready = 0; }
+            snprintf(rt.status, sizeof(rt.status), "%s", rt.refresh.status); rt.refresh.ready = 0; if(rt.refresh.thread){SDL_DetachThread(rt.refresh.thread);rt.refresh.thread=NULL;} }
         SDL_UnlockMutex(rt.refresh.mutex);
         render(&rt);
         SDL_Delay(16);
     }
+    if(rt.refresh.thread) SDL_WaitThread(rt.refresh.thread,NULL);
     TTF_CloseFont(rt.display); TTF_CloseFont(rt.heading); TTF_CloseFont(rt.body); TTF_CloseFont(rt.small);
     SDL_DestroyMutex(rt.refresh.mutex); rs_app_destroy(rt.app); SDL_DestroyRenderer(rt.renderer); SDL_DestroyWindow(rt.window);
     curl_global_cleanup(); TTF_Quit(); SDL_Quit();

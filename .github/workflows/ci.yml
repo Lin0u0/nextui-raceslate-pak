@@ -13,3 +13,14 @@ jobs:
         with:
           name: RaceSlate-screenshot
           path: build/screenshots/next.bmp
+  package:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y pkg-config zip xz-utils
+      - run: make tg5040-bootstrap
+      - run: make nextui-release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: RaceSlate-pakz
+          path: dist/RaceSlate.pakz

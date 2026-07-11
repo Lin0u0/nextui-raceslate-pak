@@ -66,7 +66,7 @@ nextui-release: tg5040
 verify-nextui-release:
 	./tests/verify_nextui_release.sh
 
-$(BUILD)/test_core: tests/test_core.c $(CORE_SRCS)
+$(BUILD)/test_core: tests/test_core.c src/rs_store.c $(CORE_SRCS)
 	@mkdir -p $(BUILD)
 	$(CC) $(CFLAGS) -o $@ $^ -lm
 

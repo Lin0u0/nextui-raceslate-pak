@@ -2,10 +2,13 @@
 #include "rs_app.h"
 #include "rs_standings.h"
 #include "rs_weather.h"
+#include "rs_store.h"
 
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 static char *read_file(const char *path) {
     FILE *file = fopen(path, "rb");
@@ -92,12 +95,23 @@ static void weather_is_aligned_to_the_nearest_session_hour(const char *fixtures)
     free(json);
 }
 
+static void a_snapshot_replaces_the_previous_generation_atomically(void) {
+    char dir[256],path[300]; char *loaded;
+    snprintf(dir,sizeof(dir),"/tmp/raceslate-store-%ld",(long)getpid());
+    snprintf(path,sizeof(path),"%s/snapshot.json",dir);
+    assert(rs_store_write_atomic(path,"{\"generation\":1}"));
+    assert(rs_store_write_atomic(path,"{\"generation\":2}"));
+    loaded=rs_store_read(path); assert(loaded); assert(strcmp(loaded,"{\"generation\":2}")==0); free(loaded);
+    unlink(path); rmdir(dir);
+}
+
 int main(int argc, char **argv) {
     assert(argc == 2);
     user_sees_the_next_session_from_a_jolpica_schedule(argv[1]);
     brick_controls_navigate_the_public_app_state();
     user_sees_complete_driver_standings(argv[1]);
     weather_is_aligned_to_the_nearest_session_hour(argv[1]);
+    a_snapshot_replaces_the_previous_generation_atomically();
     puts("ok: core behavior");
     return 0;
 }
