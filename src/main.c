@@ -4,6 +4,8 @@
 #include "rs_season.h"
 #include "rs_standings.h"
 #include "rs_store.h"
+#include "rs_weather.h"
+#include "rs_reference.h"
 
 #include <SDL.h>
 #include <SDL_ttf.h>
@@ -24,9 +26,10 @@ typedef struct {
     int success;
     char status[160];
     char data_dir[768];
-    char ca_file[768];
+    char ca_file[1024];
     RsSeasonSnapshot season;
     RsStandings standings;
+    RsWeatherSnapshot weather;
 } RefreshTask;
 
 typedef struct {
@@ -39,6 +42,8 @@ typedef struct {
     RsApp *app;
     RsSeasonSnapshot season;
     RsStandings standings;
+    RsWeatherSnapshot weather;
+    RsReferenceCatalog reference;
     RefreshTask refresh;
     char assets[768];
     char data_dir[768];
@@ -154,7 +159,14 @@ static void draw_next(Runtime *rt) {
     draw_text(rt, rt->small, event->circuit_name, 654, 484, WHITE);
     snprintf(line, sizeof(line), "%.4f, %.4f  /  YOUR TIME", event->latitude, event->longitude);
     draw_text(rt, rt->small, line, 654, 514, MUTED);
-    draw_text(rt, rt->small, "WEATHER DATA BY OPEN-METEO  /  FORECAST UPDATES WITH REFRESH", 44, 635, MUTED);
+    {
+        const RsWeatherPoint *weather = rs_weather_nearest(&rt->weather, next->starts_at_utc);
+        if (weather) {
+            snprintf(line, sizeof(line), "WEATHER DATA BY OPEN-METEO   %.1f°C   RAIN %d%%   WIND %.1f KM/H",
+                     weather->temperature_c, weather->rain_probability, weather->wind_kmh);
+        } else snprintf(line, sizeof(line), "WEATHER DATA BY OPEN-METEO  /  FORECAST UNAVAILABLE");
+        draw_text(rt, rt->small, line, 44, 635, MUTED);
+    }
 }
 
 static void draw_calendar(Runtime *rt) {
@@ -212,6 +224,34 @@ static void draw_about(Runtime *rt) {
     draw_text(rt, rt->small, "B  CLOSE", 204, 574, RED);
 }
 
+static void draw_detail(Runtime *rt) {
+    fill(rt, 86, 108, 852, 574, (SDL_Color){18, 20, 24, 252});
+    if (rs_app_route(rt->app) == RS_ROUTE_CALENDAR && rt->season.event_count) {
+        int index = rs_app_cursor(rt->app); char line[512];
+        const RsEvent *event; const RsCircuitReference *ref;
+        if (index >= (int)rt->season.event_count) index = (int)rt->season.event_count - 1;
+        event = &rt->season.events[index]; ref = rs_reference_circuit(&rt->reference, event->circuit_id);
+        draw_text(rt, rt->small, "CIRCUIT / HISTORY", 126, 140, RED);
+        draw_text(rt, rt->heading, event->circuit_name, 124, 168, WHITE);
+        if (ref) {
+            snprintf(line,sizeof(line),"%.3f KM    %d TURNS    %s",ref->length_km,ref->turns,ref->direction); draw_text(rt,rt->body,line,126,230,WHITE);
+            snprintf(line,sizeof(line),"FIRST CHAMPIONSHIP RACE %d    %d RACES HELD",ref->first_year,ref->races); draw_text(rt,rt->small,line,126,274,MUTED);
+            snprintf(line,sizeof(line),"RACE LAP RECORD  %s  /  %s  /  %d",ref->lap_record,ref->record_driver,ref->record_year); draw_text(rt,rt->body,line,126,320,WHITE);
+            draw_text(rt,rt->small,"RECENT WINNERS",126,382,MUTED);
+            snprintf(line,sizeof(line),"%s",ref->recent_winners); draw_text(rt,rt->small,line,126,416,WHITE);
+        }
+        draw_track(rt,event);
+    } else if (rs_app_route(rt->app) == RS_ROUTE_STANDINGS) {
+        int index=rs_app_cursor(rt->app); char line[256];
+        bool constructors=rs_app_standings_mode(rt->app)==RS_STANDINGS_CONSTRUCTORS;
+        draw_text(rt,rt->small,constructors?"CONSTRUCTOR PROFILE":"DRIVER PROFILE",126,140,RED);
+        if(constructors&&index<(int)rt->standings.constructor_count){const RsConstructorStanding *e=&rt->standings.constructors[index];draw_text(rt,rt->display,e->name,124,170,WHITE);snprintf(line,sizeof(line),"P%d   %.0f POINTS   %d WINS",e->position,e->points,e->wins);draw_text(rt,rt->heading,line,126,278,WHITE);}
+        else if(!constructors&&index<(int)rt->standings.driver_count){const RsDriverStanding *e=&rt->standings.drivers[index];snprintf(line,sizeof(line),"%s %s",e->given_name,e->family_name);draw_text(rt,rt->display,line,124,170,WHITE);snprintf(line,sizeof(line),"%s  /  %s",e->code,e->constructor_name);draw_text(rt,rt->body,line,128,270,MUTED);snprintf(line,sizeof(line),"P%d   %.0f POINTS   %d WINS",e->position,e->points,e->wins);draw_text(rt,rt->heading,line,126,320,WHITE);}
+        draw_text(rt,rt->small,"CURRENT SEASON STATISTICAL PROFILE",126,406,MUTED);
+    }
+    draw_text(rt,rt->small,"B  CLOSE",126,626,RED);
+}
+
 static void render(Runtime *rt) {
     SDL_SetRenderDrawColor(rt->renderer, 9, 10, 13, 255);
     SDL_RenderClear(rt->renderer);
@@ -223,6 +263,7 @@ static void render(Runtime *rt) {
     draw_text(rt, rt->small, rt->status, 42, 724, MUTED);
     draw_text(rt, rt->small, "L1/R1 PAGE   D-PAD NAV   Y REFRESH   START ABOUT   MENU EXIT", 494, 724, MUTED);
     if (rs_app_overlay(rt->app) == RS_OVERLAY_ABOUT) draw_about(rt);
+    else if (rs_app_overlay(rt->app) == RS_OVERLAY_DETAIL) draw_detail(rt);
     SDL_RenderPresent(rt->renderer);
 }
 
@@ -240,6 +281,7 @@ static bool load_data(Runtime *rt) {
     char *schedule = load_preferred(rt->data_dir, rt->assets, "schedule.json");
     char *drivers = load_preferred(rt->data_dir, rt->assets, "driver_standings.json");
     char *constructors = load_preferred(rt->data_dir, rt->assets, "constructor_standings.json");
+    char *weather = load_preferred(rt->data_dir, rt->assets, "weather.json");
     RsStandings constructor_data;
     bool ok = schedule && drivers && constructors && rs_season_decode_schedule(schedule, &rt->season) &&
               rs_standings_decode_drivers(drivers, &rt->standings) &&
@@ -247,8 +289,9 @@ static bool load_data(Runtime *rt) {
     if (ok) {
         rt->standings.constructor_count = constructor_data.constructor_count;
         memcpy(rt->standings.constructors, constructor_data.constructors, sizeof(constructor_data.constructors));
+        if (weather) rs_weather_decode(weather, &rt->weather);
     }
-    free(schedule); free(drivers); free(constructors);
+    free(schedule); free(drivers); free(constructors); free(weather);
     return ok;
 }
 
@@ -257,12 +300,27 @@ static int refresh_thread(void *context) {
     RsHttpResponse schedule = {0}, drivers = {0}, constructors = {0};
     RsSeasonSnapshot season;
     RsStandings driver_data, constructor_data;
+    RsWeatherSnapshot weather = {0};
     bool ok = rs_http_get_https("https://api.jolpi.ca/ergast/f1/2026.json?limit=100", task->ca_file, &schedule) &&
               rs_http_get_https("https://api.jolpi.ca/ergast/f1/2026/driverstandings.json?limit=100", task->ca_file, &drivers) &&
               rs_http_get_https("https://api.jolpi.ca/ergast/f1/2026/constructorstandings.json?limit=100", task->ca_file, &constructors) &&
               rs_season_decode_schedule(schedule.bytes, &season) &&
               rs_standings_decode_drivers(drivers.bytes, &driver_data) &&
               rs_standings_decode_constructors(constructors.bytes, &constructor_data);
+    if (ok) {
+        const RsSession *next = rs_season_next_session(&season, (int64_t)time(NULL));
+        const RsEvent *event = event_for_session(&season, next);
+        if (event && next) {
+            char url[768]; RsHttpResponse weather_response = {0};
+            snprintf(url, sizeof(url), "https://api.open-meteo.com/v1/forecast?latitude=%.6f&longitude=%.6f&hourly=temperature_2m,precipitation_probability,wind_speed_10m&timezone=UTC&wind_speed_unit=kmh&forecast_days=16",
+                     event->latitude, event->longitude);
+            if (rs_http_get_https(url, task->ca_file, &weather_response) && rs_weather_decode(weather_response.bytes, &weather)) {
+                char path[1024]; snprintf(path, sizeof(path), "%s/weather.json", task->data_dir);
+                rs_store_write_atomic(path, weather_response.bytes);
+            }
+            rs_http_response_dispose(&weather_response);
+        }
+    }
     if (ok) {
         char path[1024];
         snprintf(path, sizeof(path), "%s/schedule.json", task->data_dir); ok = rs_store_write_atomic(path, schedule.bytes);
@@ -274,6 +332,7 @@ static int refresh_thread(void *context) {
         task->season = season;
         task->standings = driver_data;
         task->standings.constructor_count = constructor_data.constructor_count;
+        task->weather = weather;
         memcpy(task->standings.constructors, constructor_data.constructors, sizeof(constructor_data.constructors));
         snprintf(task->status, sizeof(task->status), "ONLINE DATA UPDATED");
     } else snprintf(task->status, sizeof(task->status), "REFRESH FAILED — USING LAST COMPLETE SNAPSHOT");
@@ -350,6 +409,10 @@ int main(int argc, char **argv) {
     snprintf(rt.refresh.data_dir, sizeof(rt.refresh.data_dir), "%s", rt.data_dir);
     snprintf(rt.refresh.ca_file, sizeof(rt.refresh.ca_file), "%s/cacert.pem", rt.assets);
     snprintf(rt.status, sizeof(rt.status), "BASELINE DATA · Y TO REFRESH");
+    {
+        char path[1024]; snprintf(path,sizeof(path),"%s/reference/history.tsv",rt.assets);
+        if (!rs_reference_load(path,&rt.reference)) return 2;
+    }
     if (!rt.window || !rt.renderer || !rt.display || !rt.heading || !rt.body || !rt.small || !rt.app || !load_data(&rt)) return 2;
     if (!offline) start_refresh(&rt);
     render(&rt);
@@ -362,7 +425,7 @@ int main(int argc, char **argv) {
         }
         if (rs_app_take_refresh_request(rt.app)) start_refresh(&rt);
         SDL_LockMutex(rt.refresh.mutex);
-        if (rt.refresh.ready) { if (rt.refresh.success) { rt.season = rt.refresh.season; rt.standings = rt.refresh.standings; }
+        if (rt.refresh.ready) { if (rt.refresh.success) { rt.season = rt.refresh.season; rt.standings = rt.refresh.standings; rt.weather = rt.refresh.weather; }
             snprintf(rt.status, sizeof(rt.status), "%s", rt.refresh.status); rt.refresh.ready = 0; }
         SDL_UnlockMutex(rt.refresh.mutex);
         render(&rt);

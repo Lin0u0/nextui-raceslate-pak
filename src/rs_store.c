@@ -41,7 +41,7 @@ bool rs_store_write_atomic(const char *path, const char *bytes) {
     char *slash;
     int fd;
     size_t length, offset = 0;
-    if (!path || !bytes || strlen(path) + 16 >= sizeof(temp)) return false;
+    if (!path || !bytes || strlen(path) + 16 >= sizeof(temp) || strlen(path) >= sizeof(parent)) return false;
     snprintf(parent, sizeof(parent), "%s", path);
     slash = strrchr(parent, '/');
     if (slash) { *slash = '\0'; if (!rs_store_mkdirs(parent)) return false; }

@@ -1,0 +1,9 @@
+{
+  "name": "RaceSlate",
+  "version": "v0.1.0",
+  "type": "TOOL",
+  "description": "Independent Formula 1 season companion for TrimUI Brick",
+  "author": "Lin0u0",
+  "launch": "launch.sh",
+  "release_filename": "RaceSlate.pakz"
+}

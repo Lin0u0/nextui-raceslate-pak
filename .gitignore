@@ -1,0 +1,5 @@
+/build/
+/dist/
+/data/
+/.DS_Store
+*.dSYM/

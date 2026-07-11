@@ -1,6 +1,7 @@
 #include "rs_season.h"
 #include "rs_app.h"
 #include "rs_standings.h"
+#include "rs_weather.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -79,11 +80,24 @@ static void user_sees_complete_driver_standings(const char *fixtures) {
     free(json);
 }
 
+static void weather_is_aligned_to_the_nearest_session_hour(const char *fixtures) {
+    char path[512]; char *json; RsWeatherSnapshot weather; const RsWeatherPoint *point;
+    snprintf(path, sizeof(path), "%s/open_meteo.json", fixtures);
+    json = read_file(path);
+    assert(rs_weather_decode(json, &weather));
+    point = rs_weather_nearest(&weather, 1775804400);
+    assert(point);
+    assert(point->temperature_c == 21.5);
+    assert(point->rain_probability == 35);
+    free(json);
+}
+
 int main(int argc, char **argv) {
     assert(argc == 2);
     user_sees_the_next_session_from_a_jolpica_schedule(argv[1]);
     brick_controls_navigate_the_public_app_state();
     user_sees_complete_driver_standings(argv[1]);
+    weather_is_aligned_to_the_nearest_session_hour(argv[1]);
     puts("ok: core behavior");
     return 0;
 }

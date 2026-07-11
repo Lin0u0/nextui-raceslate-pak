@@ -1,0 +1,15 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  host:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - run: brew install sdl2 sdl2_ttf pkg-config
+      - run: make test
+      - run: make host
+      - run: mkdir -p build/screenshots && SDL_VIDEODRIVER=dummy ./build/host/raceslate --offline --now 1783742400 --screenshot build/screenshots/next.bmp
+      - uses: actions/upload-artifact@v4
+        with:
+          name: RaceSlate-screenshot
+          path: build/screenshots/next.bmp

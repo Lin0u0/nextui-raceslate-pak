@@ -1,0 +1,1 @@
+{"hourly_units":{"temperature_2m":"°C","precipitation_probability":"%","wind_speed_10m":"km/h"},"hourly":{"time":["2026-04-10T06:00","2026-04-10T07:00","2026-04-10T08:00"],"temperature_2m":[20.8,21.5,22.0],"precipitation_probability":[20,35,40],"wind_speed_10m":[12.0,14.5,15.1]}}

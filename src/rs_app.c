@@ -37,6 +37,7 @@ void rs_app_dispatch(RsApp *app, RsAction action) {
                     ? RS_STANDINGS_CONSTRUCTORS : RS_STANDINGS_DRIVERS;
             break;
         case RS_ACTION_Y: app->refresh_requested = true; break;
+        case RS_ACTION_A: if (app->route != RS_ROUTE_NEXT) app->overlay = RS_OVERLAY_DETAIL; break;
         case RS_ACTION_START: app->overlay = RS_OVERLAY_ABOUT; break;
         default: break;
     }
