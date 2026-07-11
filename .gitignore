@@ -1,5 +1,6 @@
 /build/
 /dist/
 /data/
+/marketing/*.svg
 /.DS_Store
 *.dSYM/

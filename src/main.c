@@ -186,7 +186,7 @@ static void draw_header(Runtime *rt) {
 }
 
 typedef struct {const char *key;const char *label;} FooterHint;
-static void draw_footer_hints(Runtime *rt){static const FooterHint next_hints[]={{"X","TIMEZONE"},{"L1/R1","PAGE"},{"Y","REFRESH"},{"START","SETTINGS"},{"MENU","EXIT"}};static const FooterHint list_hints[]={{"L1/R1","PAGE"},{"D-PAD","NAV"},{"Y","REFRESH"},{"START","SETTINGS"},{"MENU","EXIT"}};const FooterHint *hints=rs_app_route(rt->app)==RS_ROUTE_NEXT?next_hints:list_hints;int count=5,index,total=0,x;for(index=0;index<count;index++){int key_width=0,label_width=0;TTF_SizeUTF8(rt->small,hints[index].key,&key_width,NULL);TTF_SizeUTF8(rt->small,hints[index].label,&label_width,NULL);total+=key_width+5+label_width+(index+1<count?18:0);}x=986-total;for(index=0;index<count;index++){int width=0;draw_text(rt,rt->small,hints[index].key,x,724,RED);TTF_SizeUTF8(rt->small,hints[index].key,&width,NULL);x+=width+5;draw_text(rt,rt->small,hints[index].label,x,724,MUTED);TTF_SizeUTF8(rt->small,hints[index].label,&width,NULL);x+=width+18;}}
+static void draw_footer_hints(Runtime *rt){static const FooterHint next_hints[]={{"X","TIMEZONE"},{"L1/R1","PAGE"},{"Y","REFRESH"},{"START","SETTINGS"},{"MENU","EXIT"}};static const FooterHint list_hints[]={{"L1/R1","PAGE"},{"D-PAD","NAV"},{"Y","REFRESH"},{"START","SETTINGS"},{"MENU","EXIT"}};const FooterHint *hints=rs_app_route(rt->app)==RS_ROUTE_NEXT?next_hints:list_hints;int count=5,index,total=0,x;for(index=0;index<count;index++){int key_width=0,label_width=0;TTF_SizeUTF8(rt->small,hints[index].key,&key_width,NULL);TTF_SizeUTF8(rt->small,hints[index].label,&label_width,NULL);total+=key_width+5+label_width+(index+1<count?18:0);}x=986-total;for(index=0;index<count;index++){int width=0;draw_text(rt,rt->small,hints[index].key,x,724,WHITE);TTF_SizeUTF8(rt->small,hints[index].key,&width,NULL);x+=width+5;draw_text(rt,rt->small,hints[index].label,x,724,MUTED);TTF_SizeUTF8(rt->small,hints[index].label,&width,NULL);x+=width+18;}}
 
 static void draw_track(Runtime *rt, const RsEvent *event, SDL_Rect target) {
     char path[1024];
@@ -572,7 +572,7 @@ int main(int argc, char **argv) {
     Runtime rt = {0};
     SDL_Event event;
     const char *screenshot = NULL;
-    const char *screen=NULL,*detail=NULL,*actions=NULL; int selected=0;
+    const char *screen=NULL,*detail=NULL,*actions=NULL; int selected=-1;
     int offline = 0, i;
     snprintf(rt.assets, sizeof(rt.assets), "assets");
     snprintf(rt.data_dir, sizeof(rt.data_dir), "data");
@@ -616,7 +616,7 @@ int main(int argc, char **argv) {
     {char path[1024];char *ack;snprintf(path,sizeof(path),"%s/acknowledged",rt.data_dir);ack=rs_store_read(path);rt.first_launch=ack==NULL&&!screenshot;free(ack);if(rt.first_launch)rs_app_show_disclaimer(rt.app);}
     if (offline) snprintf(rt.status,sizeof(rt.status),"OFFLINE BASELINE DATA");
     if(screen){if(!strcmp(screen,"calendar")){rs_app_dispatch(rt.app,RS_ACTION_R1);select_upcoming_calendar(&rt);}else if(!strcmp(screen,"standings")){rs_app_dispatch(rt.app,RS_ACTION_R1);rs_app_dispatch(rt.app,RS_ACTION_R1);}}
-    while(selected-->0)rs_app_dispatch(rt.app,RS_ACTION_DOWN);
+    if(selected>=0)rs_app_set_cursor(rt.app,rs_app_route(rt.app),selected);
     if(detail){int cycles=!strcmp(detail,"race")?1:!strcmp(detail,"qualifying")?2:!strcmp(detail,"sprint")?3:0;rs_app_dispatch(rt.app,RS_ACTION_A);while(cycles-->0)rs_app_dispatch(rt.app,RS_ACTION_X);}
     if(actions){char action_list[256];snprintf(action_list,sizeof(action_list),"%s",actions);dispatch_action_list(rt.app,action_list);}
     render(&rt);
