@@ -1,7 +1,7 @@
 # Third-party notices
 
 - Jolpica-F1 API data: CC BY-NC-SA 4.0. Source: https://github.com/jolpica/jolpica-f1
-- F1DB data and circuit SVG derivatives: CC BY 4.0, pinned source commit `0921cd9a6f79029290b61544965f91201373e960`. Circuit SVG contributor: Jules Roy. Source: https://github.com/f1db/f1db
+- F1DB data and circuit SVG derivatives, including the historical venue atlas: CC BY 4.0, pinned source commit `0921cd9a6f79029290b61544965f91201373e960`. Circuit SVG contributor: Jules Roy. Source: https://github.com/f1db/f1db
 - Open-Meteo weather data: CC BY 4.0. Source: https://open-meteo.com/
 - Barlow Condensed and Inter fonts: SIL Open Font License 1.1.
 - cJSON: MIT License.

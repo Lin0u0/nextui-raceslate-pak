@@ -27,7 +27,7 @@ make host
 SDL_VIDEODRIVER=dummy ./build/host/raceslate --offline --screenshot next.bmp
 ```
 
-The app starts from the bundled snapshot and refreshes Jolpica-F1 and Open-Meteo on a worker thread. Historical seasons load one year at a time back to 1950 and are retained as separate offline snapshots. Validated responses are committed atomically under the data directory. Weather responses tolerate unavailable far-future hours while retaining valid forecast points. TLS peer and hostname checks are never disabled.
+The app starts from the bundled snapshot and refreshes Jolpica-F1 and Open-Meteo on a worker thread. Historical seasons load one year at a time back to 1950 and are retained as separate offline snapshots. Historical standings combine F1DB career totals for more than 1,000 driver and constructor identities with progression charts derived from the selected season. A compact F1DB atlas selects the circuit layout actually raced at each venue and year. Validated responses are committed atomically under the data directory. Weather responses tolerate unavailable far-future hours while retaining valid forecast points. TLS peer and hostname checks are never disabled.
 
 For a device package:
 
@@ -37,6 +37,20 @@ make nextui-release
 ```
 
 The output is `dist/RaceSlate.pakz`. Copy it to the SD-card root and let NextUI import it.
+
+## Regenerating attributed reference assets
+
+Reference assets are generated from F1DB commit `0921cd9a6f79029290b61544965f91201373e960`. On macOS, install Python 3 with PyYAML and use the system `qlmanage` and `sips` tools:
+
+```sh
+git clone https://github.com/f1db/f1db.git build/f1db-source
+git -C build/f1db-source checkout 0921cd9a6f79029290b61544965f91201373e960
+python3 -m pip install PyYAML
+python3 scripts/generate_circuits.py build/f1db-source assets/circuits
+python3 scripts/generate_profiles.py build/f1db-source assets/reference/profiles.tsv
+```
+
+Profile generation also resolves the public Jolpica driver and constructor identifiers used by runtime snapshots.
 
 ## Data and licensing
 

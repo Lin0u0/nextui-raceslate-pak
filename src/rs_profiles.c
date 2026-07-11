@@ -108,3 +108,32 @@ void rs_profiles_rebuild_series(RsProfileCatalog *catalog, const RsResultsCatalo
         }
     }
 }
+
+void rs_profiles_build_season(RsProfileCatalog *catalog,const RsStandings *standings,const RsResultsCatalog *results){
+    size_t index,classification_index;
+    if(!catalog||!standings||!results)return;
+    memset(catalog,0,sizeof(*catalog));
+    for(index=0;index<standings->driver_count&&catalog->count<RS_MAX_PROFILES;index++){
+        const RsDriverStanding *entry=&standings->drivers[index];RsProfile *profile=&catalog->profiles[catalog->count++];
+        profile->type=RS_PROFILE_DRIVER;profile->season_only=true;copy_text(profile->provider_id,sizeof(profile->provider_id),entry->id);snprintf(profile->name,sizeof(profile->name),"%s %s",entry->given_name,entry->family_name);profile->wins=entry->wins;profile->championships=entry->position==1?1:0;
+    }
+    for(index=0;index<standings->constructor_count&&catalog->count<RS_MAX_PROFILES;index++){
+        const RsConstructorStanding *entry=&standings->constructors[index];RsProfile *profile=&catalog->profiles[catalog->count++];
+        profile->type=RS_PROFILE_CONSTRUCTOR;profile->season_only=true;copy_text(profile->provider_id,sizeof(profile->provider_id),entry->id);copy_text(profile->name,sizeof(profile->name),entry->name);profile->wins=entry->wins;profile->championships=entry->position==1?1:0;
+    }
+    for(classification_index=0;classification_index<results->count;classification_index++){
+        const RsClassification *classification=&results->classifications[classification_index];size_t entry_index;
+        for(entry_index=0;entry_index<classification->entry_count;entry_index++){
+            const RsClassificationEntry *entry=&classification->entries[entry_index];RsProfileType type;
+            for(type=RS_PROFILE_DRIVER;type<=RS_PROFILE_CONSTRUCTOR;type++){
+                const char *id=type==RS_PROFILE_DRIVER?entry->driver_id:entry->constructor_id;RsProfile *profile=(RsProfile *)rs_profiles_find(catalog,type,id);
+                if(!profile)continue;
+                if(classification->kind==RS_RESULT_RACE){bool first_entry=true;if(type==RS_PROFILE_CONSTRUCTOR){size_t previous;for(previous=0;previous<entry_index;previous++)if(!strcmp(classification->entries[previous].constructor_id,id)){first_entry=false;break;}}if(first_entry)profile->starts++;if(entry->position>0&&entry->position<=3)profile->podiums++;}
+                else if(classification->kind==RS_RESULT_QUALIFYING&&entry->position==1)profile->poles++;
+            }
+        }
+    }
+    rs_profiles_rebuild_series(catalog,results);
+}
+
+bool rs_profiles_apply_career(const char *path,RsProfileCatalog *catalog){FILE *file;char line[4096];bool matched=false;if(!path||!catalog)return false;file=fopen(path,"rb");if(!file)return false;if(!fgets(line,sizeof(line),file)){fclose(file);return false;}while(fgets(line,sizeof(line),file)){char *fields[11];RsProfileType type;RsProfile *profile;if(split_tabs(line,fields,11)!=11)continue;type=fields[0][0]=='C'?RS_PROFILE_CONSTRUCTOR:RS_PROFILE_DRIVER;profile=(RsProfile *)rs_profiles_find(catalog,type,fields[1]);if(!profile)continue;copy_text(profile->country,sizeof(profile->country),fields[4]);profile->starts=atoi(fields[5]);profile->wins=atoi(fields[6]);profile->podiums=atoi(fields[7]);profile->poles=atoi(fields[8]);profile->championships=atoi(fields[9]);profile->season_only=false;matched=true;}fclose(file);return matched;}

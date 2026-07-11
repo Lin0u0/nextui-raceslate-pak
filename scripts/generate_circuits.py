@@ -6,6 +6,7 @@ import re
 import subprocess
 import sys
 import tempfile
+import yaml
 
 ALIASES = {
     "albert_park": "melbourne-2", "shanghai": "shanghai-1", "suzuka": "suzuka-2",
@@ -18,6 +19,22 @@ ALIASES = {
     "yas_marina": "yas-marina-2",
 }
 
+def render(svg: Path, bmp: Path, size: int) -> None:
+    source_text = svg.read_text()
+    path_match = re.search(r'<path[^>]* d="([^"]+)"', source_text)
+    if not path_match:
+        raise ValueError(f"no path in {svg}")
+    clean_svg = (
+        f'<svg width="{size}" height="{size}" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">'
+        f'<rect width="500" height="500" fill="#000"/><path d="{path_match.group(1)}" fill="none" '
+        'stroke="#fff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    )
+    with tempfile.TemporaryDirectory() as temporary:
+        temporary_path = Path(temporary); clean = temporary_path / svg.name; clean.write_text(clean_svg)
+        subprocess.run(["qlmanage", "-t", "-s", str(size), "-o", str(temporary_path), str(clean)], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["sips", "-s", "format", "bmp", str(temporary_path / f"{svg.name}.png"), "--out", str(bmp)], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+
 def main() -> int:
     if len(sys.argv) != 3:
         print("usage: generate_circuits.py F1DB_ROOT OUTPUT_DIR", file=sys.stderr)
@@ -29,27 +46,22 @@ def main() -> int:
         svg = source / f"{layout_id}.svg"
         if not svg.exists():
             raise FileNotFoundError(svg)
-        source_text = svg.read_text()
-        path_match = re.search(r'<path[^>]* d="([^"]+)"', source_text)
-        if not path_match:
-            raise ValueError(f"no path in {svg}")
-        clean_svg = (
-            '<svg width="500" height="500" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">'
-            '<rect width="500" height="500" fill="#000"/>'
-            f'<path d="{path_match.group(1)}" fill="none" stroke="#fff" stroke-width="12" '
-            'stroke-linecap="round" stroke-linejoin="round"/>'
-            '</svg>'
-        )
-        with tempfile.TemporaryDirectory() as temporary:
-            temporary_path = Path(temporary)
-            clean = temporary_path / f"{layout_id}.svg"
-            clean.write_text(clean_svg)
-            subprocess.run(["qlmanage", "-t", "-s", "512", "-o", str(temporary_path), str(clean)], check=True,
-                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            preview = temporary_path / f"{layout_id}.svg.png"
-            bmp = output / f"{provider_id}.bmp"
-            subprocess.run(["sips", "-s", "format", "bmp", str(preview), "--out", str(bmp)], check=True,
-                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        render(svg, output / f"{provider_id}.bmp", 512)
+    circuits = {path.stem: yaml.safe_load(path.read_text()) for path in (Path(sys.argv[1]) / "src/data/circuits").glob("*.yml")}
+    atlas = ["year\tround\tasset_id\tlatitude\tlongitude"]
+    rendered = set()
+    for race_path in sorted((Path(sys.argv[1]) / "src/data/seasons").glob("*/races/*/race.yml")):
+        race = yaml.safe_load(race_path.read_text()); circuit = circuits.get(race.get("circuitId")); layout_id = race.get("circuitLayoutId")
+        if not circuit or not layout_id or circuit.get("latitude") is None or circuit.get("longitude") is None:
+            continue
+        asset_id = f"layout-{layout_id}"; svg = source / f"{layout_id}.svg"
+        if not svg.exists():
+            continue
+        if asset_id not in rendered:
+            render(svg, output / f"{asset_id}.bmp", 256); rendered.add(asset_id)
+        year = int(race_path.parts[-4])
+        atlas.append(f"{year}\t{race.get('round',0)}\t{asset_id}\t{circuit['latitude']}\t{circuit['longitude']}")
+    (output / "atlas.tsv").write_text("\n".join(atlas) + "\n")
     return 0
 
 if __name__ == "__main__":

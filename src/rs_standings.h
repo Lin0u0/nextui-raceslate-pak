@@ -4,8 +4,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#define RS_MAX_DRIVERS 30
-#define RS_MAX_CONSTRUCTORS 15
+#define RS_MAX_DRIVERS 100
+#define RS_MAX_CONSTRUCTORS 40
 
 typedef struct {
     int position;

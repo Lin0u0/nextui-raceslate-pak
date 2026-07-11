@@ -6,6 +6,7 @@
 #include "rs_results.h"
 #include "rs_profiles.h"
 #include "rs_timezone.h"
+#include "rs_circuit_atlas.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -186,6 +187,20 @@ static void live_results_rebuild_profile_progression(const char *fixtures) {
     driver=rs_profiles_find(&profiles,RS_PROFILE_DRIVER,"max_verstappen");assert(driver);assert(driver->series_count>0);assert(driver->series[0].points>=0.0);
 }
 
+static void historical_standings_build_season_profiles(const char *fixtures){
+    char path[512];char *json;RsStandings standings,constructors={0};RsResultsCatalog results={0};RsProfileCatalog profiles;const RsProfile *driver,*team;
+    snprintf(path,sizeof(path),"%s/driver_standings.json",fixtures);json=read_file(path);assert(rs_standings_decode_drivers(json,&standings));free(json);
+    snprintf(path,sizeof(path),"%s/constructor_standings.json",fixtures);json=read_file(path);assert(rs_standings_decode_constructors(json,&constructors));free(json);standings.constructor_count=constructors.constructor_count;memcpy(standings.constructors,constructors.constructors,sizeof(constructors.constructors));
+    snprintf(path,sizeof(path),"%s/results.json",fixtures);json=read_file(path);assert(rs_results_decode(json,RS_RESULT_RACE,&results));free(json);
+    snprintf(path,sizeof(path),"%s/qualifying.json",fixtures);json=read_file(path);assert(rs_results_decode(json,RS_RESULT_QUALIFYING,&results));free(json);
+    rs_profiles_build_season(&profiles,&standings,&results);
+    driver=rs_profiles_find(&profiles,RS_PROFILE_DRIVER,standings.drivers[0].id);assert(driver);assert(driver->season_only);assert(driver->starts>0);assert(driver->series_count>0);
+    team=rs_profiles_find(&profiles,RS_PROFILE_CONSTRUCTOR,standings.constructors[0].id);assert(team);assert(team->season_only);assert(team->starts>0);
+    snprintf(path,sizeof(path),"%s/profiles.tsv",fixtures);assert(rs_profiles_apply_career(path,&profiles));driver=rs_profiles_find(&profiles,RS_PROFILE_DRIVER,standings.drivers[0].id);assert(driver&&!driver->season_only);assert(driver->starts>20);team=rs_profiles_find(&profiles,RS_PROFILE_CONSTRUCTOR,standings.constructors[0].id);assert(team&&!team->season_only);assert(team->starts>20);
+}
+
+static void historical_circuits_use_the_layout_raced_that_round(const char *fixtures){char path[512];RsCircuitAtlas atlas;snprintf(path,sizeof(path),"%s/circuit_atlas.tsv",fixtures);assert(rs_circuit_atlas_load(path,&atlas));assert(strcmp(rs_circuit_atlas_nearest(&atlas,2024,14,50.4372,5.9714),"layout-spa-francorchamps-4")==0);assert(strcmp(rs_circuit_atlas_nearest(&atlas,1950,4,46.95,7.41),"layout-bremgarten-1")==0);assert(strcmp(rs_circuit_atlas_nearest(&atlas,2020,15,26.0325,50.5106),"layout-bahrain-1")==0);assert(strcmp(rs_circuit_atlas_nearest(&atlas,2020,16,26.0325,50.5106),"layout-bahrain-3")==0);assert(rs_circuit_atlas_nearest(&atlas,1951,4,46.95,7.41)==NULL);}
+
 int main(int argc, char **argv) {
     assert(argc == 2);
     user_sees_the_next_session_from_a_jolpica_schedule(argv[1]);
@@ -198,6 +213,8 @@ int main(int argc, char **argv) {
     completed_sessions_expose_full_classifications(argv[1]);
     current_grid_profiles_include_career_totals_and_chart_series(argv[1]);
     live_results_rebuild_profile_progression(argv[1]);
+    historical_standings_build_season_profiles(argv[1]);
+    historical_circuits_use_the_layout_raced_that_round(argv[1]);
     track_time_offsets_cover_calendar_regions();
     puts("ok: core behavior");
     return 0;

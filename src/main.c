@@ -6,6 +6,7 @@
 #include "rs_store.h"
 #include "rs_weather.h"
 #include "rs_reference.h"
+#include "rs_circuit_atlas.h"
 #include "rs_results.h"
 #include "rs_profiles.h"
 #include "rs_timezone.h"
@@ -57,6 +58,7 @@ typedef struct {
     RsWeatherSnapshot weather;
     RsResultsCatalog results;
     RsReferenceCatalog reference;
+    RsCircuitAtlas circuit_atlas;
     RsProfileCatalog profiles;
     uint32_t last_refresh_at;
     RefreshTask refresh;
@@ -194,8 +196,9 @@ static void draw_track(Runtime *rt, const RsEvent *event, SDL_Rect target) {
     char path[1024];
     SDL_Surface *surface;
     SDL_Texture *texture;
-    snprintf(path, sizeof(path), "%s/circuits/%s.bmp", rt->assets, event->circuit_id);
-    surface = SDL_LoadBMP(path);
+    surface=NULL;
+    if(rt->season.season!=rt->latest_season){const char *asset=rs_circuit_atlas_nearest(&rt->circuit_atlas,rt->season.season,event->round,event->latitude,event->longitude);if(asset){snprintf(path,sizeof(path),"%s/circuits/%s.bmp",rt->assets,asset);surface=SDL_LoadBMP(path);}}
+    if(!surface){snprintf(path, sizeof(path), "%s/circuits/%s.bmp", rt->assets, event->circuit_id);surface=SDL_LoadBMP(path);}
     if (!surface) return;
     SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, 0, 0, 0));
     texture = SDL_CreateTextureFromSurface(rt->renderer, surface);
@@ -380,7 +383,7 @@ static void draw_detail(Runtime *rt) {
         draw_text(rt,rt->small,constructors?"CONSTRUCTOR PROFILE":"DRIVER PROFILE",126,140,RED);
         if(constructors&&index<(int)rt->standings.constructor_count){const RsConstructorStanding *e=&rt->standings.constructors[index];profile=rs_profiles_find(&rt->profiles,RS_PROFILE_CONSTRUCTOR,e->id);draw_text(rt,rt->display,e->name,124,170,WHITE);snprintf(line,sizeof(line),"P%d   %.0f POINTS   %d WINS",e->position,e->points,e->wins);draw_text(rt,rt->heading,line,126,278,WHITE);}
         else if(!constructors&&index<(int)rt->standings.driver_count){const RsDriverStanding *e=&rt->standings.drivers[index];profile=rs_profiles_find(&rt->profiles,RS_PROFILE_DRIVER,e->id);snprintf(line,sizeof(line),"%s %s",e->given_name,e->family_name);draw_text(rt,rt->display,line,124,170,WHITE);snprintf(line,sizeof(line),"%s  /  %s",e->code,e->constructor_name);draw_text(rt,rt->body,line,128,270,MUTED);snprintf(line,sizeof(line),"P%d   %.0f POINTS   %d WINS",e->position,e->points,e->wins);draw_text(rt,rt->heading,line,126,320,WHITE);}
-        if(profile){snprintf(line,sizeof(line),"CAREER  %d STARTS   %d WINS   %d PODIUMS   %d POLES   %d TITLES",profile->starts,profile->wins,profile->podiums,profile->poles,profile->championships);draw_text(rt,rt->small,line,126,382,WHITE);draw_profile_chart(rt,profile,(rs_app_detail_mode(rt->app)%2)==RS_DETAIL_RACE);draw_text(rt,rt->small,"SELECT  SET FAVORITE",680,626,RED);}
+        if(profile){snprintf(line,sizeof(line),"%s  %d STARTS   %d WINS   %d PODIUMS   %d POLES   %d %s",profile->season_only?"SEASON":"CAREER",profile->starts,profile->wins,profile->podiums,profile->poles,profile->championships,profile->season_only?"TITLE":"TITLES");draw_text(rt,rt->small,line,126,382,WHITE);draw_profile_chart(rt,profile,(rs_app_detail_mode(rt->app)%2)==RS_DETAIL_RACE);draw_text(rt,rt->small,"SELECT  SET FAVORITE",680,626,RED);}
         else draw_text(rt,rt->small,"CAREER PROFILE UNAVAILABLE",126,406,MUTED);
     }
     draw_text(rt,rt->small,"B  CLOSE",126,650,RED);
@@ -429,7 +432,8 @@ static bool decode_snapshot_text(const char *text,RsSeasonSnapshot *season,RsSta
 done:cJSON_Delete(snapshot);return ok;
 }
 
-static bool load_cached_season(Runtime *rt,int season){char path[1024],*text;bool ok;snprintf(path,sizeof(path),"%s/seasons/%d/snapshot.json",rt->data_dir,season);text=rs_store_read(path);if(!text)return false;ok=decode_snapshot_text(text,&rt->season,&rt->standings,&rt->weather,&rt->results);free(text);if(ok){rt->weather_live=false;rs_profiles_rebuild_series(&rt->profiles,&rt->results);}return ok;}
+static void apply_career_profiles(Runtime *rt){char path[1024];snprintf(path,sizeof(path),"%s/reference/profiles.tsv",rt->assets);rs_profiles_apply_career(path,&rt->profiles);}
+static bool load_cached_season(Runtime *rt,int season){char path[1024],*text;bool ok;snprintf(path,sizeof(path),"%s/seasons/%d/snapshot.json",rt->data_dir,season);text=rs_store_read(path);if(!text)return false;ok=decode_snapshot_text(text,&rt->season,&rt->standings,&rt->weather,&rt->results);free(text);if(ok){rt->weather_live=false;rs_profiles_build_season(&rt->profiles,&rt->standings,&rt->results);apply_career_profiles(rt);}return ok;}
 
 static bool load_data(Runtime *rt) {
     char snapshot_path[1024]; char *snapshot_bytes; cJSON *snapshot=NULL; char *schedule=NULL,*drivers=NULL,*constructors=NULL,*results=NULL,*qualifying=NULL,*sprint=NULL,*weather=NULL;
@@ -455,7 +459,7 @@ static bool load_data(Runtime *rt) {
         if(results)rs_results_decode(results,RS_RESULT_RACE,&rt->results);
         if(qualifying)rs_results_decode(qualifying,RS_RESULT_QUALIFYING,&rt->results);
         if(sprint)rs_results_decode(sprint,RS_RESULT_SPRINT,&rt->results);
-        rs_profiles_rebuild_series(&rt->profiles,&rt->results);
+        rs_profiles_build_season(&rt->profiles,&rt->standings,&rt->results);apply_career_profiles(rt);
     }
     free(schedule); free(drivers); free(constructors); free(results); free(qualifying); free(sprint); free(weather); cJSON_Delete(snapshot);
     return ok;
@@ -642,6 +646,8 @@ int main(int argc, char **argv) {
         if (!rs_reference_load(path,&rt.reference)) return 2;
         snprintf(path,sizeof(path),"%s/reference/profiles.tsv",rt.assets);
         if (!rs_profiles_load(path,&rt.profiles)) return 2;
+        snprintf(path,sizeof(path),"%s/circuits/atlas.tsv",rt.assets);
+        if(!rs_circuit_atlas_load(path,&rt.circuit_atlas))return 2;
     }
     if (!rt.window || !rt.renderer || !rt.display || !rt.heading || !rt.body || !rt.small || !rt.metric || !rt.table || !rt.app || !load_data(&rt)) return 2;
     rt.latest_season=rt.season.season;
@@ -670,7 +676,7 @@ int main(int argc, char **argv) {
         if(rs_app_take_settings_action(rt.app))perform_settings_action(&rt);
         if (rt.first_launch && rs_app_overlay(rt.app) == RS_OVERLAY_NONE) rs_app_show_disclaimer(rt.app);
         SDL_LockMutex(rt.refresh.mutex);
-        if (rt.refresh.ready) { if (rt.refresh.success) { rt.season = rt.refresh.season; rt.standings = rt.refresh.standings; if(rt.refresh.weather.count)rt.weather = rt.refresh.weather;else memset(&rt.weather,0,sizeof(rt.weather));rt.weather_live=rt.refresh.weather_live!=0; rt.results=rt.refresh.results;rs_profiles_rebuild_series(&rt.profiles,&rt.results);rs_app_set_cursor(rt.app,rs_app_route(rt.app),0);if(rt.refresh.requested_season==0)rt.latest_season=rt.season.season; }
+        if (rt.refresh.ready) { if (rt.refresh.success) { rt.season = rt.refresh.season; rt.standings = rt.refresh.standings; if(rt.refresh.weather.count)rt.weather = rt.refresh.weather;else memset(&rt.weather,0,sizeof(rt.weather));rt.weather_live=rt.refresh.weather_live!=0; rt.results=rt.refresh.results;rs_profiles_build_season(&rt.profiles,&rt.standings,&rt.results);apply_career_profiles(&rt);rs_app_set_cursor(rt.app,rs_app_route(rt.app),0);if(rt.refresh.requested_season==0)rt.latest_season=rt.season.season; }
             snprintf(rt.status, sizeof(rt.status), "%s", rt.refresh.status); rt.refresh.ready = 0; if(rt.refresh.thread){SDL_DetachThread(rt.refresh.thread);rt.refresh.thread=NULL;} }
         SDL_UnlockMutex(rt.refresh.mutex);
         render(&rt);

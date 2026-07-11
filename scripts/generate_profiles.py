@@ -6,6 +6,10 @@ from pathlib import Path
 import csv
 import sys
 import yaml
+import json
+import re
+import unicodedata
+import urllib.request
 
 DRIVERS = {
     "antonelli": "kimi-antonelli", "russell": "george-russell",
@@ -40,11 +44,27 @@ def position(value):
         return 99
 
 
+def normalized(value):
+    ascii_value = unicodedata.normalize("NFKD", value or "").encode("ascii", "ignore").decode().lower()
+    return re.sub(r"[^a-z0-9]", "", ascii_value)
+
+
+def jolpica(kind):
+    table = "DriverTable" if kind == "drivers" else "ConstructorTable"; key = "Drivers" if kind == "drivers" else "Constructors"
+    rows, offset = [], 0
+    while True:
+        url = f"https://api.jolpi.ca/ergast/f1/{kind}.json?limit=100&offset={offset}"
+        with urllib.request.urlopen(url) as response: document = json.load(response)["MRData"]
+        batch = document[table][key]; rows.extend(batch); offset += len(batch)
+        if offset >= int(document["total"]): return rows
+
+
 def main():
     if len(sys.argv) != 3:
         raise SystemExit("usage: generate_profiles.py F1DB_ROOT OUTPUT_TSV")
     root, output = Path(sys.argv[1]), Path(sys.argv[2])
-    driver_ids, constructor_ids = set(DRIVERS.values()), set(CONSTRUCTORS.values())
+    driver_ids = {path.stem for path in (root / "src/data/drivers").glob("*.yml")}
+    constructor_ids = {path.stem for path in (root / "src/data/constructors").glob("*.yml")}
     stats = defaultdict(lambda: [0, 0, 0, 0, 0])  # starts, wins, podiums, poles, titles
 
     for path in (root / "src/data/seasons").glob("*/races/*/race-results.yml"):
@@ -77,28 +97,40 @@ def main():
             if rows and rows[0].get(key) in ids:
                 stats[(kind, rows[0][key])][4] += 1
 
-    series = defaultdict(list)
-    for race_path in sorted((root / "src/data/seasons/2026/races").glob("*/race.yml"), key=lambda p: int(load(p).get("round", 0))):
-        race = load(race_path)
-        for kind, filename, ids in (("D", "driver-standings.yml", driver_ids), ("C", "constructor-standings.yml", constructor_ids)):
-            path = race_path.parent / filename
-            if not path.exists():
-                continue
-            key = "driverId" if kind == "D" else "constructorId"
-            for row in load(path) or []:
-                if row.get(key) in ids:
-                    series[(kind, row[key])].append(f"{race['round']}:{row.get('position', 0)}:{row.get('points', 0)}")
+    source_drivers = {path.stem: load(path) for path in (root / "src/data/drivers").glob("*.yml")}
+    source_constructors = {path.stem: load(path) for path in (root / "src/data/constructors").glob("*.yml")}
+    driver_names = {}
+    drivers_by_last = defaultdict(list)
+    for source_id, data in source_drivers.items():
+        for name in (data.get("name"), f"{data.get('firstName','')} {data.get('lastName','')}".strip()):
+            if name: driver_names[normalized(name)] = source_id
+        drivers_by_last[normalized(data.get("lastName"))].append(source_id)
+    constructor_names = {}
+    for source_id, data in source_constructors.items():
+        for name in (data.get("name"), data.get("fullName")):
+            if name: constructor_names[normalized(name)] = source_id
+    mappings = []
+    for item in jolpica("drivers"):
+        provider_id=item["driverId"]; name=f"{item.get('givenName','')} {item.get('familyName','')}".strip(); source_id=DRIVERS.get(provider_id) or driver_names.get(normalized(name))
+        if not source_id:
+            candidates=drivers_by_last.get(normalized(item.get("familyName")),[]); given=normalized(item.get("givenName"))
+            matches=[candidate for candidate in candidates if normalized(source_drivers[candidate].get("firstName")).startswith(given)]
+            if len(matches)==1: source_id=matches[0]
+        if source_id: mappings.append(("D",provider_id,source_id,source_drivers[source_id]))
+    for item in jolpica("constructors"):
+        provider_id=item["constructorId"]; name=item["name"]; source_id=CONSTRUCTORS.get(provider_id) or constructor_names.get(normalized(name))
+        if not source_id and "-" in name: source_id=constructor_names.get(normalized(name.split("-",1)[0]))
+        if source_id: mappings.append(("C",provider_id,source_id,source_constructors[source_id]))
+    current_ids=set(DRIVERS)|set(CONSTRUCTORS)
+    mappings.sort(key=lambda value:(value[1] not in current_ids,value[0],value[1]))
 
     output.parent.mkdir(parents=True, exist_ok=True)
     with output.open("w", newline="") as stream:
         writer = csv.writer(stream, delimiter="\t", lineterminator="\n")
         writer.writerow(["type", "provider_id", "source_id", "name", "country", "starts", "wins", "podiums", "poles", "championships", "series"])
-        for kind, mappings, folder in (("D", DRIVERS, "drivers"), ("C", CONSTRUCTORS, "constructors")):
-            for provider_id, source_id in mappings.items():
-                path = root / f"src/data/{folder}/{source_id}.yml"
-                data = load(path) if path.exists() else {"name": source_id}
-                country = data.get("nationalityCountryId") or data.get("countryOfBirthCountryId") or data.get("countryId") or "UNKNOWN"
-                writer.writerow([kind, provider_id, source_id, data.get("name", source_id), country, *stats[(kind, source_id)], ",".join(series[(kind, source_id)])])
+        for kind, provider_id, source_id, data in mappings:
+            country = data.get("nationalityCountryId") or data.get("countryOfBirthCountryId") or data.get("countryId") or "UNKNOWN"
+            writer.writerow([kind, provider_id, source_id, data.get("name", source_id), country, *stats[(kind, source_id)], ""])
 
 
 if __name__ == "__main__":
