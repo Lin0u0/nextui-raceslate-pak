@@ -5,6 +5,8 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PREFIX_ROOT="${1:-$ROOT_DIR/third_party/tg5040}"
 SDK_ROOT="${TG5040_SDK_ROOT:-$ROOT_DIR/build/tg5040-sdk}"
+[[ "$PREFIX_ROOT" = /* ]] || PREFIX_ROOT="$ROOT_DIR/$PREFIX_ROOT"
+[[ "$SDK_ROOT" = /* ]] || SDK_ROOT="$ROOT_DIR/$SDK_ROOT"
 SDK_USR="$SDK_ROOT/sdk_usr/usr"
 BUILD_ROOT="$ROOT_DIR/build/tg5040-deps"
 SRC_ROOT="$BUILD_ROOT/src"
