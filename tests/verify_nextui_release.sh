@@ -20,7 +20,9 @@ for entry in \
   Tools/tg5040/RaceSlate.pak/res/THIRD_PARTY_NOTICES.md \
   Tools/tg5040/.media/RaceSlate.png; do grep -Fx "$entry" "$manifest" >/dev/null || { echo "missing archive entry: $entry" >&2; exit 1; }; done
 ! grep -F '/Inter.ttf' "$manifest" >/dev/null || { echo "unused Inter font must not be packaged" >&2; exit 1; }
-bytes=$(stat -f %z "$ARCHIVE" 2>/dev/null || stat -c %s "$ARCHIVE")
+if ! bytes=$(stat -c %s "$ARCHIVE" 2>/dev/null); then
+  bytes=$(stat -f %z "$ARCHIVE")
+fi
 (( bytes <= 15728640 )) || { echo "package exceeds 15 MiB: $bytes" >&2; exit 1; }
 unzip -p "$ARCHIVE" Tools/tg5040/RaceSlate.pak/launch.sh | grep -F 'CURL_CA_BUNDLE' >/dev/null
 unzip -p "$ARCHIVE" Tools/tg5040/RaceSlate.pak/pak.json | grep -F '"version": "v' >/dev/null
