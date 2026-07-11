@@ -8,6 +8,7 @@
 #include "rs_reference.h"
 #include "rs_results.h"
 #include "rs_profiles.h"
+#include "rs_timezone.h"
 #include "cJSON.h"
 
 #include <SDL.h>
@@ -45,6 +46,7 @@ typedef struct {
     TTF_Font *heading;
     TTF_Font *body;
     TTF_Font *small;
+    TTF_Font *metric;
     RsApp *app;
     RsSeasonSnapshot season;
     RsStandings standings;
@@ -117,6 +119,19 @@ static SDL_Color team_color(const char *id) {
     return MUTED;
 }
 
+static void classification_result(const RsClassification *classification, size_t index, char *output, size_t capacity) {
+    const RsClassificationEntry *entry = &classification->entries[index];
+    if (classification->kind == RS_RESULT_QUALIFYING) {
+        const char *lap = entry->q3[0] ? entry->q3 : entry->q2[0] ? entry->q2 : entry->q1;
+        snprintf(output, capacity, "%s", lap[0] ? lap : entry->status);
+    } else if (index == 0 && entry->time[0]) snprintf(output, capacity, "%s", entry->time);
+    else if (classification->entry_count > 0 && classification->entries[0].laps > entry->laps) {
+        int gap = classification->entries[0].laps - entry->laps;
+        snprintf(output, capacity, "+%d %s", gap, gap == 1 ? "LAP" : "LAPS");
+    } else if (entry->time[0]) snprintf(output, capacity, "%s%s", entry->time[0] != '+' ? "+" : "", entry->time);
+    else snprintf(output, capacity, "%s", entry->status);
+}
+
 static void fill(Runtime *rt, int x, int y, int w, int h, SDL_Color color) {
     SDL_Rect rect = {x, y, w, h};
     SDL_SetRenderDrawColor(rt->renderer, color.r, color.g, color.b, color.a);
@@ -144,6 +159,8 @@ static void format_time(int64_t value, char *out, size_t size) {
     strftime(out, size, "%d %b %Y  %H:%M", &local);
     for (char *p = out; *p; p++) if (*p >= 'a' && *p <= 'z') *p = (char)(*p - 32);
 }
+
+static void format_event_time(const Runtime *rt,const RsEvent *event,int64_t value,char *out,size_t size){if(!rs_app_track_time(rt->app)){format_time(value,out,size);return;}time_t raw=(time_t)(value+rs_track_utc_offset(event->circuit_id,value));struct tm track;gmtime_r(&raw,&track);strftime(out,size,"%d %b %Y  %H:%M",&track);for(char *p=out;*p;p++)if(*p>='a'&&*p<='z')*p=(char)(*p-'a'+'A');}
 
 static void draw_header(Runtime *rt) {
     const char *tabs[] = {"NEXT", "CALENDAR", "STANDINGS"};
@@ -188,29 +205,31 @@ static void draw_next(Runtime *rt) {
     draw_text(rt, rt->heading, event->name, 45, 248, MUTED);
     draw_text(rt, rt->small, "NEXT SESSION", 46, 318, MUTED);
     draw_text(rt, rt->heading, session_name(next->kind), 44, 343, WHITE);
-    format_time(next->starts_at_utc, time_text, sizeof(time_text));
+    format_event_time(rt,event,next->starts_at_utc, time_text, sizeof(time_text));
     draw_text(rt, rt->body, time_text, 45, 397, WHITE);
     {
         int64_t delta = next->starts_at_utc - now_utc(rt);
         snprintf(countdown, sizeof(countdown), "%02" PRId64 "D  %02" PRId64 "H  %02" PRId64 "M",
                  delta / 86400, (delta / 3600) % 24, (delta / 60) % 60);
     }
-    fill(rt, 42, 466, 538, 112, PANEL);
+    fill(rt, 42, 466, 538, 184, PANEL);
     draw_text(rt, rt->small, "STARTS IN", 64, 482, MUTED);
     draw_text(rt, rt->heading, countdown, 63, 514, WHITE);
+    fill(rt,64,580,494,1,(SDL_Color){55,58,65,255});
+    {size_t session_index;const RsSession *following=NULL;for(session_index=0;session_index<event->session_count;session_index++)if(event->sessions[session_index].starts_at_utc>next->starts_at_utc){following=&event->sessions[session_index];break;}draw_text(rt,rt->small,"FOLLOWING",64,594,MUTED);if(following){format_event_time(rt,event,following->starts_at_utc,time_text,sizeof(time_text));snprintf(line,sizeof(line),"%s  /  %s",session_name(following->kind),time_text);draw_text(rt,rt->small,line,64,620,WHITE);}else draw_text(rt,rt->small,"FINAL SESSION OF THE WEEKEND",64,620,WHITE);}
     draw_track(rt, event);
     draw_text(rt, rt->small, event->circuit_name, 654, 486, WHITE);
-    snprintf(line, sizeof(line), "%.4f, %.4f  /  YOUR TIME", event->latitude, event->longitude);
+    snprintf(line, sizeof(line), "%.4f, %.4f  /  %s", event->latitude, event->longitude,rs_app_track_time(rt->app)?"TRACK TIME":"YOUR TIME");
     draw_text(rt, rt->small, line, 654, 516, MUTED);
     {
         const RsWeatherPoint *weather = rs_weather_nearest(&rt->weather, next->starts_at_utc);
         fill(rt, 620, 558, 366, 92, PANEL);
         draw_text(rt, rt->small, "SESSION FORECAST  /  OPEN-METEO", 640, 572, MUTED);
         if (weather) {
-            snprintf(line, sizeof(line), "%.1f°C",weather->temperature_c);draw_text(rt,rt->body,line,640,604,WHITE);
-            snprintf(line, sizeof(line), "RAIN %d%%",weather->rain_probability);draw_text(rt,rt->body,line,742,604,WHITE);
-            snprintf(line, sizeof(line), "WIND %.1f",weather->wind_kmh);draw_text(rt,rt->body,line,858,604,WHITE);
-        } else draw_text(rt, rt->body, "UNAVAILABLE  /  PRESS Y TO REFRESH", 640, 604, MUTED);
+            draw_text(rt,rt->small,"TEMP",640,601,MUTED);snprintf(line, sizeof(line), "%.1f°C",weather->temperature_c);draw_text(rt,rt->metric,line,640,619,WHITE);
+            draw_text(rt,rt->small,"RAIN",758,601,MUTED);snprintf(line, sizeof(line), "%d%%",weather->rain_probability);draw_text(rt,rt->metric,line,758,619,WHITE);
+            draw_text(rt,rt->small,"WIND KM/H",856,601,MUTED);snprintf(line, sizeof(line), "%.1f",weather->wind_kmh);draw_text(rt,rt->metric,line,856,619,WHITE);
+        } else draw_text(rt, rt->metric, "UNAVAILABLE  /  PRESS Y", 640, 608, MUTED);
     }
 }
 
@@ -226,7 +245,7 @@ static void draw_calendar(Runtime *rt) {
         const RsSession *race = &event->sessions[event->session_count - 1];
         int y = 190 + row * 48;
         if (first + row == cursor) fill(rt, 38, y - 5, 948, 42, (SDL_Color){44, 46, 53, 255});
-        format_time(race->starts_at_utc, date_text, sizeof(date_text));
+        format_event_time(rt,event,race->starts_at_utc, date_text, sizeof(date_text));
         snprintf(line, sizeof(line), "%02d   %-18s  %-28s  %s", event->round, event->country, event->locality, date_text);
         draw_text(rt, rt->body, line, 52, y, first + row == cursor ? WHITE : MUTED);
     }
@@ -314,9 +333,10 @@ static void draw_detail(Runtime *rt) {
             snprintf(line,sizeof(line),"%.3f KM    %d TURNS    %s",ref->length_km,ref->turns,ref->direction); draw_text(rt,rt->body,line,126,230,WHITE);
             snprintf(line,sizeof(line),"FIRST CHAMPIONSHIP RACE %d    %d RACES HELD",ref->first_year,ref->races); draw_text(rt,rt->small,line,126,274,MUTED);
             snprintf(line,sizeof(line),"RACE LAP RECORD  %s  /  %s  /  %d",ref->lap_record,ref->record_driver,ref->record_year); draw_text(rt,rt->body,line,126,320,WHITE);
-            draw_text(rt,rt->small,"RECENT WINNERS",126,382,MUTED);
-            snprintf(line,sizeof(line),"%s",ref->recent_winners); draw_text(rt,rt->small,line,126,416,WHITE);
+            draw_text(rt,rt->small,"RECENT WINNERS",126,362,MUTED);
+            snprintf(line,sizeof(line),"%s",ref->recent_winners); draw_text(rt,rt->small,line,126,388,WHITE);
          }
+         {size_t session_index;draw_text(rt,rt->small,"WEEKEND SCHEDULE",126,430,MUTED);for(session_index=0;session_index<event->session_count;session_index++){char when[64];const RsSession *session=&event->sessions[session_index];format_event_time(rt,event,session->starts_at_utc,when,sizeof(when));snprintf(line,sizeof(line),"%-19s  %s  /  %s",session_name(session->kind),when,session->starts_at_utc<=now_utc(rt)?"COMPLETE":"UPCOMING");draw_text(rt,rt->small,line,126,458+(int)session_index*27,session->starts_at_utc<=now_utc(rt)?MUTED:WHITE);}}
          draw_track(rt,event);
         }else{
          RsResultKind kind=rs_app_detail_mode(rt->app)==RS_DETAIL_RACE?RS_RESULT_RACE:rs_app_detail_mode(rt->app)==RS_DETAIL_QUALIFYING?RS_RESULT_QUALIFYING:RS_RESULT_SPRINT;
@@ -324,7 +344,7 @@ static void draw_detail(Runtime *rt) {
          const char *title=kind==RS_RESULT_RACE?"RACE CLASSIFICATION":kind==RS_RESULT_QUALIFYING?"QUALIFYING CLASSIFICATION":"SPRINT CLASSIFICATION";
          draw_text(rt,rt->small,"RESULTS  /  X NEXT VIEW",126,140,RED);draw_text(rt,rt->heading,title,124,168,WHITE);
          if(!classification)draw_text(rt,rt->body,"RESULT UNAVAILABLE",126,244,MUTED);
-         else for(row=0;row<10&&first+row<(int)classification->entry_count;row++){const RsClassificationEntry *e=&classification->entries[first+row];int y=228+row*38,row_top=y-3,row_height=34;SDL_Color text_color=first+row==cursor?WHITE:MUTED;char position[8],points[24];if(first+row==cursor)fill(rt,116,row_top,790,row_height,(SDL_Color){44,46,53,255});fill(rt,126,row_top+(row_height-18)/2,4,18,team_color(e->constructor_id));snprintf(position,sizeof(position),"%02d",e->position);format_points(e->points,points,sizeof(points));draw_text_right_center_y(rt,rt->small,position,166,row_top,row_height,text_color);draw_text_center_y(rt,rt->small,e->driver_code,188,row_top,row_height,text_color);draw_text_center_y(rt,rt->small,e->driver_name,244,row_top,row_height,text_color);draw_text_center_y(rt,rt->small,e->constructor_name,470,row_top,row_height,team_color(e->constructor_id));draw_text_right_center_y(rt,rt->small,points,718,row_top,row_height,text_color);draw_text_center_y(rt,rt->small,"PTS",728,row_top,row_height,MUTED);draw_text_center_y(rt,rt->small,e->status,774,row_top,row_height,text_color);}
+         else {draw_text(rt,rt->small,"POS   DRIVER       CONSTRUCTOR",126,220,MUTED);draw_text(rt,rt->small,kind==RS_RESULT_QUALIFYING?"LAP TIME":"TIME / GAP",786,220,MUTED);for(row=0;row<10&&first+row<(int)classification->entry_count;row++){const RsClassificationEntry *e=&classification->entries[first+row];int y=248+row*38,row_top=y-3,row_height=34;SDL_Color text_color=first+row==cursor?WHITE:MUTED;char position[8],points[24],result[64];if(first+row==cursor)fill(rt,116,row_top,790,row_height,(SDL_Color){44,46,53,255});fill(rt,126,row_top+(row_height-18)/2,4,18,team_color(e->constructor_id));snprintf(position,sizeof(position),"%02d",e->position);format_points(e->points,points,sizeof(points));classification_result(classification,(size_t)(first+row),result,sizeof(result));draw_text_right_center_y(rt,rt->small,position,166,row_top,row_height,text_color);draw_text_center_y(rt,rt->small,e->driver_code,198,row_top,row_height,text_color);draw_text_center_y(rt,rt->small,e->constructor_name,286,row_top,row_height,team_color(e->constructor_id));draw_text_right_center_y(rt,rt->small,points,670,row_top,row_height,text_color);draw_text_center_y(rt,rt->small,"PTS",680,row_top,row_height,MUTED);draw_text_right_center_y(rt,rt->small,result,890,row_top,row_height,text_color);}}
         }
     } else if (rs_app_route(rt->app) == RS_ROUTE_STANDINGS) {
         int index=rs_app_cursor(rt->app); char line[256];
@@ -336,7 +356,7 @@ static void draw_detail(Runtime *rt) {
         if(profile){snprintf(line,sizeof(line),"CAREER  %d STARTS   %d WINS   %d PODIUMS   %d POLES   %d TITLES",profile->starts,profile->wins,profile->podiums,profile->poles,profile->championships);draw_text(rt,rt->small,line,126,382,WHITE);draw_profile_chart(rt,profile,(rs_app_detail_mode(rt->app)%2)==RS_DETAIL_RACE);draw_text(rt,rt->small,"SELECT  SET FAVORITE",680,626,RED);}
         else draw_text(rt,rt->small,"CAREER PROFILE UNAVAILABLE",126,406,MUTED);
     }
-    draw_text(rt,rt->small,"B  CLOSE",126,626,RED);
+    draw_text(rt,rt->small,"B  CLOSE",126,650,RED);
 }
 
 static void render(Runtime *rt) {
@@ -348,7 +368,7 @@ static void render(Runtime *rt) {
     else draw_standings(rt);
     fill(rt, 38, 710, 948, 1, (SDL_Color){55, 58, 65, 255});
     draw_text(rt, rt->small, rt->status, 42, 724, MUTED);
-    draw_text(rt, rt->small, "L1/R1 PAGE   D-PAD NAV   Y REFRESH   START ABOUT   MENU EXIT", 494, 724, MUTED);
+    draw_text(rt, rt->small, rs_app_route(rt->app)==RS_ROUTE_NEXT?"X TIMEZONE   L1/R1 PAGE   Y REFRESH   START SETTINGS   MENU EXIT":"L1/R1 PAGE   D-PAD NAV   Y REFRESH   START SETTINGS   MENU EXIT", 494, 724, MUTED);
     if (rs_app_overlay(rt->app) == RS_OVERLAY_ABOUT) draw_about(rt);
     else if (rs_app_overlay(rt->app) == RS_OVERLAY_DETAIL) draw_detail(rt);
     SDL_RenderPresent(rt->renderer);
@@ -388,6 +408,7 @@ static bool load_data(Runtime *rt) {
         if(results)rs_results_decode(results,RS_RESULT_RACE,&rt->results);
         if(qualifying)rs_results_decode(qualifying,RS_RESULT_QUALIFYING,&rt->results);
         if(sprint)rs_results_decode(sprint,RS_RESULT_SPRINT,&rt->results);
+        rs_profiles_rebuild_series(&rt->profiles,&rt->results);
     }
     free(schedule); free(drivers); free(constructors); free(results); free(qualifying); free(sprint); free(weather); cJSON_Delete(snapshot);
     return ok;
@@ -537,7 +558,7 @@ int main(int argc, char **argv) {
     {
         char path[1024];
         snprintf(path, sizeof(path), "%s/fonts/BarlowCondensed-SemiBold.ttf", rt.assets);
-        rt.display = TTF_OpenFont(path, 86); rt.heading = TTF_OpenFont(path, 42); rt.small = TTF_OpenFont(path, 17);
+        rt.display = TTF_OpenFont(path, 86); rt.heading = TTF_OpenFont(path, 42); rt.small = TTF_OpenFont(path, 17);rt.metric=TTF_OpenFont(path,28);
         snprintf(path, sizeof(path), "%s/fonts/Inter.ttf", rt.assets);
         rt.body = TTF_OpenFont(path, 22);
     }
@@ -552,7 +573,7 @@ int main(int argc, char **argv) {
         snprintf(path,sizeof(path),"%s/reference/profiles.tsv",rt.assets);
         if (!rs_profiles_load(path,&rt.profiles)) return 2;
     }
-    if (!rt.window || !rt.renderer || !rt.display || !rt.heading || !rt.body || !rt.small || !rt.app || !load_data(&rt)) return 2;
+    if (!rt.window || !rt.renderer || !rt.display || !rt.heading || !rt.body || !rt.small || !rt.metric || !rt.app || !load_data(&rt)) return 2;
     load_favorites(&rt);
     {char path[1024];char *ack;snprintf(path,sizeof(path),"%s/acknowledged",rt.data_dir);ack=rs_store_read(path);rt.first_launch=ack==NULL&&!screenshot;free(ack);if(rt.first_launch)rs_app_dispatch(rt.app,RS_ACTION_START);}
     if (offline) snprintf(rt.status,sizeof(rt.status),"OFFLINE BASELINE DATA");
@@ -572,14 +593,14 @@ int main(int argc, char **argv) {
         if (rs_app_take_acknowledgement_request(rt.app) && rt.first_launch) acknowledge_disclaimer(&rt);
         if (rt.first_launch && rs_app_overlay(rt.app) == RS_OVERLAY_NONE) rs_app_dispatch(rt.app,RS_ACTION_START);
         SDL_LockMutex(rt.refresh.mutex);
-        if (rt.refresh.ready) { if (rt.refresh.success) { rt.season = rt.refresh.season; rt.standings = rt.refresh.standings; if(rt.refresh.weather.count)rt.weather = rt.refresh.weather; rt.results=rt.refresh.results; }
+        if (rt.refresh.ready) { if (rt.refresh.success) { rt.season = rt.refresh.season; rt.standings = rt.refresh.standings; if(rt.refresh.weather.count)rt.weather = rt.refresh.weather; rt.results=rt.refresh.results;rs_profiles_rebuild_series(&rt.profiles,&rt.results); }
             snprintf(rt.status, sizeof(rt.status), "%s", rt.refresh.status); rt.refresh.ready = 0; if(rt.refresh.thread){SDL_DetachThread(rt.refresh.thread);rt.refresh.thread=NULL;} }
         SDL_UnlockMutex(rt.refresh.mutex);
         render(&rt);
         SDL_Delay(16);
     }
     if(rt.refresh.thread) SDL_WaitThread(rt.refresh.thread,NULL);
-    TTF_CloseFont(rt.display); TTF_CloseFont(rt.heading); TTF_CloseFont(rt.body); TTF_CloseFont(rt.small);
+    TTF_CloseFont(rt.display); TTF_CloseFont(rt.heading); TTF_CloseFont(rt.body); TTF_CloseFont(rt.small);TTF_CloseFont(rt.metric);
     SDL_DestroyMutex(rt.refresh.mutex); rs_app_destroy(rt.app); SDL_DestroyRenderer(rt.renderer); SDL_DestroyWindow(rt.window);
     curl_global_cleanup(); TTF_Quit(); SDL_Quit();
     return 0;

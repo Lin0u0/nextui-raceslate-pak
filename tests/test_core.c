@@ -5,6 +5,7 @@
 #include "rs_store.h"
 #include "rs_results.h"
 #include "rs_profiles.h"
+#include "rs_timezone.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -47,6 +48,8 @@ static void user_sees_the_next_session_from_a_jolpica_schedule(const char *fixtu
     assert(next->starts_at_utc == 1775804400);
     assert(snapshot.events[1].round == 2);
     assert(snapshot.events[1].is_sprint_weekend);
+    assert(snapshot.events[1].session_count == 5);
+    assert(snapshot.events[1].sessions[1].kind == RS_SESSION_SPRINT_QUALIFYING);
     free(json);
 }
 
@@ -54,6 +57,7 @@ static void brick_controls_navigate_the_public_app_state(void) {
     RsApp *app = rs_app_create();
     assert(app);
     assert(rs_app_route(app) == RS_ROUTE_NEXT);
+    rs_app_dispatch(app,RS_ACTION_X);assert(rs_app_track_time(app));rs_app_dispatch(app,RS_ACTION_X);assert(!rs_app_track_time(app));
     rs_app_dispatch(app, RS_ACTION_R1);
     assert(rs_app_route(app) == RS_ROUTE_CALENDAR);
     rs_app_dispatch(app, RS_ACTION_R1);
@@ -79,6 +83,8 @@ static void brick_controls_navigate_the_public_app_state(void) {
     assert(!rs_app_running(app));
     rs_app_destroy(app);
 }
+
+static void track_time_offsets_cover_calendar_regions(void){assert(rs_track_utc_offset("spa",1784287800)==7200);assert(rs_track_utc_offset("albert_park",1774000000)==39600);assert(rs_track_utc_offset("vegas",1795200000)==-28800);}
 
 static void user_sees_complete_driver_standings(const char *fixtures) {
     char path[512];
@@ -137,6 +143,7 @@ static void completed_sessions_expose_full_classifications(const char *fixtures)
     assert(race); assert(race->entry_count>=20); assert(race->entries[0].position==1);
     assert(race->entries[0].driver_name[0]!='\0'); assert(race->entries[0].points>=0.0);
     assert(race->entries[0].constructor_id[0]!='\0');
+    assert(race->entries[0].time[0]!='\0');
     assert(rs_results_find(&catalog,1,RS_RESULT_QUALIFYING));
 }
 
@@ -154,6 +161,15 @@ static void current_grid_profiles_include_career_totals_and_chart_series(const c
     assert(constructor); assert(constructor->championships > 10);
 }
 
+static void live_results_rebuild_profile_progression(const char *fixtures) {
+    char path[512]; char *json; RsProfileCatalog profiles; RsResultsCatalog results={0}; const RsProfile *driver;
+    snprintf(path,sizeof(path),"%s/profiles.tsv",fixtures); assert(rs_profiles_load(path,&profiles));
+    snprintf(path,sizeof(path),"%s/results.json",fixtures);json=read_file(path);assert(rs_results_decode(json,RS_RESULT_RACE,&results));free(json);
+    snprintf(path,sizeof(path),"%s/sprint.json",fixtures);json=read_file(path);assert(rs_results_decode(json,RS_RESULT_SPRINT,&results));free(json);
+    rs_profiles_rebuild_series(&profiles,&results);
+    driver=rs_profiles_find(&profiles,RS_PROFILE_DRIVER,"max_verstappen");assert(driver);assert(driver->series_count>0);assert(driver->series[0].points>=0.0);
+}
+
 int main(int argc, char **argv) {
     assert(argc == 2);
     user_sees_the_next_session_from_a_jolpica_schedule(argv[1]);
@@ -164,6 +180,8 @@ int main(int argc, char **argv) {
     a_snapshot_replaces_the_previous_generation_atomically();
     completed_sessions_expose_full_classifications(argv[1]);
     current_grid_profiles_include_career_totals_and_chart_series(argv[1]);
+    live_results_rebuild_profile_progression(argv[1]);
+    track_time_offsets_cover_calendar_regions();
     puts("ok: core behavior");
     return 0;
 }

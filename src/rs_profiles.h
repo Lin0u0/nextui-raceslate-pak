@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+#include "rs_results.h"
 
 #define RS_MAX_PROFILES 40
 #define RS_MAX_PROFILE_SERIES 24
@@ -36,5 +37,6 @@ typedef struct {
 
 bool rs_profiles_load(const char *path, RsProfileCatalog *catalog);
 const RsProfile *rs_profiles_find(const RsProfileCatalog *catalog, RsProfileType type, const char *provider_id);
+void rs_profiles_rebuild_series(RsProfileCatalog *catalog, const RsResultsCatalog *results);
 
 #endif

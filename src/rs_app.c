@@ -13,6 +13,7 @@ struct RsApp {
     bool acknowledgement_requested;
     RsDetailMode detail_mode;
     int detail_cursor;
+    bool track_time;
 };
 
 RsApp *rs_app_create(void) {
@@ -41,7 +42,8 @@ void rs_app_dispatch(RsApp *app, RsAction action) {
         case RS_ACTION_UP: if (app->cursor[app->route] > 0) app->cursor[app->route]--; break;
         case RS_ACTION_DOWN: app->cursor[app->route]++; break;
         case RS_ACTION_X:
-            if (app->route == RS_ROUTE_STANDINGS)
+            if(app->route==RS_ROUTE_NEXT)app->track_time=!app->track_time;
+            else if (app->route == RS_ROUTE_STANDINGS)
                 app->standings_mode = app->standings_mode == RS_STANDINGS_DRIVERS
                     ? RS_STANDINGS_CONSTRUCTORS : RS_STANDINGS_DRIVERS;
             break;
@@ -84,3 +86,4 @@ bool rs_app_take_acknowledgement_request(RsApp *app) {
 }
 RsDetailMode rs_app_detail_mode(const RsApp *app){return app?app->detail_mode:RS_DETAIL_HISTORY;}
 int rs_app_detail_cursor(const RsApp *app){return app?app->detail_cursor:0;}
+bool rs_app_track_time(const RsApp *app){return app&&app->track_time;}
