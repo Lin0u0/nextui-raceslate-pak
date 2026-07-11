@@ -74,6 +74,8 @@ typedef struct {
     bool weather_live;
     int latest_season;
     int64_t now_override;
+    SDL_Texture *track_texture;
+    char track_texture_path[1024];
 } Runtime;
 
 static SDL_Color WHITE = {245, 242, 238, 255};
@@ -195,16 +197,17 @@ static void draw_footer_hints(Runtime *rt){static const FooterHint next_hints[]=
 
 static void draw_track(Runtime *rt, const RsEvent *event, SDL_Rect target) {
     char path[1024];
-    SDL_Surface *surface;
-    SDL_Texture *texture;
-    surface=NULL;
-    if(rt->season.season!=rt->latest_season){const RsCircuitAtlasEntry *entry=rs_circuit_atlas_nearest(&rt->circuit_atlas,rt->season.season,event->round,event->latitude,event->longitude);if(entry){snprintf(path,sizeof(path),"%s/circuits/%s.bmp",rt->assets,entry->asset_id);surface=SDL_LoadBMP(path);}}
-    if(!surface){snprintf(path, sizeof(path), "%s/circuits/%s.bmp", rt->assets, event->circuit_id);surface=SDL_LoadBMP(path);}
-    if (!surface) return;
-    SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, 0, 0, 0));
-    texture = SDL_CreateTextureFromSurface(rt->renderer, surface);
-    SDL_FreeSurface(surface);
-    if (texture) { SDL_SetTextureColorMod(texture, RED.r, RED.g, RED.b); SDL_RenderCopy(rt->renderer, texture, NULL, &target); SDL_DestroyTexture(texture); }
+    const RsCircuitAtlasEntry *entry=NULL;
+    if(rt->season.season!=rt->latest_season)entry=rs_circuit_atlas_nearest(&rt->circuit_atlas,rt->season.season,event->round,event->latitude,event->longitude);
+    snprintf(path,sizeof(path),"%s/circuits/%s.bmp",rt->assets,entry?entry->asset_id:event->circuit_id);
+    if(strcmp(path,rt->track_texture_path)){
+        SDL_Surface *loaded=SDL_LoadBMP(path),*surface=NULL;
+        if(!loaded&&entry){snprintf(path,sizeof(path),"%s/circuits/%s.bmp",rt->assets,event->circuit_id);loaded=SDL_LoadBMP(path);}
+        if(loaded)surface=SDL_ConvertSurfaceFormat(loaded,SDL_PIXELFORMAT_RGBA32,0);
+        SDL_FreeSurface(loaded);
+        if(surface){int x,y;SDL_LockSurface(surface);for(y=0;y<surface->h;y++){Uint32 *pixels=(Uint32 *)((Uint8 *)surface->pixels+y*surface->pitch);for(x=0;x<surface->w;x++){Uint8 r,g,b,a,mask;SDL_GetRGBA(pixels[x],surface->format,&r,&g,&b,&a);mask=r>g?(r>b?r:b):(g>b?g:b);pixels[x]=SDL_MapRGBA(surface->format,255,255,255,mask);}}SDL_UnlockSurface(surface);if(rt->track_texture)SDL_DestroyTexture(rt->track_texture);rt->track_texture=SDL_CreateTextureFromSurface(rt->renderer,surface);SDL_FreeSurface(surface);if(rt->track_texture){SDL_SetTextureBlendMode(rt->track_texture,SDL_BLENDMODE_BLEND);SDL_SetTextureColorMod(rt->track_texture,RED.r,RED.g,RED.b);snprintf(rt->track_texture_path,sizeof(rt->track_texture_path),"%s",path);}else rt->track_texture_path[0]='\0';}
+    }
+    if(rt->track_texture)SDL_RenderCopy(rt->renderer,rt->track_texture,NULL,&target);
 }
 
 static void draw_next(Runtime *rt) {
@@ -678,28 +681,31 @@ int main(int argc, char **argv) {
     if (screenshot) { SDL_Surface *shot=SDL_CreateRGBSurfaceWithFormat(0, SCREEN_W, SCREEN_H, 32, SDL_PIXELFORMAT_ARGB8888);
         SDL_RenderReadPixels(rt.renderer, NULL, SDL_PIXELFORMAT_ARGB8888, shot->pixels, shot->pitch); SDL_SaveBMP(shot, screenshot); SDL_FreeSurface(shot); rs_app_dispatch(rt.app, RS_ACTION_MENU); }
     else{SDL_RenderPresent(rt.renderer);if(!offline&&!rt.weather.count)start_refresh(&rt);}
+    {bool redraw=false;int64_t rendered_second=now_utc(&rt);
     while (rs_app_running(rt.app)) {
-        while (SDL_PollEvent(&event)) {
+        int received=SDL_WaitEventTimeout(&event,250);
+        while (received) {
             if (event.type == SDL_QUIT) rs_app_dispatch(rt.app, RS_ACTION_MENU);
-            else { RsAction action = map_event(&event); if (action != RS_ACTION_NONE) {RsRoute before=rs_app_route(rt.app);rs_app_dispatch(rt.app, action);pulse_haptic(&rt);if(rs_app_route(rt.app)==RS_ROUTE_NEXT&&rt.season.season!=rt.latest_season){load_data(&rt);}if(before!=RS_ROUTE_CALENDAR&&rs_app_route(rt.app)==RS_ROUTE_CALENDAR&&rt.season.season==rt.latest_season)select_upcoming_calendar(&rt);} }
+            else { RsAction action = map_event(&event); if (action != RS_ACTION_NONE) {RsRoute before=rs_app_route(rt.app);rs_app_dispatch(rt.app, action);pulse_haptic(&rt);if(rs_app_route(rt.app)==RS_ROUTE_NEXT&&rt.season.season!=rt.latest_season){load_data(&rt);}if(before!=RS_ROUTE_CALENDAR&&rs_app_route(rt.app)==RS_ROUTE_CALENDAR&&rt.season.season==rt.latest_season)select_upcoming_calendar(&rt);redraw=true;} }
+            received=SDL_PollEvent(&event);
         }
-        {int season_delta=rs_app_take_season_delta(rt.app);if(season_delta)request_season(&rt,season_delta);}
-        if (rs_app_take_refresh_request(rt.app)) start_refresh(&rt);
+        {int season_delta=rs_app_take_season_delta(rt.app);if(season_delta){request_season(&rt,season_delta);redraw=true;}}
+        if (rs_app_take_refresh_request(rt.app)) {start_refresh(&rt);redraw=true;}
         if (rs_app_take_favorite_request(rt.app)) save_selected_favorite(&rt);
         if (rs_app_take_acknowledgement_request(rt.app) && rt.first_launch) acknowledge_disclaimer(&rt);
         if(rs_app_take_settings_action(rt.app))perform_settings_action(&rt);
-        if (rt.first_launch && rs_app_overlay(rt.app) == RS_OVERLAY_NONE) rs_app_show_disclaimer(rt.app);
+        if (rt.first_launch && rs_app_overlay(rt.app) == RS_OVERLAY_NONE) {rs_app_show_disclaimer(rt.app);redraw=true;}
         SDL_LockMutex(rt.refresh.mutex);
         if (rt.refresh.ready) { if(rt.refresh.weather.count){rt.weather=rt.refresh.weather;rt.weather_live=rt.refresh.weather_live!=0;}if (rt.refresh.success) { rt.season = rt.refresh.season; rt.standings = rt.refresh.standings; rt.results=rt.refresh.results;rs_profiles_build_season(&rt.profiles,&rt.standings,&rt.results);apply_career_profiles(&rt);rs_app_set_cursor(rt.app,rs_app_route(rt.app),0);if(rt.refresh.requested_season==0)rt.latest_season=rt.season.season; }
-            snprintf(rt.status, sizeof(rt.status), "%s", rt.refresh.status); rt.refresh.ready = 0; if(rt.refresh.thread){SDL_DetachThread(rt.refresh.thread);rt.refresh.thread=NULL;} }
+            snprintf(rt.status, sizeof(rt.status), "%s", rt.refresh.status); rt.refresh.ready = 0; if(rt.refresh.thread){SDL_DetachThread(rt.refresh.thread);rt.refresh.thread=NULL;}redraw=true; }
         SDL_UnlockMutex(rt.refresh.mutex);
-        render(&rt);
-        SDL_RenderPresent(rt.renderer);
-        SDL_Delay(16);
+        if(rs_app_route(rt.app)==RS_ROUTE_NEXT&&now_utc(&rt)!=rendered_second)redraw=true;
+        if(redraw){render(&rt);SDL_RenderPresent(rt.renderer);rendered_second=now_utc(&rt);redraw=false;}
+    }
     }
     if(rt.refresh.thread) SDL_WaitThread(rt.refresh.thread,NULL);
     TTF_CloseFont(rt.display); TTF_CloseFont(rt.heading); TTF_CloseFont(rt.body); TTF_CloseFont(rt.small);TTF_CloseFont(rt.metric);TTF_CloseFont(rt.table);
-    SDL_DestroyMutex(rt.refresh.mutex); rs_app_destroy(rt.app);if(rt.joystick)SDL_JoystickClose(rt.joystick); SDL_DestroyRenderer(rt.renderer); SDL_DestroyWindow(rt.window);
+    SDL_DestroyMutex(rt.refresh.mutex); rs_app_destroy(rt.app);if(rt.joystick)SDL_JoystickClose(rt.joystick);if(rt.track_texture)SDL_DestroyTexture(rt.track_texture); SDL_DestroyRenderer(rt.renderer); SDL_DestroyWindow(rt.window);
     curl_global_cleanup(); TTF_Quit(); SDL_Quit();free(runtime);
 #undef rt
     return 0;
