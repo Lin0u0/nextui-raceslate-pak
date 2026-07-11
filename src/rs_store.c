@@ -14,7 +14,7 @@ char *rs_store_read(const char *path) {
     long length;
     char *bytes;
     if (!file) return NULL;
-    if (fseek(file, 0, SEEK_END) != 0 || (length = ftell(file)) < 0 || length > 1024 * 1024) { fclose(file); return NULL; }
+    if (fseek(file, 0, SEEK_END) != 0 || (length = ftell(file)) < 0 || length > 8 * 1024 * 1024) { fclose(file); return NULL; }
     rewind(file);
     bytes = malloc((size_t)length + 1);
     if (!bytes || fread(bytes, 1, (size_t)length, file) != (size_t)length) { free(bytes); fclose(file); return NULL; }

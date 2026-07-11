@@ -33,5 +33,6 @@ bool rs_app_track_time(const RsApp *app);
 void rs_app_show_disclaimer(RsApp *app);
 int rs_app_settings_cursor(const RsApp *app);
 bool rs_app_take_settings_action(RsApp *app);
+int rs_app_take_season_delta(RsApp *app);
 
 #endif

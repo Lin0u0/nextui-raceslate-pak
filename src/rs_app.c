@@ -12,6 +12,7 @@ struct RsApp {
     bool favorite_requested;
     bool acknowledgement_requested;
     bool settings_action_requested;
+    int season_delta;
     int settings_cursor;
     RsDetailMode detail_mode;
     int detail_cursor;
@@ -54,8 +55,8 @@ void rs_app_dispatch(RsApp *app, RsAction action) {
             break;
         case RS_ACTION_Y: app->refresh_requested = true; break;
         case RS_ACTION_A: if (app->route != RS_ROUTE_NEXT) {app->overlay = RS_OVERLAY_DETAIL;app->detail_mode=RS_DETAIL_HISTORY;app->detail_cursor=0;} break;
-        case RS_ACTION_L2: if(app->route==RS_ROUTE_CALENDAR&&app->cursor[app->route]>0)app->cursor[app->route]--;break;
-        case RS_ACTION_R2: if(app->route==RS_ROUTE_CALENDAR)app->cursor[app->route]++;break;
+        case RS_ACTION_L2: if(app->route==RS_ROUTE_CALENDAR||app->route==RS_ROUTE_STANDINGS)app->season_delta=-1;break;
+        case RS_ACTION_R2: if(app->route==RS_ROUTE_CALENDAR||app->route==RS_ROUTE_STANDINGS)app->season_delta=1;break;
         case RS_ACTION_START: app->overlay = RS_OVERLAY_ABOUT; break;
         default: break;
     }
@@ -96,3 +97,4 @@ bool rs_app_track_time(const RsApp *app){return app&&app->track_time;}
 void rs_app_show_disclaimer(RsApp *app){if(app)app->overlay=RS_OVERLAY_DISCLAIMER;}
 int rs_app_settings_cursor(const RsApp *app){return app?app->settings_cursor:0;}
 bool rs_app_take_settings_action(RsApp *app){bool value;if(!app)return false;value=app->settings_action_requested;app->settings_action_requested=false;return value;}
+int rs_app_take_season_delta(RsApp *app){int value;if(!app)return 0;value=app->season_delta;app->season_delta=0;return value;}

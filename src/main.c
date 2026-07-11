@@ -39,6 +39,7 @@ typedef struct {
     RsWeatherSnapshot weather;
     RsResultsCatalog results;
     int weather_live;
+    int requested_season;
 } RefreshTask;
 
 typedef struct {
@@ -68,6 +69,7 @@ typedef struct {
     bool haptics;
     bool haptic_available;
     bool weather_live;
+    int latest_season;
     int64_t now_override;
 } Runtime;
 
@@ -252,6 +254,7 @@ static void draw_calendar(Runtime *rt) {
     char line[180], date_text[64],round_text[8];
     snprintf(line,sizeof(line),"%d RACE CALENDAR",rt->season.season);
     draw_text(rt, rt->heading, line, 42, 112, WHITE);
+    draw_text(rt,rt->small,"L2 / R2  SEASON",844,138,MUTED);
     fill(rt,38,174,948,26,(SDL_Color){18,20,24,255});draw_text(rt,rt->small,"RD",52,177,MUTED);draw_text(rt,rt->small,"COUNTRY",108,177,MUTED);draw_text(rt,rt->small,"VENUE",284,177,MUTED);draw_text(rt,rt->small,rs_app_track_time(rt->app)?"RACE / TRACK TIME":"RACE / YOUR TIME",530,177,MUTED);
     for (row = 0; row < 10 && first + row < (int)rt->season.event_count; row++) {
         const RsEvent *event = &rt->season.events[first + row];
@@ -269,11 +272,14 @@ static void draw_standings(Runtime *rt) {
     int cursor = rs_app_cursor(rt->app);
     int first = cursor > 8 ? cursor - 8 : 0;
     int row;
+    char title[80];
     bool constructors = rs_app_standings_mode(rt->app) == RS_STANDINGS_CONSTRUCTORS;
-    draw_text(rt, rt->heading, constructors ? "CONSTRUCTOR STANDINGS" : "DRIVER STANDINGS", 42, 112, WHITE);
-    draw_text(rt, rt->small, "X  SWITCH TABLE", 846, 138, MUTED);
+    snprintf(title,sizeof(title),"%d %s STANDINGS",rt->season.season,constructors?"CONSTRUCTOR":"DRIVER");
+    draw_text(rt, rt->heading, title, 42, 112, WHITE);
+    draw_text(rt, rt->small, "L2 / R2 SEASON   X TABLE", 780, 138, MUTED);
     fill(rt,38,174,948,26,(SDL_Color){18,20,24,255});draw_text(rt,rt->small,"POS",52,177,MUTED);
     if(constructors){draw_text(rt,rt->small,"CONSTRUCTOR",108,177,MUTED);draw_text_right_center_y(rt,rt->small,"WINS",700,174,26,MUTED);draw_text_right_center_y(rt,rt->small,"POINTS",870,174,26,MUTED);}else{draw_text(rt,rt->small,"CODE",108,177,MUTED);draw_text(rt,rt->small,"DRIVER",176,177,MUTED);draw_text(rt,rt->small,"CONSTRUCTOR",430,177,MUTED);draw_text_right_center_y(rt,rt->small,"POINTS",870,174,26,MUTED);}
+    if(constructors&&rt->standings.constructor_count==0){draw_text(rt,rt->body,"NO CONSTRUCTOR CHAMPIONSHIP BEFORE 1958",108,238,MUTED);return;}
     for (row = 0; row < 11; row++) {
         int index = first + row;
         int top = 204 + row * 40;
@@ -404,6 +410,27 @@ static char *load_preferred(const char *data_dir, const char *assets, const char
     return rs_store_read(path);
 }
 
+static bool decode_snapshot_text(const char *text,RsSeasonSnapshot *season,RsStandings *standings,RsWeatherSnapshot *weather,RsResultsCatalog *results){
+    cJSON *snapshot;const cJSON *s,*d,*c,*r,*q,*sp,*w;char *json;RsStandings constructors;bool ok=false;
+    if(!text)return false;
+    snapshot=cJSON_Parse(text);
+    if(!snapshot)return false;
+    s=cJSON_GetObjectItemCaseSensitive(snapshot,"schedule");d=cJSON_GetObjectItemCaseSensitive(snapshot,"drivers");c=cJSON_GetObjectItemCaseSensitive(snapshot,"constructors");r=cJSON_GetObjectItemCaseSensitive(snapshot,"results");q=cJSON_GetObjectItemCaseSensitive(snapshot,"qualifying");sp=cJSON_GetObjectItemCaseSensitive(snapshot,"sprint");w=cJSON_GetObjectItemCaseSensitive(snapshot,"weather");
+    memset(results,0,sizeof(*results));memset(weather,0,sizeof(*weather));
+    if(!cJSON_IsObject(s)||!cJSON_IsObject(d)||!cJSON_IsObject(c))goto done;
+    json=cJSON_PrintUnformatted(s);ok=json&&rs_season_decode_schedule(json,season);free(json);if(!ok)goto done;
+    json=cJSON_PrintUnformatted(d);ok=json&&rs_standings_decode_drivers(json,standings);free(json);if(!ok)goto done;
+    json=cJSON_PrintUnformatted(c);ok=json&&rs_standings_decode_constructors(json,&constructors);free(json);if(!ok&&season->season>=1958)goto done;if(!ok)memset(&constructors,0,sizeof(constructors));ok=true;
+    standings->constructor_count=constructors.constructor_count;memcpy(standings->constructors,constructors.constructors,sizeof(constructors.constructors));
+    if(cJSON_IsObject(r)){json=cJSON_PrintUnformatted(r);if(json){rs_results_decode(json,RS_RESULT_RACE,results);free(json);}}
+    if(cJSON_IsObject(q)){json=cJSON_PrintUnformatted(q);if(json){rs_results_decode(json,RS_RESULT_QUALIFYING,results);free(json);}}
+    if(cJSON_IsObject(sp)){json=cJSON_PrintUnformatted(sp);if(json){rs_results_decode(json,RS_RESULT_SPRINT,results);free(json);}}
+    if(cJSON_IsObject(w)){json=cJSON_PrintUnformatted(w);if(json){rs_weather_decode(json,weather);free(json);}}
+done:cJSON_Delete(snapshot);return ok;
+}
+
+static bool load_cached_season(Runtime *rt,int season){char path[1024],*text;bool ok;snprintf(path,sizeof(path),"%s/seasons/%d/snapshot.json",rt->data_dir,season);text=rs_store_read(path);if(!text)return false;ok=decode_snapshot_text(text,&rt->season,&rt->standings,&rt->weather,&rt->results);free(text);if(ok){rt->weather_live=false;rs_profiles_rebuild_series(&rt->profiles,&rt->results);}return ok;}
+
 static bool load_data(Runtime *rt) {
     char snapshot_path[1024]; char *snapshot_bytes; cJSON *snapshot=NULL; char *schedule=NULL,*drivers=NULL,*constructors=NULL,*results=NULL,*qualifying=NULL,*sprint=NULL,*weather=NULL;
     bool snapshot_valid=false;snprintf(snapshot_path,sizeof(snapshot_path),"%s/snapshot.json",rt->data_dir);
@@ -466,7 +493,7 @@ static bool initialize_haptics(void){if(access("/sys/class/gpio/gpio227/value",W
 static void pulse_haptic(const Runtime *rt){if(!rt->haptics||!rt->haptic_available)return;if(!write_device_value("/sys/class/gpio/gpio227/value","1"))return;SDL_Delay(24);write_device_value("/sys/class/gpio/gpio227/value","0");}
 static void save_settings(Runtime *rt){char path[1024],text[32];snprintf(path,sizeof(path),"%s/settings.txt",rt->data_dir);snprintf(text,sizeof(text),"haptics=%d\n",rt->haptics?1:0);rs_store_write_atomic(path,text);}
 static void load_settings(Runtime *rt){char path[1024],*text;rt->haptics=true;snprintf(path,sizeof(path),"%s/settings.txt",rt->data_dir);text=rs_store_read(path);if(text){if(strstr(text,"haptics=0"))rt->haptics=false;free(text);}}
-static void perform_settings_action(Runtime *rt){int cursor=rs_app_settings_cursor(rt->app);char path[1024];if(cursor==0){if(!rt->haptic_available){snprintf(rt->status,sizeof(rt->status),"HAPTICS UNSUPPORTED ON THIS DEVICE");return;}rt->haptics=!rt->haptics;save_settings(rt);snprintf(rt->status,sizeof(rt->status),"HAPTICS %s",rt->haptics?"ENABLED":"DISABLED");pulse_haptic(rt);}else if(cursor==1){snprintf(path,sizeof(path),"%s/snapshot.json",rt->data_dir);unlink(path);snprintf(path,sizeof(path),"%s/weather.json",rt->data_dir);unlink(path);snprintf(rt->status,sizeof(rt->status),"DOWNLOADED CACHE CLEARED · BASELINE KEPT");pulse_haptic(rt);}else snprintf(rt->status,sizeof(rt->status),"JOLPICA CC BY-NC-SA · F1DB/OPEN-METEO CC BY · FONTS OFL");}
+static void perform_settings_action(Runtime *rt){int cursor=rs_app_settings_cursor(rt->app);char path[1024];if(cursor==0){if(!rt->haptic_available){snprintf(rt->status,sizeof(rt->status),"HAPTICS UNSUPPORTED ON THIS DEVICE");return;}rt->haptics=!rt->haptics;save_settings(rt);snprintf(rt->status,sizeof(rt->status),"HAPTICS %s",rt->haptics?"ENABLED":"DISABLED");pulse_haptic(rt);}else if(cursor==1){int season;snprintf(path,sizeof(path),"%s/snapshot.json",rt->data_dir);unlink(path);snprintf(path,sizeof(path),"%s/weather.json",rt->data_dir);unlink(path);for(season=1950;season<=rt->latest_season;season++){snprintf(path,sizeof(path),"%s/seasons/%d/snapshot.json",rt->data_dir,season);unlink(path);snprintf(path,sizeof(path),"%s/seasons/%d",rt->data_dir,season);rmdir(path);}snprintf(path,sizeof(path),"%s/seasons",rt->data_dir);rmdir(path);snprintf(rt->status,sizeof(rt->status),"DOWNLOADED CACHE CLEARED · BASELINE KEPT");pulse_haptic(rt);}else snprintf(rt->status,sizeof(rt->status),"JOLPICA CC BY-NC-SA · F1DB/OPEN-METEO CC BY · FONTS OFL");}
 
 static int refresh_thread(void *context) {
     RefreshTask *task = context;
@@ -478,18 +505,22 @@ static int refresh_thread(void *context) {
     bool weather_ok = false;
     bool weather_fetched=false;
     bool sprint_valid=false;
+    bool qualifying_valid=false;
     char *cached_weather=NULL;
-    bool ok = rs_http_get_https("https://api.jolpi.ca/ergast/f1/current.json?limit=100", task->ca_file, &schedule) &&
+    int requested=task->requested_season;
+    char schedule_url[256];
+    if(requested>0)snprintf(schedule_url,sizeof(schedule_url),"https://api.jolpi.ca/ergast/f1/%d.json?limit=100",requested);else snprintf(schedule_url,sizeof(schedule_url),"https://api.jolpi.ca/ergast/f1/current.json?limit=100");
+    bool ok = rs_http_get_https(schedule_url, task->ca_file, &schedule) &&
               rs_season_decode_schedule(schedule.bytes, &season);
     if (ok) {
         char url[256];
         snprintf(url,sizeof(url),"https://api.jolpi.ca/ergast/f1/%d/driverstandings.json?limit=100",season.season);
         ok=rs_http_get_https(url,task->ca_file,&drivers)&&rs_standings_decode_drivers(drivers.bytes,&driver_data);
         snprintf(url,sizeof(url),"https://api.jolpi.ca/ergast/f1/%d/constructorstandings.json?limit=100",season.season);
-        ok=ok&&rs_http_get_https(url,task->ca_file,&constructors)&&rs_standings_decode_constructors(constructors.bytes,&constructor_data);
+        {bool constructor_ok=rs_http_get_https(url,task->ca_file,&constructors)&&rs_standings_decode_constructors(constructors.bytes,&constructor_data);if(!constructor_ok&&season.season<1958){memset(&constructor_data,0,sizeof(constructor_data));constructor_ok=constructors.bytes!=NULL;}ok=ok&&constructor_ok;}
     }
-    if(ok){char url[256];SDL_Delay(300);snprintf(url,sizeof(url),"https://api.jolpi.ca/ergast/f1/%d/results.json?limit=1000",season.season);ok=rs_http_get_https(url,task->ca_file,&results)&&rs_results_decode(results.bytes,RS_RESULT_RACE,&task->results);SDL_Delay(300);snprintf(url,sizeof(url),"https://api.jolpi.ca/ergast/f1/%d/qualifying.json?limit=1000",season.season);ok=ok&&rs_http_get_https(url,task->ca_file,&qualifying)&&rs_results_decode(qualifying.bytes,RS_RESULT_QUALIFYING,&task->results);SDL_Delay(300);snprintf(url,sizeof(url),"https://api.jolpi.ca/ergast/f1/%d/sprint.json?limit=1000",season.season);sprint_valid=rs_http_get_https(url,task->ca_file,&sprint)&&rs_results_decode(sprint.bytes,RS_RESULT_SPRINT,&task->results);}
-    if (ok) {
+    if(ok){char url[256];SDL_Delay(300);snprintf(url,sizeof(url),"https://api.jolpi.ca/ergast/f1/%d/results.json?limit=1000",season.season);ok=rs_http_get_https(url,task->ca_file,&results)&&rs_results_decode(results.bytes,RS_RESULT_RACE,&task->results);SDL_Delay(300);snprintf(url,sizeof(url),"https://api.jolpi.ca/ergast/f1/%d/qualifying.json?limit=1000",season.season);qualifying_valid=rs_http_get_https(url,task->ca_file,&qualifying)&&rs_results_decode(qualifying.bytes,RS_RESULT_QUALIFYING,&task->results);SDL_Delay(300);snprintf(url,sizeof(url),"https://api.jolpi.ca/ergast/f1/%d/sprint.json?limit=1000",season.season);sprint_valid=rs_http_get_https(url,task->ca_file,&sprint)&&rs_results_decode(sprint.bytes,RS_RESULT_SPRINT,&task->results);}
+    if (ok && requested==0) {
         const RsSession *next = rs_season_next_session(&season, (int64_t)time(NULL));
         const RsEvent *event = event_for_session(&season, next);
         if (event && next) {
@@ -501,11 +532,11 @@ static int refresh_thread(void *context) {
             }
         }
     }
-    if(ok&&!weather_fetched){cached_weather=cached_snapshot_weather(task->data_dir,&weather);weather_ok=cached_weather!=NULL;}
+    if(ok&&!weather_fetched&&requested==0){cached_weather=cached_snapshot_weather(task->data_dir,&weather);weather_ok=cached_weather!=NULL;}
     if (ok) {
-        char path[1024]; const char *sprint_json=sprint_valid?sprint.bytes:"{\"MRData\":{\"RaceTable\":{\"Races\":[]}}}";const char *weather_json=weather_fetched?weather_response.bytes:cached_weather?cached_weather:"null"; size_t length=schedule.length+drivers.length+constructors.length+results.length+qualifying.length+strlen(sprint_json)+strlen(weather_json)+192; char *generation=malloc(length);
+        char path[1024]; const char *empty_results="{\"MRData\":{\"RaceTable\":{\"Races\":[]}}}";const char *qualifying_json=qualifying_valid?qualifying.bytes:empty_results;const char *sprint_json=sprint_valid?sprint.bytes:empty_results;const char *weather_json=weather_fetched?weather_response.bytes:cached_weather?cached_weather:"null"; size_t length=schedule.length+drivers.length+constructors.length+results.length+strlen(qualifying_json)+strlen(sprint_json)+strlen(weather_json)+192; char *generation=malloc(length);
         if(!generation)ok=false;
-        else{snprintf(generation,length,"{\"schedule\":%s,\"drivers\":%s,\"constructors\":%s,\"results\":%s,\"qualifying\":%s,\"sprint\":%s,\"weather\":%s}",schedule.bytes,drivers.bytes,constructors.bytes,results.bytes,qualifying.bytes,sprint_json,weather_json);snprintf(path,sizeof(path),"%s/snapshot.json",task->data_dir);ok=rs_store_write_atomic(path,generation);free(generation);}
+        else{snprintf(generation,length,"{\"schedule\":%s,\"drivers\":%s,\"constructors\":%s,\"results\":%s,\"qualifying\":%s,\"sprint\":%s,\"weather\":%s}",schedule.bytes,drivers.bytes,constructors.bytes,results.bytes,qualifying_json,sprint_json,weather_json);if(requested>0)snprintf(path,sizeof(path),"%s/seasons/%d/snapshot.json",task->data_dir,season.season);else snprintf(path,sizeof(path),"%s/snapshot.json",task->data_dir);ok=rs_store_write_atomic(path,generation);free(generation);}
     }
     SDL_LockMutex(task->mutex);
     if (ok) {
@@ -515,7 +546,7 @@ static int refresh_thread(void *context) {
         task->weather = weather;
         task->weather_live=weather_fetched;
         memcpy(task->standings.constructors, constructor_data.constructors, sizeof(constructor_data.constructors));
-        snprintf(task->status, sizeof(task->status), weather_fetched ? "ONLINE DATA AND WEATHER UPDATED" : weather_ok?"RACE DATA UPDATED · CACHED WEATHER KEPT":"RACE DATA UPDATED · WEATHER UNAVAILABLE");
+        if(requested>0)snprintf(task->status,sizeof(task->status),"%d SEASON DOWNLOADED · CACHED OFFLINE",season.season);else snprintf(task->status, sizeof(task->status), weather_fetched ? "ONLINE DATA AND WEATHER UPDATED" : weather_ok?"RACE DATA UPDATED · CACHED WEATHER KEPT":"RACE DATA UPDATED · WEATHER UNAVAILABLE");
     } else snprintf(task->status, sizeof(task->status), "REFRESH FAILED — USING LAST COMPLETE SNAPSHOT");
     task->success = ok;
     task->ready = 1;
@@ -531,11 +562,14 @@ static void start_refresh(Runtime *rt) {
     if (rt->refresh.running) { SDL_UnlockMutex(rt->refresh.mutex); return; }
     if (rt->last_refresh_at && now-rt->last_refresh_at<60000) { snprintf(rt->status,sizeof(rt->status),"REFRESH COOLDOWN — LAST REQUEST WAS RECENT"); SDL_UnlockMutex(rt->refresh.mutex); return; }
     rt->refresh.running = 1; rt->refresh.ready = 0; rt->last_refresh_at=now;
+    rt->refresh.requested_season=0;
     SDL_UnlockMutex(rt->refresh.mutex);
     snprintf(rt->status, sizeof(rt->status), "REFRESHING VERIFIED HTTPS DATA…");
     rt->refresh.thread=SDL_CreateThread(refresh_thread, "raceslate-refresh", &rt->refresh);
     if(!rt->refresh.thread){SDL_LockMutex(rt->refresh.mutex);rt->refresh.running=0;SDL_UnlockMutex(rt->refresh.mutex);snprintf(rt->status,sizeof(rt->status),"REFRESH WORKER COULD NOT START");}
 }
+
+static void request_season(Runtime *rt,int delta){int target=rt->season.season+delta;uint32_t now=SDL_GetTicks();if(target<1950){snprintf(rt->status,sizeof(rt->status),"1950 IS THE FIRST CHAMPIONSHIP SEASON");return;}if(target>rt->latest_season){snprintf(rt->status,sizeof(rt->status),"%d IS THE LATEST AVAILABLE SEASON",rt->latest_season);return;}if(target==rt->latest_season){if(load_data(rt)){select_upcoming_calendar(rt);snprintf(rt->status,sizeof(rt->status),"%d CURRENT SEASON RESTORED",target);}return;}if(load_cached_season(rt,target)){rs_app_set_cursor(rt->app,rs_app_route(rt->app),0);snprintf(rt->status,sizeof(rt->status),"%d SEASON · OFFLINE CACHE",target);return;}SDL_LockMutex(rt->refresh.mutex);if(rt->refresh.running){SDL_UnlockMutex(rt->refresh.mutex);snprintf(rt->status,sizeof(rt->status),"WAIT FOR THE CURRENT DOWNLOAD");return;}rt->refresh.running=1;rt->refresh.ready=0;rt->refresh.requested_season=target;rt->last_refresh_at=now;SDL_UnlockMutex(rt->refresh.mutex);snprintf(rt->status,sizeof(rt->status),"DOWNLOADING %d SEASON…",target);rt->refresh.thread=SDL_CreateThread(refresh_thread,"raceslate-history",&rt->refresh);if(!rt->refresh.thread){SDL_LockMutex(rt->refresh.mutex);rt->refresh.running=0;SDL_UnlockMutex(rt->refresh.mutex);snprintf(rt->status,sizeof(rt->status),"HISTORY DOWNLOAD COULD NOT START");}}
 
 static RsAction map_event(const SDL_Event *event) {
     if (event->type == SDL_KEYDOWN) {
@@ -610,6 +644,7 @@ int main(int argc, char **argv) {
         if (!rs_profiles_load(path,&rt.profiles)) return 2;
     }
     if (!rt.window || !rt.renderer || !rt.display || !rt.heading || !rt.body || !rt.small || !rt.metric || !rt.table || !rt.app || !load_data(&rt)) return 2;
+    rt.latest_season=rt.season.season;
     load_favorites(&rt);
     load_settings(&rt);
     rt.haptic_available=initialize_haptics();
@@ -626,15 +661,16 @@ int main(int argc, char **argv) {
     while (rs_app_running(rt.app)) {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) rs_app_dispatch(rt.app, RS_ACTION_MENU);
-            else { RsAction action = map_event(&event); if (action != RS_ACTION_NONE) {RsRoute before=rs_app_route(rt.app);rs_app_dispatch(rt.app, action);if(before!=RS_ROUTE_CALENDAR&&rs_app_route(rt.app)==RS_ROUTE_CALENDAR)select_upcoming_calendar(&rt);} }
+            else { RsAction action = map_event(&event); if (action != RS_ACTION_NONE) {RsRoute before=rs_app_route(rt.app);rs_app_dispatch(rt.app, action);if(rs_app_route(rt.app)==RS_ROUTE_NEXT&&rt.season.season!=rt.latest_season){load_data(&rt);}if(before!=RS_ROUTE_CALENDAR&&rs_app_route(rt.app)==RS_ROUTE_CALENDAR&&rt.season.season==rt.latest_season)select_upcoming_calendar(&rt);} }
         }
+        {int season_delta=rs_app_take_season_delta(rt.app);if(season_delta)request_season(&rt,season_delta);}
         if (rs_app_take_refresh_request(rt.app)) start_refresh(&rt);
         if (rs_app_take_favorite_request(rt.app)) save_selected_favorite(&rt);
         if (rs_app_take_acknowledgement_request(rt.app) && rt.first_launch) acknowledge_disclaimer(&rt);
         if(rs_app_take_settings_action(rt.app))perform_settings_action(&rt);
         if (rt.first_launch && rs_app_overlay(rt.app) == RS_OVERLAY_NONE) rs_app_show_disclaimer(rt.app);
         SDL_LockMutex(rt.refresh.mutex);
-        if (rt.refresh.ready) { if (rt.refresh.success) { rt.season = rt.refresh.season; rt.standings = rt.refresh.standings; if(rt.refresh.weather.count)rt.weather = rt.refresh.weather;rt.weather_live=rt.refresh.weather_live!=0; rt.results=rt.refresh.results;rs_profiles_rebuild_series(&rt.profiles,&rt.results); }
+        if (rt.refresh.ready) { if (rt.refresh.success) { rt.season = rt.refresh.season; rt.standings = rt.refresh.standings; if(rt.refresh.weather.count)rt.weather = rt.refresh.weather;else memset(&rt.weather,0,sizeof(rt.weather));rt.weather_live=rt.refresh.weather_live!=0; rt.results=rt.refresh.results;rs_profiles_rebuild_series(&rt.profiles,&rt.results);rs_app_set_cursor(rt.app,rs_app_route(rt.app),0);if(rt.refresh.requested_season==0)rt.latest_season=rt.season.season; }
             snprintf(rt.status, sizeof(rt.status), "%s", rt.refresh.status); rt.refresh.ready = 0; if(rt.refresh.thread){SDL_DetachThread(rt.refresh.thread);rt.refresh.thread=NULL;} }
         SDL_UnlockMutex(rt.refresh.mutex);
         render(&rt);

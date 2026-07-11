@@ -60,6 +60,11 @@ static void brick_controls_navigate_the_public_app_state(void) {
     rs_app_dispatch(app,RS_ACTION_X);assert(rs_app_track_time(app));rs_app_dispatch(app,RS_ACTION_X);assert(!rs_app_track_time(app));
     rs_app_dispatch(app, RS_ACTION_R1);
     assert(rs_app_route(app) == RS_ROUTE_CALENDAR);
+    rs_app_dispatch(app, RS_ACTION_L2);
+    assert(rs_app_take_season_delta(app) == -1);
+    assert(rs_app_take_season_delta(app) == 0);
+    rs_app_dispatch(app, RS_ACTION_R2);
+    assert(rs_app_take_season_delta(app) == 1);
     rs_app_set_cursor(app,RS_ROUTE_CALENDAR,7);assert(rs_app_cursor(app)==7);rs_app_set_cursor(app,RS_ROUTE_CALENDAR,0);
     rs_app_dispatch(app, RS_ACTION_R1);
     assert(rs_app_route(app) == RS_ROUTE_STANDINGS);
@@ -135,6 +140,15 @@ static void a_snapshot_replaces_the_previous_generation_atomically(void) {
     unlink(path); rmdir(dir);
 }
 
+static void multi_megabyte_season_snapshots_can_be_reloaded(void) {
+    char dir[256],path[300];char *payload,*loaded;size_t size=2u*1024u*1024u;
+    snprintf(dir,sizeof(dir),"/tmp/raceslate-large-store-%ld",(long)getpid());
+    snprintf(path,sizeof(path),"%s/snapshot.json",dir);
+    payload=malloc(size+1);assert(payload);memset(payload,'x',size);payload[size]='\0';
+    assert(rs_store_write_atomic(path,payload));loaded=rs_store_read(path);assert(loaded);assert(strlen(loaded)==size);
+    free(loaded);free(payload);unlink(path);rmdir(dir);
+}
+
 static void completed_sessions_expose_full_classifications(const char *fixtures) {
     char path[512]; char *json; RsResultsCatalog catalog={0}; const RsClassification *race;
     snprintf(path,sizeof(path),"%s/results.json",fixtures); json=read_file(path);
@@ -180,6 +194,7 @@ int main(int argc, char **argv) {
     weather_is_aligned_to_the_nearest_session_hour(argv[1]);
     weather_keeps_valid_forecast_before_null_tail(argv[1]);
     a_snapshot_replaces_the_previous_generation_atomically();
+    multi_megabyte_season_snapshots_can_be_reloaded();
     completed_sessions_expose_full_classifications(argv[1]);
     current_grid_profiles_include_career_totals_and_chart_series(argv[1]);
     live_results_rebuild_profile_progression(argv[1]);
