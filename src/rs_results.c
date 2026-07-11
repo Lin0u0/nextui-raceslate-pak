@@ -72,6 +72,7 @@ bool rs_results_decode(const char *json, RsResultKind kind, RsResultsCatalog *ca
             copy_value(entry->driver_code, sizeof(entry->driver_code), text_value(driver, "code"));
             snprintf(name, sizeof(name), "%s %s", text_value(driver, "givenName") ? text_value(driver, "givenName") : "", text_value(driver, "familyName") ? text_value(driver, "familyName") : "");
             copy_value(entry->driver_name, sizeof(entry->driver_name), name);
+            copy_value(entry->constructor_id, sizeof(entry->constructor_id), text_value(constructor, "constructorId"));
             copy_value(entry->constructor_name, sizeof(entry->constructor_name), text_value(constructor, "name"));
             copy_value(entry->status, sizeof(entry->status), text_value(row, "status") ? text_value(row, "status") : "CLASSIFIED");
             copy_value(entry->q1, sizeof(entry->q1), text_value(row, "Q1")); copy_value(entry->q2, sizeof(entry->q2), text_value(row, "Q2")); copy_value(entry->q3, sizeof(entry->q3), text_value(row, "Q3"));

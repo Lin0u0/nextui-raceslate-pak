@@ -14,6 +14,7 @@
 #include <SDL_ttf.h>
 #include <curl/curl.h>
 #include <inttypes.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -83,6 +84,32 @@ static void draw_text(Runtime *rt, TTF_Font *font, const char *text, int x, int 
     target = (SDL_Rect){x, y, surface->w, surface->h};
     SDL_FreeSurface(surface);
     if (texture) { SDL_RenderCopy(rt->renderer, texture, NULL, &target); SDL_DestroyTexture(texture); }
+}
+
+static void draw_text_right(Runtime *rt, TTF_Font *font, const char *text, int right, int y, SDL_Color color) {
+    int width = 0;
+    if (text && TTF_SizeUTF8(font, text, &width, NULL) == 0) draw_text(rt, font, text, right - width, y, color);
+}
+
+static void format_points(double points, char *output, size_t capacity) {
+    if (fabs(points - round(points)) < 0.001) snprintf(output, capacity, "%.0f", points);
+    else snprintf(output, capacity, "%.1f", points);
+}
+
+static SDL_Color team_color(const char *id) {
+    if (!id) return MUTED;
+    if (!strcmp(id,"ferrari")) return (SDL_Color){232,0,45,255};
+    if (!strcmp(id,"mclaren")) return (SDL_Color){255,128,0,255};
+    if (!strcmp(id,"mercedes")) return (SDL_Color){0,215,182,255};
+    if (!strcmp(id,"red_bull")) return (SDL_Color){54,113,198,255};
+    if (!strcmp(id,"aston_martin")) return (SDL_Color){34,153,113,255};
+    if (!strcmp(id,"alpine")) return (SDL_Color){255,135,188,255};
+    if (!strcmp(id,"williams")) return (SDL_Color){0,160,222,255};
+    if (!strcmp(id,"haas")) return (SDL_Color){182,186,189,255};
+    if (!strcmp(id,"rb")) return (SDL_Color){102,146,255,255};
+    if (!strcmp(id,"audi")) return (SDL_Color){217,255,0,255};
+    if (!strcmp(id,"cadillac")) return (SDL_Color){212,175,55,255};
+    return MUTED;
 }
 
 static void fill(Runtime *rt, int x, int y, int w, int h, SDL_Color color) {
@@ -259,7 +286,9 @@ static void draw_profile_chart(Runtime *rt, const RsProfile *profile, bool point
         int y2 = points_mode ? y + height - (int)(cv / maximum * height) : y + (int)((cv - 1.0) / maximum * height);
         SDL_RenderDrawLine(rt->renderer, x1, y1, x2, y2);
         fill(rt, x2 - 2, y2 - 2, 5, 5, WHITE);
+        { char value[24]; if(points_mode)format_points(cv,value,sizeof(value));else snprintf(value,sizeof(value),"%d",current->position);draw_text(rt,rt->small,value,x2-6,y2>y+18?y2-20:y2+5,WHITE); }
     }
+    {char value[24];const RsProfilePoint *first=&profile->series[0];double fv=points_mode?first->points:first->position;int fy=points_mode?y+height-(int)(fv/maximum*height):y+(int)((fv-1.0)/maximum*height);if(points_mode)format_points(fv,value,sizeof(value));else snprintf(value,sizeof(value),"%d",first->position);fill(rt,x-2,fy-2,5,5,WHITE);draw_text(rt,rt->small,value,x,fy>y+18?fy-20:fy+5,WHITE);}
     snprintf(label, sizeof(label), "%s  /  X SWITCH METRIC", points_mode ? "POINTS PROGRESSION" : "CHAMPIONSHIP POSITION");
     draw_text(rt, rt->small, label, x, y - 27, MUTED);
 }
@@ -288,7 +317,7 @@ static void draw_detail(Runtime *rt) {
          const char *title=kind==RS_RESULT_RACE?"RACE CLASSIFICATION":kind==RS_RESULT_QUALIFYING?"QUALIFYING CLASSIFICATION":"SPRINT CLASSIFICATION";
          draw_text(rt,rt->small,"RESULTS  /  X NEXT VIEW",126,140,RED);draw_text(rt,rt->heading,title,124,168,WHITE);
          if(!classification)draw_text(rt,rt->body,"RESULT UNAVAILABLE",126,244,MUTED);
-         else for(row=0;row<10&&first+row<(int)classification->entry_count;row++){const RsClassificationEntry *e=&classification->entries[first+row];int y=228+row*38;if(first+row==cursor)fill(rt,116,y-3,790,34,(SDL_Color){44,46,53,255});snprintf(line,sizeof(line),"%02d  %-3s  %-24s  %-20s  %5.1f PTS  %s",e->position,e->driver_code,e->driver_name,e->constructor_name,e->points,e->status);draw_text(rt,rt->small,line,126,y,first+row==cursor?WHITE:MUTED);}
+         else for(row=0;row<10&&first+row<(int)classification->entry_count;row++){const RsClassificationEntry *e=&classification->entries[first+row];int y=228+row*38;SDL_Color text_color=first+row==cursor?WHITE:MUTED;char position[8],points[24];if(first+row==cursor)fill(rt,116,y-3,790,34,(SDL_Color){44,46,53,255});fill(rt,126,y+2,4,18,team_color(e->constructor_id));snprintf(position,sizeof(position),"%02d",e->position);format_points(e->points,points,sizeof(points));draw_text_right(rt,rt->small,position,166,y,text_color);draw_text(rt,rt->small,e->driver_code,188,y,text_color);draw_text(rt,rt->small,e->driver_name,244,y,text_color);draw_text(rt,rt->small,e->constructor_name,470,y,team_color(e->constructor_id));draw_text_right(rt,rt->small,points,718,y,text_color);draw_text(rt,rt->small,"PTS",728,y,MUTED);draw_text(rt,rt->small,e->status,774,y,text_color);}
         }
     } else if (rs_app_route(rt->app) == RS_ROUTE_STANDINGS) {
         int index=rs_app_cursor(rt->app); char line[256];
@@ -517,7 +546,7 @@ int main(int argc, char **argv) {
     }
     if (!rt.window || !rt.renderer || !rt.display || !rt.heading || !rt.body || !rt.small || !rt.app || !load_data(&rt)) return 2;
     load_favorites(&rt);
-    {char path[1024];char *ack;snprintf(path,sizeof(path),"%s/acknowledged",rt.data_dir);ack=rs_store_read(path);rt.first_launch=ack==NULL;free(ack);if(rt.first_launch)rs_app_dispatch(rt.app,RS_ACTION_START);}
+    {char path[1024];char *ack;snprintf(path,sizeof(path),"%s/acknowledged",rt.data_dir);ack=rs_store_read(path);rt.first_launch=ack==NULL&&!screenshot;free(ack);if(rt.first_launch)rs_app_dispatch(rt.app,RS_ACTION_START);}
     if (offline) snprintf(rt.status,sizeof(rt.status),"OFFLINE BASELINE DATA");
     if(screen){if(!strcmp(screen,"calendar"))rs_app_dispatch(rt.app,RS_ACTION_R1);else if(!strcmp(screen,"standings")){rs_app_dispatch(rt.app,RS_ACTION_R1);rs_app_dispatch(rt.app,RS_ACTION_R1);}}
     while(selected-->0)rs_app_dispatch(rt.app,RS_ACTION_DOWN);
@@ -532,7 +561,7 @@ int main(int argc, char **argv) {
         }
         if (rs_app_take_refresh_request(rt.app)) start_refresh(&rt);
         if (rs_app_take_favorite_request(rt.app)) save_selected_favorite(&rt);
-        if (rs_app_take_acknowledgement_request(rt.app)) acknowledge_disclaimer(&rt);
+        if (rs_app_take_acknowledgement_request(rt.app) && rt.first_launch) acknowledge_disclaimer(&rt);
         if (rt.first_launch && rs_app_overlay(rt.app) == RS_OVERLAY_NONE) rs_app_dispatch(rt.app,RS_ACTION_START);
         SDL_LockMutex(rt.refresh.mutex);
         if (rt.refresh.ready) { if (rt.refresh.success) { rt.season = rt.refresh.season; rt.standings = rt.refresh.standings; rt.weather = rt.refresh.weather; rt.results=rt.refresh.results; }

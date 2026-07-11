@@ -67,6 +67,8 @@ def main():
         rows = load(path) or []
         if rows and rows[0].get("driverId") in driver_ids:
             stats[("D", rows[0]["driverId"])][3] += 1
+        if rows and rows[0].get("constructorId") in constructor_ids:
+            stats[("C", rows[0]["constructorId"])][3] += 1
 
     for kind, filename, ids in (("D", "driver-standings.yml", driver_ids), ("C", "constructor-standings.yml", constructor_ids)):
         for path in (root / "src/data/seasons").glob(f"*/{filename}"):
@@ -89,7 +91,7 @@ def main():
 
     output.parent.mkdir(parents=True, exist_ok=True)
     with output.open("w", newline="") as stream:
-        writer = csv.writer(stream, delimiter="\t")
+        writer = csv.writer(stream, delimiter="\t", lineterminator="\n")
         writer.writerow(["type", "provider_id", "source_id", "name", "country", "starts", "wins", "podiums", "poles", "championships", "series"])
         for kind, mappings, folder in (("D", DRIVERS, "drivers"), ("C", CONSTRUCTORS, "constructors")):
             for provider_id, source_id in mappings.items():

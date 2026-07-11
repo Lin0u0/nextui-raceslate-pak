@@ -125,6 +125,7 @@ static void completed_sessions_expose_full_classifications(const char *fixtures)
     race=rs_results_find(&catalog,1,RS_RESULT_RACE);
     assert(race); assert(race->entry_count>=20); assert(race->entries[0].position==1);
     assert(race->entries[0].driver_name[0]!='\0'); assert(race->entries[0].points>=0.0);
+    assert(race->entries[0].constructor_id[0]!='\0');
     assert(rs_results_find(&catalog,1,RS_RESULT_QUALIFYING));
 }
 
