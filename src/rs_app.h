@@ -24,6 +24,7 @@ RsStandingsMode rs_app_standings_mode(const RsApp *app);
 bool rs_app_running(const RsApp *app);
 int rs_app_cursor(const RsApp *app);
 bool rs_app_take_refresh_request(RsApp *app);
+bool rs_app_take_favorite_request(RsApp *app);
 RsDetailMode rs_app_detail_mode(const RsApp *app);
 int rs_app_detail_cursor(const RsApp *app);
 

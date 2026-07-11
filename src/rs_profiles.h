@@ -1,0 +1,40 @@
+#ifndef RS_PROFILES_H
+#define RS_PROFILES_H
+
+#include <stdbool.h>
+#include <stddef.h>
+
+#define RS_MAX_PROFILES 40
+#define RS_MAX_PROFILE_SERIES 24
+
+typedef enum { RS_PROFILE_DRIVER, RS_PROFILE_CONSTRUCTOR } RsProfileType;
+
+typedef struct {
+    int round;
+    int position;
+    double points;
+} RsProfilePoint;
+
+typedef struct {
+    RsProfileType type;
+    char provider_id[40];
+    char name[64];
+    char country[40];
+    int starts;
+    int wins;
+    int podiums;
+    int poles;
+    int championships;
+    RsProfilePoint series[RS_MAX_PROFILE_SERIES];
+    size_t series_count;
+} RsProfile;
+
+typedef struct {
+    RsProfile profiles[RS_MAX_PROFILES];
+    size_t count;
+} RsProfileCatalog;
+
+bool rs_profiles_load(const char *path, RsProfileCatalog *catalog);
+const RsProfile *rs_profiles_find(const RsProfileCatalog *catalog, RsProfileType type, const char *provider_id);
+
+#endif

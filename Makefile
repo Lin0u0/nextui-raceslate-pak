@@ -4,7 +4,7 @@ CC ?= cc
 CFLAGS := -std=c11 -Wall -Wextra -Werror -pedantic -Isrc -Ivendor -O0 -g
 SDL_CFLAGS := $(shell pkg-config --cflags sdl2 SDL2_ttf libcurl)
 SDL_LIBS := $(shell pkg-config --libs sdl2 SDL2_ttf libcurl)
-CORE_SRCS := src/rs_season.c src/rs_standings.c src/rs_results.c src/rs_weather.c src/rs_reference.c src/rs_app.c vendor/cJSON.c
+CORE_SRCS := src/rs_season.c src/rs_standings.c src/rs_results.c src/rs_weather.c src/rs_reference.c src/rs_profiles.c src/rs_app.c vendor/cJSON.c
 APP_SRCS := src/main.c src/rs_http.c src/rs_store.c $(CORE_SRCS)
 TG5040_TOOLCHAIN_ROOT ?= build/tg5040-toolchain
 TG5040_TOOLCHAIN := $(TG5040_TOOLCHAIN_ROOT)/gcc-arm-10.3-2021.07-x86_64-aarch64-none-linux-gnu

@@ -4,6 +4,7 @@
 #include "rs_weather.h"
 #include "rs_store.h"
 #include "rs_results.h"
+#include "rs_profiles.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -65,6 +66,11 @@ static void brick_controls_navigate_the_public_app_state(void) {
     assert(rs_app_overlay(app) == RS_OVERLAY_ABOUT);
     rs_app_dispatch(app, RS_ACTION_B);
     assert(rs_app_overlay(app) == RS_OVERLAY_NONE);
+    rs_app_dispatch(app, RS_ACTION_R1);
+    rs_app_dispatch(app, RS_ACTION_A);
+    rs_app_dispatch(app, RS_ACTION_SELECT);
+    assert(rs_app_take_favorite_request(app));
+    assert(!rs_app_take_favorite_request(app));
     rs_app_dispatch(app, RS_ACTION_MENU);
     assert(!rs_app_running(app));
     rs_app_destroy(app);
@@ -118,6 +124,20 @@ static void completed_sessions_expose_full_classifications(const char *fixtures)
     assert(rs_results_find(&catalog,1,RS_RESULT_QUALIFYING));
 }
 
+static void current_grid_profiles_include_career_totals_and_chart_series(const char *fixtures) {
+    char path[512];
+    RsProfileCatalog catalog;
+    const RsProfile *driver;
+    const RsProfile *constructor;
+    snprintf(path, sizeof(path), "%s/profiles.tsv", fixtures);
+    assert(rs_profiles_load(path, &catalog));
+    driver = rs_profiles_find(&catalog, RS_PROFILE_DRIVER, "max_verstappen");
+    assert(driver); assert(driver->starts > 200); assert(driver->wins > 50);
+    assert(driver->series_count >= 5); assert(driver->series[0].round == 1);
+    constructor = rs_profiles_find(&catalog, RS_PROFILE_CONSTRUCTOR, "ferrari");
+    assert(constructor); assert(constructor->championships > 10);
+}
+
 int main(int argc, char **argv) {
     assert(argc == 2);
     user_sees_the_next_session_from_a_jolpica_schedule(argv[1]);
@@ -126,6 +146,7 @@ int main(int argc, char **argv) {
     weather_is_aligned_to_the_nearest_session_hour(argv[1]);
     a_snapshot_replaces_the_previous_generation_atomically();
     completed_sessions_expose_full_classifications(argv[1]);
+    current_grid_profiles_include_career_totals_and_chart_series(argv[1]);
     puts("ok: core behavior");
     return 0;
 }

@@ -7,6 +7,7 @@
 #include "rs_weather.h"
 #include "rs_reference.h"
 #include "rs_results.h"
+#include "rs_profiles.h"
 #include "cJSON.h"
 
 #include <SDL.h>
@@ -49,11 +50,14 @@ typedef struct {
     RsWeatherSnapshot weather;
     RsResultsCatalog results;
     RsReferenceCatalog reference;
+    RsProfileCatalog profiles;
     uint32_t last_refresh_at;
     RefreshTask refresh;
     char assets[768];
     char data_dir[768];
     char status[160];
+    char favorite_driver[48];
+    char favorite_constructor[48];
     int64_t now_override;
 } Runtime;
 
@@ -209,10 +213,10 @@ static void draw_standings(Runtime *rt) {
         if (index == cursor) fill(rt, 38, y - 5, 948, 40, (SDL_Color){44, 46, 53, 255});
         if (constructors) {
             const RsConstructorStanding *entry = &rt->standings.constructors[index];
-            snprintf(line, sizeof(line), "%02d   %-42s  %7.0f PTS   %d WINS", entry->position, entry->name, entry->points, entry->wins);
+            snprintf(line, sizeof(line), "%s %02d   %-40s  %7.0f PTS   %d WINS", !strcmp(entry->id,rt->favorite_constructor)?"*":" ", entry->position, entry->name, entry->points, entry->wins);
         } else {
             const RsDriverStanding *entry = &rt->standings.drivers[index];
-            snprintf(line, sizeof(line), "%02d   %-3s  %-20s  %-24s  %7.0f PTS", entry->position, entry->code,
+            snprintf(line, sizeof(line), "%s %02d   %-3s  %-20s  %-22s  %7.0f PTS", !strcmp(entry->id,rt->favorite_driver)?"*":" ", entry->position, entry->code,
                      entry->family_name, entry->constructor_name, entry->points);
         }
         draw_text(rt, rt->body, line, 52, y, index == cursor ? WHITE : MUTED);
@@ -229,6 +233,34 @@ static void draw_about(Runtime *rt) {
     draw_text(rt, rt->small, "Weather: Open-Meteo  /  CC BY 4.0", 204, 400, WHITE);
     draw_text(rt, rt->small, "Fonts: Barlow Condensed + Inter  /  OFL 1.1", 204, 436, WHITE);
     draw_text(rt, rt->small, "B  CLOSE", 204, 574, RED);
+}
+
+static void draw_profile_chart(Runtime *rt, const RsProfile *profile, bool points_mode) {
+    const int x = 126, y = 436, width = 746, height = 130;
+    size_t index;
+    double maximum = 1.0;
+    char label[80];
+    if (!profile || profile->series_count < 2) return;
+    for (index = 0; index < profile->series_count; index++) {
+        double value = points_mode ? profile->series[index].points : profile->series[index].position;
+        if (value > maximum) maximum = value;
+    }
+    SDL_SetRenderDrawColor(rt->renderer, 60, 63, 70, 255);
+    SDL_RenderDrawRect(rt->renderer, &(SDL_Rect){x, y, width, height});
+    SDL_SetRenderDrawColor(rt->renderer, RED.r, RED.g, RED.b, RED.a);
+    for (index = 1; index < profile->series_count; index++) {
+        const RsProfilePoint *previous = &profile->series[index - 1], *current = &profile->series[index];
+        double pv = points_mode ? previous->points : previous->position;
+        double cv = points_mode ? current->points : current->position;
+        int x1 = x + (int)((index - 1) * (size_t)width / (profile->series_count - 1));
+        int x2 = x + (int)(index * (size_t)width / (profile->series_count - 1));
+        int y1 = points_mode ? y + height - (int)(pv / maximum * height) : y + (int)((pv - 1.0) / maximum * height);
+        int y2 = points_mode ? y + height - (int)(cv / maximum * height) : y + (int)((cv - 1.0) / maximum * height);
+        SDL_RenderDrawLine(rt->renderer, x1, y1, x2, y2);
+        fill(rt, x2 - 2, y2 - 2, 5, 5, WHITE);
+    }
+    snprintf(label, sizeof(label), "%s  /  X SWITCH METRIC", points_mode ? "POINTS PROGRESSION" : "CHAMPIONSHIP POSITION");
+    draw_text(rt, rt->small, label, x, y - 27, MUTED);
 }
 
 static void draw_detail(Runtime *rt) {
@@ -260,10 +292,12 @@ static void draw_detail(Runtime *rt) {
     } else if (rs_app_route(rt->app) == RS_ROUTE_STANDINGS) {
         int index=rs_app_cursor(rt->app); char line[256];
         bool constructors=rs_app_standings_mode(rt->app)==RS_STANDINGS_CONSTRUCTORS;
+        const RsProfile *profile=NULL;
         draw_text(rt,rt->small,constructors?"CONSTRUCTOR PROFILE":"DRIVER PROFILE",126,140,RED);
-        if(constructors&&index<(int)rt->standings.constructor_count){const RsConstructorStanding *e=&rt->standings.constructors[index];draw_text(rt,rt->display,e->name,124,170,WHITE);snprintf(line,sizeof(line),"P%d   %.0f POINTS   %d WINS",e->position,e->points,e->wins);draw_text(rt,rt->heading,line,126,278,WHITE);}
-        else if(!constructors&&index<(int)rt->standings.driver_count){const RsDriverStanding *e=&rt->standings.drivers[index];snprintf(line,sizeof(line),"%s %s",e->given_name,e->family_name);draw_text(rt,rt->display,line,124,170,WHITE);snprintf(line,sizeof(line),"%s  /  %s",e->code,e->constructor_name);draw_text(rt,rt->body,line,128,270,MUTED);snprintf(line,sizeof(line),"P%d   %.0f POINTS   %d WINS",e->position,e->points,e->wins);draw_text(rt,rt->heading,line,126,320,WHITE);}
-        draw_text(rt,rt->small,"CURRENT SEASON STATISTICAL PROFILE",126,406,MUTED);
+        if(constructors&&index<(int)rt->standings.constructor_count){const RsConstructorStanding *e=&rt->standings.constructors[index];profile=rs_profiles_find(&rt->profiles,RS_PROFILE_CONSTRUCTOR,e->id);draw_text(rt,rt->display,e->name,124,170,WHITE);snprintf(line,sizeof(line),"P%d   %.0f POINTS   %d WINS",e->position,e->points,e->wins);draw_text(rt,rt->heading,line,126,278,WHITE);}
+        else if(!constructors&&index<(int)rt->standings.driver_count){const RsDriverStanding *e=&rt->standings.drivers[index];profile=rs_profiles_find(&rt->profiles,RS_PROFILE_DRIVER,e->id);snprintf(line,sizeof(line),"%s %s",e->given_name,e->family_name);draw_text(rt,rt->display,line,124,170,WHITE);snprintf(line,sizeof(line),"%s  /  %s",e->code,e->constructor_name);draw_text(rt,rt->body,line,128,270,MUTED);snprintf(line,sizeof(line),"P%d   %.0f POINTS   %d WINS",e->position,e->points,e->wins);draw_text(rt,rt->heading,line,126,320,WHITE);}
+        if(profile){snprintf(line,sizeof(line),"CAREER  %d STARTS   %d WINS   %d PODIUMS   %d POLES   %d TITLES",profile->starts,profile->wins,profile->podiums,profile->poles,profile->championships);draw_text(rt,rt->small,line,126,382,WHITE);draw_profile_chart(rt,profile,(rs_app_detail_mode(rt->app)%2)==RS_DETAIL_RACE);draw_text(rt,rt->small,"SELECT  SET FAVORITE",680,626,RED);}
+        else draw_text(rt,rt->small,"CAREER PROFILE UNAVAILABLE",126,406,MUTED);
     }
     draw_text(rt,rt->small,"B  CLOSE",126,626,RED);
 }
@@ -320,6 +354,24 @@ static bool load_data(Runtime *rt) {
     }
     free(schedule); free(drivers); free(constructors); free(results); free(qualifying); free(sprint); free(weather); cJSON_Delete(snapshot);
     return ok;
+}
+
+static void load_favorites(Runtime *rt) {
+    char path[1024]; char *text, *line;
+    snprintf(path,sizeof(path),"%s/favorites.txt",rt->data_dir); text=rs_store_read(path);
+    if(!text)return;
+    line=strtok(text,"\r\n");
+    while(line){if(!strncmp(line,"driver=",7))snprintf(rt->favorite_driver,sizeof(rt->favorite_driver),"%s",line+7);else if(!strncmp(line,"constructor=",12))snprintf(rt->favorite_constructor,sizeof(rt->favorite_constructor),"%s",line+12);line=strtok(NULL,"\r\n");}
+    free(text);
+}
+
+static void save_selected_favorite(Runtime *rt) {
+    int index=rs_app_cursor(rt->app); char path[1024],contents[160];
+    if(rs_app_standings_mode(rt->app)==RS_STANDINGS_CONSTRUCTORS){if(index>=(int)rt->standings.constructor_count)return;snprintf(rt->favorite_constructor,sizeof(rt->favorite_constructor),"%s",rt->standings.constructors[index].id);snprintf(rt->status,sizeof(rt->status),"FAVORITE CONSTRUCTOR SAVED");}
+    else {if(index>=(int)rt->standings.driver_count)return;snprintf(rt->favorite_driver,sizeof(rt->favorite_driver),"%s",rt->standings.drivers[index].id);snprintf(rt->status,sizeof(rt->status),"FAVORITE DRIVER SAVED");}
+    snprintf(contents,sizeof(contents),"driver=%s\nconstructor=%s\n",rt->favorite_driver,rt->favorite_constructor);
+    snprintf(path,sizeof(path),"%s/favorites.txt",rt->data_dir);
+    if(!rs_store_write_atomic(path,contents))snprintf(rt->status,sizeof(rt->status),"FAVORITE COULD NOT BE SAVED");
 }
 
 static int refresh_thread(void *context) {
@@ -452,8 +504,11 @@ int main(int argc, char **argv) {
     {
         char path[1024]; snprintf(path,sizeof(path),"%s/reference/history.tsv",rt.assets);
         if (!rs_reference_load(path,&rt.reference)) return 2;
+        snprintf(path,sizeof(path),"%s/reference/profiles.tsv",rt.assets);
+        if (!rs_profiles_load(path,&rt.profiles)) return 2;
     }
     if (!rt.window || !rt.renderer || !rt.display || !rt.heading || !rt.body || !rt.small || !rt.app || !load_data(&rt)) return 2;
+    load_favorites(&rt);
     if (offline) snprintf(rt.status,sizeof(rt.status),"OFFLINE BASELINE DATA");
     if(screen){if(!strcmp(screen,"calendar"))rs_app_dispatch(rt.app,RS_ACTION_R1);else if(!strcmp(screen,"standings")){rs_app_dispatch(rt.app,RS_ACTION_R1);rs_app_dispatch(rt.app,RS_ACTION_R1);}}
     while(selected-->0)rs_app_dispatch(rt.app,RS_ACTION_DOWN);
@@ -467,6 +522,7 @@ int main(int argc, char **argv) {
             else { RsAction action = map_event(&event); if (action != RS_ACTION_NONE) rs_app_dispatch(rt.app, action); }
         }
         if (rs_app_take_refresh_request(rt.app)) start_refresh(&rt);
+        if (rs_app_take_favorite_request(rt.app)) save_selected_favorite(&rt);
         SDL_LockMutex(rt.refresh.mutex);
         if (rt.refresh.ready) { if (rt.refresh.success) { rt.season = rt.refresh.season; rt.standings = rt.refresh.standings; rt.weather = rt.refresh.weather; rt.results=rt.refresh.results; }
             snprintf(rt.status, sizeof(rt.status), "%s", rt.refresh.status); rt.refresh.ready = 0; if(rt.refresh.thread){SDL_DetachThread(rt.refresh.thread);rt.refresh.thread=NULL;} }

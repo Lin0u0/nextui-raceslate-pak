@@ -9,6 +9,7 @@ struct RsApp {
     int cursor[3];
     bool running;
     bool refresh_requested;
+    bool favorite_requested;
     RsDetailMode detail_mode;
     int detail_cursor;
 };
@@ -29,6 +30,7 @@ void rs_app_dispatch(RsApp *app, RsAction action) {
         else if(app->overlay==RS_OVERLAY_DETAIL&&action==RS_ACTION_X){app->detail_mode=(RsDetailMode)((app->detail_mode+1)%4);app->detail_cursor=0;}
         else if(app->overlay==RS_OVERLAY_DETAIL&&action==RS_ACTION_DOWN)app->detail_cursor++;
         else if(app->overlay==RS_OVERLAY_DETAIL&&action==RS_ACTION_UP&&app->detail_cursor>0)app->detail_cursor--;
+        else if(app->overlay==RS_OVERLAY_DETAIL&&action==RS_ACTION_SELECT&&app->route==RS_ROUTE_STANDINGS)app->favorite_requested=true;
         return;
     }
     switch (action) {
@@ -62,6 +64,13 @@ bool rs_app_take_refresh_request(RsApp *app) {
     if (!app) return false;
     requested = app->refresh_requested;
     app->refresh_requested = false;
+    return requested;
+}
+bool rs_app_take_favorite_request(RsApp *app) {
+    bool requested;
+    if (!app) return false;
+    requested = app->favorite_requested;
+    app->favorite_requested = false;
     return requested;
 }
 RsDetailMode rs_app_detail_mode(const RsApp *app){return app?app->detail_mode:RS_DETAIL_HISTORY;}
