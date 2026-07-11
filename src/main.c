@@ -46,6 +46,7 @@ typedef struct {
 typedef struct {
     SDL_Window *window;
     SDL_Renderer *renderer;
+    SDL_Joystick *joystick;
     TTF_Font *display;
     TTF_Font *heading;
     TTF_Font *body;
@@ -600,6 +601,7 @@ static RsAction map_event(const SDL_Event *event) {
         if (event->jhat.value & SDL_HAT_LEFT) return RS_ACTION_LEFT;
         if (event->jhat.value & SDL_HAT_RIGHT) return RS_ACTION_RIGHT;
     }
+    if(event->type==SDL_JOYAXISMOTION){const Sint16 threshold=16000;if(event->jaxis.axis==0&&event->jaxis.value<=-threshold)return RS_ACTION_LEFT;if(event->jaxis.axis==0&&event->jaxis.value>=threshold)return RS_ACTION_RIGHT;if(event->jaxis.axis==1&&event->jaxis.value<=-threshold)return RS_ACTION_UP;if(event->jaxis.axis==1&&event->jaxis.value>=threshold)return RS_ACTION_DOWN;}
     return RS_ACTION_NONE;
 }
 
@@ -628,6 +630,7 @@ int main(int argc, char **argv) {
         else if (!strcmp(argv[i], "--offline")) offline = 1;
     }
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) != 0 || TTF_Init() != 0 || curl_global_init(CURL_GLOBAL_DEFAULT) != 0) return 1;
+    SDL_JoystickEventState(SDL_ENABLE);if(SDL_NumJoysticks()>0)rt.joystick=SDL_JoystickOpen(0);
     rt.window = SDL_CreateWindow("RaceSlate", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_W, SCREEN_H, 0);
     rt.renderer = SDL_CreateRenderer(rt.window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (!rt.renderer) rt.renderer = SDL_CreateRenderer(rt.window, -1, SDL_RENDERER_SOFTWARE);
@@ -687,7 +690,7 @@ int main(int argc, char **argv) {
     }
     if(rt.refresh.thread) SDL_WaitThread(rt.refresh.thread,NULL);
     TTF_CloseFont(rt.display); TTF_CloseFont(rt.heading); TTF_CloseFont(rt.body); TTF_CloseFont(rt.small);TTF_CloseFont(rt.metric);TTF_CloseFont(rt.table);
-    SDL_DestroyMutex(rt.refresh.mutex); rs_app_destroy(rt.app); SDL_DestroyRenderer(rt.renderer); SDL_DestroyWindow(rt.window);
+    SDL_DestroyMutex(rt.refresh.mutex); rs_app_destroy(rt.app);if(rt.joystick)SDL_JoystickClose(rt.joystick); SDL_DestroyRenderer(rt.renderer); SDL_DestroyWindow(rt.window);
     curl_global_cleanup(); TTF_Quit(); SDL_Quit();free(runtime);
 #undef rt
     return 0;
