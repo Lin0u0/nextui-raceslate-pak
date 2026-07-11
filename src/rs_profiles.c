@@ -74,6 +74,8 @@ const RsProfile *rs_profiles_find(const RsProfileCatalog *catalog, RsProfileType
 
 void rs_profiles_rebuild_series(RsProfileCatalog *catalog, const RsResultsCatalog *results) {
     double totals[RS_MAX_PROFILES] = {0};
+    int finishes[RS_MAX_PROFILES][RS_MAX_CLASSIFICATION_ENTRIES] = {{0}};
+    int latest_finish_round[RS_MAX_PROFILES][RS_MAX_CLASSIFICATION_ENTRIES] = {{0}};
     int round, maximum_round = 0;
     size_t index;
     if (!catalog || !results) return;
@@ -90,14 +92,18 @@ void rs_profiles_rebuild_series(RsProfileCatalog *catalog, const RsResultsCatalo
                 for (index = 0; index < catalog->count; index++) {
                     RsProfile *profile = &catalog->profiles[index];
                     const char *id = profile->type == RS_PROFILE_DRIVER ? entry->driver_id : entry->constructor_id;
-                    if (!strcmp(profile->provider_id, id)) totals[index] += entry->points;
+                    if (!strcmp(profile->provider_id, id)) {totals[index] += entry->points;if(classification->kind==RS_RESULT_RACE&&entry->position>0&&entry->position<=RS_MAX_CLASSIFICATION_ENTRIES){finishes[index][entry->position-1]++;latest_finish_round[index][entry->position-1]=round;}}
                 }
             }
         }
         for (index = 0; index < catalog->count; index++) {
             RsProfile *profile = &catalog->profiles[index];
             size_t other; int position = 1;
-            for (other = 0; other < catalog->count; other++) if (catalog->profiles[other].type == profile->type && totals[other] > totals[index]) position++;
+            for (other = 0; other < catalog->count; other++) if (catalog->profiles[other].type == profile->type) {
+                bool ahead=totals[other]>totals[index];
+                if(!ahead&&totals[other]==totals[index]&&other!=index){int place;for(place=0;place<RS_MAX_CLASSIFICATION_ENTRIES;place++){if(finishes[other][place]!=finishes[index][place]){ahead=finishes[other][place]>finishes[index][place];break;}}if(place==RS_MAX_CLASSIFICATION_ENTRIES)for(place=0;place<RS_MAX_CLASSIFICATION_ENTRIES;place++)if(latest_finish_round[other][place]!=latest_finish_round[index][place]){ahead=latest_finish_round[other][place]>latest_finish_round[index][place];break;}}
+                if(ahead)position++;
+            }
             if (profile->series_count < RS_MAX_PROFILE_SERIES) profile->series[profile->series_count++] = (RsProfilePoint){round, position, totals[index]};
         }
     }

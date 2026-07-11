@@ -38,6 +38,7 @@ typedef struct {
     RsStandings standings;
     RsWeatherSnapshot weather;
     RsResultsCatalog results;
+    int weather_live;
 } RefreshTask;
 
 typedef struct {
@@ -397,17 +398,17 @@ static char *load_preferred(const char *data_dir, const char *assets, const char
 
 static bool load_data(Runtime *rt) {
     char snapshot_path[1024]; char *snapshot_bytes; cJSON *snapshot=NULL; char *schedule=NULL,*drivers=NULL,*constructors=NULL,*results=NULL,*qualifying=NULL,*sprint=NULL,*weather=NULL;
-    snprintf(snapshot_path,sizeof(snapshot_path),"%s/snapshot.json",rt->data_dir);
+    bool snapshot_valid=false;snprintf(snapshot_path,sizeof(snapshot_path),"%s/snapshot.json",rt->data_dir);
     snapshot_bytes=rs_store_read(snapshot_path);
     if(snapshot_bytes){snapshot=cJSON_Parse(snapshot_bytes);free(snapshot_bytes);}
-    if(snapshot){const cJSON *s=cJSON_GetObjectItemCaseSensitive(snapshot,"schedule"),*d=cJSON_GetObjectItemCaseSensitive(snapshot,"drivers"),*c=cJSON_GetObjectItemCaseSensitive(snapshot,"constructors"),*w=cJSON_GetObjectItemCaseSensitive(snapshot,"weather");if(cJSON_IsObject(s)&&cJSON_IsObject(d)&&cJSON_IsObject(c)){schedule=cJSON_PrintUnformatted(s);drivers=cJSON_PrintUnformatted(d);constructors=cJSON_PrintUnformatted(c);results=cJSON_PrintUnformatted(cJSON_GetObjectItemCaseSensitive(snapshot,"results"));qualifying=cJSON_PrintUnformatted(cJSON_GetObjectItemCaseSensitive(snapshot,"qualifying"));sprint=cJSON_PrintUnformatted(cJSON_GetObjectItemCaseSensitive(snapshot,"sprint"));if(cJSON_IsObject(w))weather=cJSON_PrintUnformatted(w);}}
+    if(snapshot){const cJSON *s=cJSON_GetObjectItemCaseSensitive(snapshot,"schedule"),*d=cJSON_GetObjectItemCaseSensitive(snapshot,"drivers"),*c=cJSON_GetObjectItemCaseSensitive(snapshot,"constructors"),*w=cJSON_GetObjectItemCaseSensitive(snapshot,"weather");if(cJSON_IsObject(s)&&cJSON_IsObject(d)&&cJSON_IsObject(c)){snapshot_valid=true;schedule=cJSON_PrintUnformatted(s);drivers=cJSON_PrintUnformatted(d);constructors=cJSON_PrintUnformatted(c);results=cJSON_PrintUnformatted(cJSON_GetObjectItemCaseSensitive(snapshot,"results"));qualifying=cJSON_PrintUnformatted(cJSON_GetObjectItemCaseSensitive(snapshot,"qualifying"));sprint=cJSON_PrintUnformatted(cJSON_GetObjectItemCaseSensitive(snapshot,"sprint"));if(cJSON_IsObject(w))weather=cJSON_PrintUnformatted(w);}}
     if(!schedule)schedule=load_preferred(rt->data_dir, rt->assets, "schedule.json");
     if(!drivers)drivers=load_preferred(rt->data_dir, rt->assets, "driver_standings.json");
     if(!constructors)constructors=load_preferred(rt->data_dir, rt->assets, "constructor_standings.json");
     if(!results)results=load_preferred(rt->data_dir,rt->assets,"results.json");
     if(!qualifying)qualifying=load_preferred(rt->data_dir,rt->assets,"qualifying.json");
     if(!sprint)sprint=load_preferred(rt->data_dir,rt->assets,"sprint.json");
-    if(!weather)weather = load_preferred(rt->data_dir, rt->assets, "weather.json");
+    if(!weather&&!snapshot_valid)weather = load_preferred(rt->data_dir, rt->assets, "weather.json");
     RsStandings constructor_data;
     bool ok = schedule && drivers && constructors && rs_season_decode_schedule(schedule, &rt->season) &&
               rs_standings_decode_drivers(drivers, &rt->standings) &&
@@ -450,6 +451,8 @@ static void acknowledge_disclaimer(Runtime *rt) {
     else snprintf(rt->status,sizeof(rt->status),"ACKNOWLEDGEMENT COULD NOT BE SAVED");
 }
 
+static char *cached_snapshot_weather(const char *data_dir,RsWeatherSnapshot *weather){char path[1024],*bytes,*json=NULL;cJSON *root;const cJSON *item;snprintf(path,sizeof(path),"%s/snapshot.json",data_dir);bytes=rs_store_read(path);if(!bytes)return NULL;root=cJSON_Parse(bytes);free(bytes);if(!root)return NULL;item=cJSON_GetObjectItemCaseSensitive(root,"weather");if(cJSON_IsObject(item)){json=cJSON_PrintUnformatted(item);if(json&&!rs_weather_decode(json,weather)){free(json);json=NULL;}}cJSON_Delete(root);return json;}
+
 static bool write_device_value(const char *path,const char *value){FILE *file=fopen(path,"w");int written,closed;if(!file)return false;written=fputs(value,file);closed=fclose(file);return written>=0&&closed==0;}
 static bool initialize_haptics(void){if(access("/sys/class/gpio/gpio227/value",W_OK)==0)return write_device_value("/sys/class/gpio/gpio227/direction","out")&&write_device_value("/sys/class/gpio/gpio227/value","0");if(!write_device_value("/sys/class/gpio/export","227"))return false;SDL_Delay(50);return write_device_value("/sys/class/gpio/gpio227/direction","out")&&write_device_value("/sys/class/gpio/gpio227/value","0");}
 static void pulse_haptic(const Runtime *rt){if(!rt->haptics||!rt->haptic_available)return;if(!write_device_value("/sys/class/gpio/gpio227/value","1"))return;SDL_Delay(24);write_device_value("/sys/class/gpio/gpio227/value","0");}
@@ -465,6 +468,9 @@ static int refresh_thread(void *context) {
     RsStandings driver_data, constructor_data;
     RsWeatherSnapshot weather = {0};
     bool weather_ok = false;
+    bool weather_fetched=false;
+    bool sprint_valid=false;
+    char *cached_weather=NULL;
     bool ok = rs_http_get_https("https://api.jolpi.ca/ergast/f1/current.json?limit=100", task->ca_file, &schedule) &&
               rs_season_decode_schedule(schedule.bytes, &season);
     if (ok) {
@@ -474,7 +480,7 @@ static int refresh_thread(void *context) {
         snprintf(url,sizeof(url),"https://api.jolpi.ca/ergast/f1/%d/constructorstandings.json?limit=100",season.season);
         ok=ok&&rs_http_get_https(url,task->ca_file,&constructors)&&rs_standings_decode_constructors(constructors.bytes,&constructor_data);
     }
-    if(ok){char url[256];SDL_Delay(300);snprintf(url,sizeof(url),"https://api.jolpi.ca/ergast/f1/%d/results.json?limit=1000",season.season);ok=rs_http_get_https(url,task->ca_file,&results)&&rs_results_decode(results.bytes,RS_RESULT_RACE,&task->results);SDL_Delay(300);snprintf(url,sizeof(url),"https://api.jolpi.ca/ergast/f1/%d/qualifying.json?limit=1000",season.season);ok=ok&&rs_http_get_https(url,task->ca_file,&qualifying)&&rs_results_decode(qualifying.bytes,RS_RESULT_QUALIFYING,&task->results);SDL_Delay(300);snprintf(url,sizeof(url),"https://api.jolpi.ca/ergast/f1/%d/sprint.json?limit=1000",season.season);if(rs_http_get_https(url,task->ca_file,&sprint))rs_results_decode(sprint.bytes,RS_RESULT_SPRINT,&task->results);}
+    if(ok){char url[256];SDL_Delay(300);snprintf(url,sizeof(url),"https://api.jolpi.ca/ergast/f1/%d/results.json?limit=1000",season.season);ok=rs_http_get_https(url,task->ca_file,&results)&&rs_results_decode(results.bytes,RS_RESULT_RACE,&task->results);SDL_Delay(300);snprintf(url,sizeof(url),"https://api.jolpi.ca/ergast/f1/%d/qualifying.json?limit=1000",season.season);ok=ok&&rs_http_get_https(url,task->ca_file,&qualifying)&&rs_results_decode(qualifying.bytes,RS_RESULT_QUALIFYING,&task->results);SDL_Delay(300);snprintf(url,sizeof(url),"https://api.jolpi.ca/ergast/f1/%d/sprint.json?limit=1000",season.season);sprint_valid=rs_http_get_https(url,task->ca_file,&sprint)&&rs_results_decode(sprint.bytes,RS_RESULT_SPRINT,&task->results);}
     if (ok) {
         const RsSession *next = rs_season_next_session(&season, (int64_t)time(NULL));
         const RsEvent *event = event_for_session(&season, next);
@@ -483,12 +489,13 @@ static int refresh_thread(void *context) {
             snprintf(url, sizeof(url), "https://api.open-meteo.com/v1/forecast?latitude=%.6f&longitude=%.6f&hourly=temperature_2m,precipitation_probability,wind_speed_10m&timezone=UTC&wind_speed_unit=kmh&forecast_days=16",
                      event->latitude, event->longitude);
             if (rs_http_get_https(url, task->ca_file, &weather_response) && rs_weather_decode(weather_response.bytes, &weather)) {
-                weather_ok=true;
+                weather_ok=true;weather_fetched=true;
             }
         }
     }
+    if(ok&&!weather_fetched){cached_weather=cached_snapshot_weather(task->data_dir,&weather);weather_ok=cached_weather!=NULL;}
     if (ok) {
-        char path[1024]; const char *sprint_json=sprint.bytes?sprint.bytes:"{\"MRData\":{\"RaceTable\":{\"Races\":[]}}}";const char *weather_json=weather_ok?weather_response.bytes:"null"; size_t length=schedule.length+drivers.length+constructors.length+results.length+qualifying.length+strlen(sprint_json)+strlen(weather_json)+192; char *generation=malloc(length);
+        char path[1024]; const char *sprint_json=sprint_valid?sprint.bytes:"{\"MRData\":{\"RaceTable\":{\"Races\":[]}}}";const char *weather_json=weather_fetched?weather_response.bytes:cached_weather?cached_weather:"null"; size_t length=schedule.length+drivers.length+constructors.length+results.length+qualifying.length+strlen(sprint_json)+strlen(weather_json)+192; char *generation=malloc(length);
         if(!generation)ok=false;
         else{snprintf(generation,length,"{\"schedule\":%s,\"drivers\":%s,\"constructors\":%s,\"results\":%s,\"qualifying\":%s,\"sprint\":%s,\"weather\":%s}",schedule.bytes,drivers.bytes,constructors.bytes,results.bytes,qualifying.bytes,sprint_json,weather_json);snprintf(path,sizeof(path),"%s/snapshot.json",task->data_dir);ok=rs_store_write_atomic(path,generation);free(generation);}
     }
@@ -498,14 +505,15 @@ static int refresh_thread(void *context) {
         task->standings = driver_data;
         task->standings.constructor_count = constructor_data.constructor_count;
         task->weather = weather;
+        task->weather_live=weather_fetched;
         memcpy(task->standings.constructors, constructor_data.constructors, sizeof(constructor_data.constructors));
-        snprintf(task->status, sizeof(task->status), weather_ok ? "ONLINE DATA AND WEATHER UPDATED" : "RACE DATA UPDATED · WEATHER UNAVAILABLE");
+        snprintf(task->status, sizeof(task->status), weather_fetched ? "ONLINE DATA AND WEATHER UPDATED" : weather_ok?"RACE DATA UPDATED · CACHED WEATHER KEPT":"RACE DATA UPDATED · WEATHER UNAVAILABLE");
     } else snprintf(task->status, sizeof(task->status), "REFRESH FAILED — USING LAST COMPLETE SNAPSHOT");
     task->success = ok;
     task->ready = 1;
     task->running = 0;
     SDL_UnlockMutex(task->mutex);
-    rs_http_response_dispose(&schedule); rs_http_response_dispose(&drivers); rs_http_response_dispose(&constructors);rs_http_response_dispose(&results);rs_http_response_dispose(&qualifying);rs_http_response_dispose(&sprint);rs_http_response_dispose(&weather_response);
+    free(cached_weather);rs_http_response_dispose(&schedule); rs_http_response_dispose(&drivers); rs_http_response_dispose(&constructors);rs_http_response_dispose(&results);rs_http_response_dispose(&qualifying);rs_http_response_dispose(&sprint);rs_http_response_dispose(&weather_response);
     return 0;
 }
 
@@ -612,7 +620,7 @@ int main(int argc, char **argv) {
         if(rs_app_take_settings_action(rt.app))perform_settings_action(&rt);
         if (rt.first_launch && rs_app_overlay(rt.app) == RS_OVERLAY_NONE) rs_app_show_disclaimer(rt.app);
         SDL_LockMutex(rt.refresh.mutex);
-        if (rt.refresh.ready) { if (rt.refresh.success) { rt.season = rt.refresh.season; rt.standings = rt.refresh.standings; if(rt.refresh.weather.count){rt.weather = rt.refresh.weather;rt.weather_live=true;} rt.results=rt.refresh.results;rs_profiles_rebuild_series(&rt.profiles,&rt.results); }
+        if (rt.refresh.ready) { if (rt.refresh.success) { rt.season = rt.refresh.season; rt.standings = rt.refresh.standings; if(rt.refresh.weather.count)rt.weather = rt.refresh.weather;rt.weather_live=rt.refresh.weather_live!=0; rt.results=rt.refresh.results;rs_profiles_rebuild_series(&rt.profiles,&rt.results); }
             snprintf(rt.status, sizeof(rt.status), "%s", rt.refresh.status); rt.refresh.ready = 0; if(rt.refresh.thread){SDL_DetachThread(rt.refresh.thread);rt.refresh.thread=NULL;} }
         SDL_UnlockMutex(rt.refresh.mutex);
         render(&rt);

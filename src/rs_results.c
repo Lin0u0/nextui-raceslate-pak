@@ -42,7 +42,6 @@ bool rs_results_decode(const char *json, RsResultKind kind, RsResultsCatalog *ca
     cJSON *root;
     const cJSON *mr_data, *table, *races, *race;
     const char *key = kind == RS_RESULT_RACE ? "Results" : kind == RS_RESULT_SPRINT ? "SprintResults" : "QualifyingResults";
-    bool any = false;
     if (!json || !catalog) return false;
     root = cJSON_Parse(json);
     if (!root) return false;
@@ -79,8 +78,7 @@ bool rs_results_decode(const char *json, RsResultKind kind, RsResultsCatalog *ca
             time = cJSON_GetObjectItemCaseSensitive(row, "Time"); copy_value(entry->time, sizeof(entry->time), text_value(time, "time"));
             fastest_lap = cJSON_GetObjectItemCaseSensitive(row, "FastestLap"); entry->fastest_lap = cJSON_IsObject(fastest_lap) && integer_value(fastest_lap, "rank") == 1;
         }
-        any = any || classification->entry_count > 0;
     }
     cJSON_Delete(root);
-    return any;
+    return true;
 }
