@@ -223,7 +223,7 @@ static void draw_next(Runtime *rt) {
     draw_text(rt, rt->small, "NEXT SESSION", 46, 318, MUTED);
     draw_text(rt, rt->heading, session_name(next->kind), 44, 343, WHITE);
     format_event_time(rt,event,next->starts_at_utc, time_text, sizeof(time_text));
-    draw_text(rt, rt->body, time_text, 45, 397, WHITE);
+    draw_text(rt,rt->metric,time_text,45,392,WHITE);
     {
         int64_t delta = next->starts_at_utc - now_utc(rt);
         snprintf(countdown, sizeof(countdown), "%02" PRId64 "D  %02" PRId64 "H  %02" PRId64 "M",
@@ -633,7 +633,7 @@ int main(int argc, char **argv) {
     }
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) != 0 || TTF_Init() != 0 || curl_global_init(CURL_GLOBAL_DEFAULT) != 0) return 1;
     SDL_JoystickEventState(SDL_ENABLE);if(SDL_NumJoysticks()>0)rt.joystick=SDL_JoystickOpen(0);
-    rt.window = SDL_CreateWindow("RaceSlate", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_W, SCREEN_H, SDL_WINDOW_FULLSCREEN_DESKTOP);
+    rt.window = SDL_CreateWindow("RaceSlate", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_W, SCREEN_H,screenshot?0:SDL_WINDOW_FULLSCREEN_DESKTOP);
     rt.renderer = SDL_CreateRenderer(rt.window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (!rt.renderer) rt.renderer = SDL_CreateRenderer(rt.window, -1, SDL_RENDERER_SOFTWARE);
     {
