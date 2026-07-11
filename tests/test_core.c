@@ -106,6 +106,17 @@ static void weather_is_aligned_to_the_nearest_session_hour(const char *fixtures)
     free(json);
 }
 
+static void weather_keeps_valid_forecast_before_null_tail(const char *fixtures) {
+    char path[512]; char *json; RsWeatherSnapshot weather; const RsWeatherPoint *point;
+    snprintf(path, sizeof(path), "%s/open_meteo_null_tail.json", fixtures);
+    json = read_file(path);
+    assert(rs_weather_decode(json, &weather));
+    assert(weather.count == 2);
+    point = rs_weather_nearest(&weather, 1784289600); /* 2026-07-17 12:00Z */
+    assert(point); assert(point->temperature_c == 19.0); assert(point->rain_probability == 25);
+    free(json);
+}
+
 static void a_snapshot_replaces_the_previous_generation_atomically(void) {
     char dir[256],path[300]; char *loaded;
     snprintf(dir,sizeof(dir),"/tmp/raceslate-store-%ld",(long)getpid());
@@ -149,6 +160,7 @@ int main(int argc, char **argv) {
     brick_controls_navigate_the_public_app_state();
     user_sees_complete_driver_standings(argv[1]);
     weather_is_aligned_to_the_nearest_session_hour(argv[1]);
+    weather_keeps_valid_forecast_before_null_tail(argv[1]);
     a_snapshot_replaces_the_previous_generation_atomically();
     completed_sessions_expose_full_classifications(argv[1]);
     current_grid_profiles_include_career_totals_and_chart_series(argv[1]);

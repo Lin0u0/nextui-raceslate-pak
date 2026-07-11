@@ -3,9 +3,9 @@
 
 from pathlib import Path
 import re
-import shutil
 import subprocess
 import sys
+import tempfile
 
 ALIASES = {
     "albert_park": "melbourne-2", "shanghai": "shanghai-1", "suzuka": "suzuka-2",
@@ -29,13 +29,27 @@ def main() -> int:
         svg = source / f"{layout_id}.svg"
         if not svg.exists():
             raise FileNotFoundError(svg)
-        subprocess.run(["qlmanage", "-t", "-s", "256", "-o", str(output), str(svg)], check=True,
-                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        preview = output / f"{layout_id}.svg.png"
-        bmp = output / f"{provider_id}.bmp"
-        subprocess.run(["sips", "-s", "format", "bmp", str(preview), "--out", str(bmp)], check=True,
-                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        preview.unlink()
+        source_text = svg.read_text()
+        path_match = re.search(r'<path[^>]* d="([^"]+)"', source_text)
+        if not path_match:
+            raise ValueError(f"no path in {svg}")
+        clean_svg = (
+            '<svg width="500" height="500" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">'
+            '<rect width="500" height="500" fill="#000"/>'
+            f'<path d="{path_match.group(1)}" fill="none" stroke="#fff" stroke-width="12" '
+            'stroke-linecap="round" stroke-linejoin="round"/>'
+            '</svg>'
+        )
+        with tempfile.TemporaryDirectory() as temporary:
+            temporary_path = Path(temporary)
+            clean = temporary_path / f"{layout_id}.svg"
+            clean.write_text(clean_svg)
+            subprocess.run(["qlmanage", "-t", "-s", "512", "-o", str(temporary_path), str(clean)], check=True,
+                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            preview = temporary_path / f"{layout_id}.svg.png"
+            bmp = output / f"{provider_id}.bmp"
+            subprocess.run(["sips", "-s", "format", "bmp", str(preview), "--out", str(bmp)], check=True,
+                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     return 0
 
 if __name__ == "__main__":

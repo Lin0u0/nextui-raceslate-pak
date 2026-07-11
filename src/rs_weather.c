@@ -30,10 +30,14 @@ bool rs_weather_decode(const char *json, RsWeatherSnapshot *out) {
        cJSON_GetArraySize(temps)!=count||cJSON_GetArraySize(rain)!=count||cJSON_GetArraySize(wind)!=count){cJSON_Delete(root);return false;}
     for(i=0;i<count;i++){
         const cJSON *t=cJSON_GetArrayItem(times,i),*a=cJSON_GetArrayItem(temps,i),*b=cJSON_GetArrayItem(rain,i),*c=cJSON_GetArrayItem(wind,i);
-        if(!cJSON_IsString(t)||!cJSON_IsNumber(a)||!cJSON_IsNumber(b)||!cJSON_IsNumber(c)||!timestamp(t->valuestring,&out->points[i].time_utc)){cJSON_Delete(root);memset(out,0,sizeof(*out));return false;}
-        out->points[i].temperature_c=a->valuedouble; out->points[i].rain_probability=b->valueint; out->points[i].wind_kmh=c->valuedouble;
+        RsWeatherPoint *point;
+        if(!cJSON_IsString(t)||!cJSON_IsNumber(a)||!cJSON_IsNumber(b)||!cJSON_IsNumber(c))continue;
+        point=&out->points[out->count];
+        if(!timestamp(t->valuestring,&point->time_utc))continue;
+        point->temperature_c=a->valuedouble; point->rain_probability=b->valueint; point->wind_kmh=c->valuedouble;
+        out->count++;
     }
-    out->count=(size_t)count; cJSON_Delete(root); return true;
+    cJSON_Delete(root); return out->count>0;
 }
 const RsWeatherPoint *rs_weather_nearest(const RsWeatherSnapshot *weather,int64_t target){
     const RsWeatherPoint *best=NULL; int64_t distance=INT64_MAX; size_t i;

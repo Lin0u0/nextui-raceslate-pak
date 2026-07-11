@@ -163,11 +163,11 @@ static void draw_track(Runtime *rt, const RsEvent *event) {
     char path[1024];
     SDL_Surface *surface;
     SDL_Texture *texture;
-    SDL_Rect target = {654, 162, 300, 300};
+    SDL_Rect target = {620, 122, 360, 360};
     snprintf(path, sizeof(path), "%s/circuits/%s.bmp", rt->assets, event->circuit_id);
     surface = SDL_LoadBMP(path);
     if (!surface) return;
-    SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, 255, 255, 255));
+    SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, 0, 0, 0));
     texture = SDL_CreateTextureFromSurface(rt->renderer, surface);
     SDL_FreeSurface(surface);
     if (texture) { SDL_SetTextureColorMod(texture, RED.r, RED.g, RED.b); SDL_RenderCopy(rt->renderer, texture, NULL, &target); SDL_DestroyTexture(texture); }
@@ -199,16 +199,18 @@ static void draw_next(Runtime *rt) {
     draw_text(rt, rt->small, "STARTS IN", 64, 482, MUTED);
     draw_text(rt, rt->heading, countdown, 63, 514, WHITE);
     draw_track(rt, event);
-    draw_text(rt, rt->small, event->circuit_name, 654, 484, WHITE);
+    draw_text(rt, rt->small, event->circuit_name, 654, 486, WHITE);
     snprintf(line, sizeof(line), "%.4f, %.4f  /  YOUR TIME", event->latitude, event->longitude);
-    draw_text(rt, rt->small, line, 654, 514, MUTED);
+    draw_text(rt, rt->small, line, 654, 516, MUTED);
     {
         const RsWeatherPoint *weather = rs_weather_nearest(&rt->weather, next->starts_at_utc);
+        fill(rt, 620, 558, 366, 92, PANEL);
+        draw_text(rt, rt->small, "SESSION FORECAST  /  OPEN-METEO", 640, 572, MUTED);
         if (weather) {
-            snprintf(line, sizeof(line), "WEATHER DATA BY OPEN-METEO   %.1f°C   RAIN %d%%   WIND %.1f KM/H",
-                     weather->temperature_c, weather->rain_probability, weather->wind_kmh);
-        } else snprintf(line, sizeof(line), "WEATHER DATA BY OPEN-METEO  /  FORECAST UNAVAILABLE");
-        draw_text(rt, rt->small, line, 44, 635, MUTED);
+            snprintf(line, sizeof(line), "%.1f°C",weather->temperature_c);draw_text(rt,rt->body,line,640,604,WHITE);
+            snprintf(line, sizeof(line), "RAIN %d%%",weather->rain_probability);draw_text(rt,rt->body,line,742,604,WHITE);
+            snprintf(line, sizeof(line), "WIND %.1f",weather->wind_kmh);draw_text(rt,rt->body,line,858,604,WHITE);
+        } else draw_text(rt, rt->body, "UNAVAILABLE  /  PRESS Y TO REFRESH", 640, 604, MUTED);
     }
 }
 
@@ -423,6 +425,7 @@ static int refresh_thread(void *context) {
     RsSeasonSnapshot season;
     RsStandings driver_data, constructor_data;
     RsWeatherSnapshot weather = {0};
+    bool weather_ok = false;
     bool ok = rs_http_get_https("https://api.jolpi.ca/ergast/f1/current.json?limit=100", task->ca_file, &schedule) &&
               rs_season_decode_schedule(schedule.bytes, &season);
     if (ok) {
@@ -442,7 +445,7 @@ static int refresh_thread(void *context) {
                      event->latitude, event->longitude);
             if (rs_http_get_https(url, task->ca_file, &weather_response) && rs_weather_decode(weather_response.bytes, &weather)) {
                 char path[1024]; snprintf(path, sizeof(path), "%s/weather.json", task->data_dir);
-                rs_store_write_atomic(path, weather_response.bytes);
+                weather_ok=rs_store_write_atomic(path, weather_response.bytes);
             }
             rs_http_response_dispose(&weather_response);
         }
@@ -459,7 +462,7 @@ static int refresh_thread(void *context) {
         task->standings.constructor_count = constructor_data.constructor_count;
         task->weather = weather;
         memcpy(task->standings.constructors, constructor_data.constructors, sizeof(constructor_data.constructors));
-        snprintf(task->status, sizeof(task->status), "ONLINE DATA UPDATED");
+        snprintf(task->status, sizeof(task->status), weather_ok ? "ONLINE DATA AND WEATHER UPDATED" : "RACE DATA UPDATED · WEATHER UNAVAILABLE");
     } else snprintf(task->status, sizeof(task->status), "REFRESH FAILED — USING LAST COMPLETE SNAPSHOT");
     task->success = ok;
     task->ready = 1;
@@ -569,7 +572,7 @@ int main(int argc, char **argv) {
         if (rs_app_take_acknowledgement_request(rt.app) && rt.first_launch) acknowledge_disclaimer(&rt);
         if (rt.first_launch && rs_app_overlay(rt.app) == RS_OVERLAY_NONE) rs_app_dispatch(rt.app,RS_ACTION_START);
         SDL_LockMutex(rt.refresh.mutex);
-        if (rt.refresh.ready) { if (rt.refresh.success) { rt.season = rt.refresh.season; rt.standings = rt.refresh.standings; rt.weather = rt.refresh.weather; rt.results=rt.refresh.results; }
+        if (rt.refresh.ready) { if (rt.refresh.success) { rt.season = rt.refresh.season; rt.standings = rt.refresh.standings; if(rt.refresh.weather.count)rt.weather = rt.refresh.weather; rt.results=rt.refresh.results; }
             snprintf(rt.status, sizeof(rt.status), "%s", rt.refresh.status); rt.refresh.ready = 0; if(rt.refresh.thread){SDL_DetachThread(rt.refresh.thread);rt.refresh.thread=NULL;} }
         SDL_UnlockMutex(rt.refresh.mutex);
         render(&rt);
