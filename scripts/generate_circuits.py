@@ -48,7 +48,7 @@ def main() -> int:
             raise FileNotFoundError(svg)
         render(svg, output / f"{provider_id}.bmp", 512)
     circuits = {path.stem: yaml.safe_load(path.read_text()) for path in (Path(sys.argv[1]) / "src/data/circuits").glob("*.yml")}
-    atlas = ["year\tround\tasset_id\tlatitude\tlongitude"]
+    atlas = ["year\tround\tasset_id\treference_id\tlatitude\tlongitude"]
     rendered = set()
     for race_path in sorted((Path(sys.argv[1]) / "src/data/seasons").glob("*/races/*/race.yml")):
         race = yaml.safe_load(race_path.read_text()); circuit = circuits.get(race.get("circuitId")); layout_id = race.get("circuitLayoutId")
@@ -60,7 +60,7 @@ def main() -> int:
         if asset_id not in rendered:
             render(svg, output / f"{asset_id}.bmp", 256); rendered.add(asset_id)
         year = int(race_path.parts[-4])
-        atlas.append(f"{year}\t{race.get('round',0)}\t{asset_id}\t{circuit['latitude']}\t{circuit['longitude']}")
+        atlas.append(f"{year}\t{race.get('round',0)}\t{asset_id}\t{asset_id}\t{circuit['latitude']}\t{circuit['longitude']}")
     (output / "atlas.tsv").write_text("\n".join(atlas) + "\n")
     return 0
 

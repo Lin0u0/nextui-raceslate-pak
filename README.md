@@ -27,7 +27,7 @@ make host
 SDL_VIDEODRIVER=dummy ./build/host/raceslate --offline --screenshot next.bmp
 ```
 
-The app starts from the bundled snapshot and refreshes Jolpica-F1 and Open-Meteo on a worker thread. Historical seasons load one year at a time back to 1950 and are retained as separate offline snapshots. Historical standings combine F1DB career totals for more than 1,000 driver and constructor identities with progression charts derived from the selected season. A compact F1DB atlas selects the circuit layout actually raced at each venue and year. Validated responses are committed atomically under the data directory. Weather responses tolerate unavailable far-future hours while retaining valid forecast points. TLS peer and hostname checks are never disabled.
+The app starts from the bundled snapshot and refreshes Jolpica-F1 and Open-Meteo on a worker thread. Historical seasons load one year at a time back to 1950 and are retained as separate offline snapshots. Historical standings combine F1DB career totals for more than 1,000 driver and constructor identities with progression charts derived from the selected season. A compact F1DB atlas selects the circuit layout actually raced at each venue, year and round; 78 current and retired venues include geometry, records, winners and poles. Classifications retain up to 64 entries so early Indianapolis fields remain complete. Validated responses are committed atomically under the data directory. Weather responses tolerate unavailable far-future hours while retaining valid forecast points. TLS peer and hostname checks are never disabled.
 
 For a device package:
 

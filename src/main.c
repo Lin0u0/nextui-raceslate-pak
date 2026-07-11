@@ -197,7 +197,7 @@ static void draw_track(Runtime *rt, const RsEvent *event, SDL_Rect target) {
     SDL_Surface *surface;
     SDL_Texture *texture;
     surface=NULL;
-    if(rt->season.season!=rt->latest_season){const char *asset=rs_circuit_atlas_nearest(&rt->circuit_atlas,rt->season.season,event->round,event->latitude,event->longitude);if(asset){snprintf(path,sizeof(path),"%s/circuits/%s.bmp",rt->assets,asset);surface=SDL_LoadBMP(path);}}
+    if(rt->season.season!=rt->latest_season){const RsCircuitAtlasEntry *entry=rs_circuit_atlas_nearest(&rt->circuit_atlas,rt->season.season,event->round,event->latitude,event->longitude);if(entry){snprintf(path,sizeof(path),"%s/circuits/%s.bmp",rt->assets,entry->asset_id);surface=SDL_LoadBMP(path);}}
     if(!surface){snprintf(path, sizeof(path), "%s/circuits/%s.bmp", rt->assets, event->circuit_id);surface=SDL_LoadBMP(path);}
     if (!surface) return;
     SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, 0, 0, 0));
@@ -353,7 +353,7 @@ static void draw_detail(Runtime *rt) {
         int index = rs_app_cursor(rt->app); char line[512];
         const RsEvent *event; const RsCircuitReference *ref;
         if (index >= (int)rt->season.event_count) index = (int)rt->season.event_count - 1;
-        event = &rt->season.events[index]; ref = rs_reference_circuit(&rt->reference, event->circuit_id);
+        event = &rt->season.events[index];ref=NULL;if(rt->season.season!=rt->latest_season){const RsCircuitAtlasEntry *entry=rs_circuit_atlas_nearest(&rt->circuit_atlas,rt->season.season,event->round,event->latitude,event->longitude);if(entry)ref=rs_reference_circuit(&rt->reference,entry->reference_id);}if(!ref)ref=rs_reference_circuit(&rt->reference,event->circuit_id);
         if(rs_app_detail_mode(rt->app)==RS_DETAIL_HISTORY){
          if(ref&&rs_app_detail_cursor(rt->app)>0)draw_history_log(rt,ref,rs_app_detail_cursor(rt->app));else{
          draw_text(rt, rt->small, "HISTORY  /  X NEXT VIEW", 126, 140, RED);
@@ -607,11 +607,13 @@ static RsAction named_action(const char *name){if(!strcmp(name,"UP"))return RS_A
 static void dispatch_action_list(RsApp *app,char *list){char *save=NULL,*name=strtok_r(list,",",&save);while(name){RsAction action=named_action(name);if(action!=RS_ACTION_NONE)rs_app_dispatch(app,action);name=strtok_r(NULL,",",&save);}}
 
 int main(int argc, char **argv) {
-    Runtime rt = {0};
+    Runtime *runtime = calloc(1,sizeof(*runtime));
+#define rt (*runtime)
     SDL_Event event;
     const char *screenshot = NULL;
     const char *screen=NULL,*detail=NULL,*actions=NULL; int selected=-1;
     int offline = 0, i;
+    if(!runtime)return 1;
     snprintf(rt.assets, sizeof(rt.assets), "assets");
     snprintf(rt.data_dir, sizeof(rt.data_dir), "data");
     for (i = 1; i < argc; i++) {
@@ -686,6 +688,7 @@ int main(int argc, char **argv) {
     if(rt.refresh.thread) SDL_WaitThread(rt.refresh.thread,NULL);
     TTF_CloseFont(rt.display); TTF_CloseFont(rt.heading); TTF_CloseFont(rt.body); TTF_CloseFont(rt.small);TTF_CloseFont(rt.metric);TTF_CloseFont(rt.table);
     SDL_DestroyMutex(rt.refresh.mutex); rs_app_destroy(rt.app); SDL_DestroyRenderer(rt.renderer); SDL_DestroyWindow(rt.window);
-    curl_global_cleanup(); TTF_Quit(); SDL_Quit();
+    curl_global_cleanup(); TTF_Quit(); SDL_Quit();free(runtime);
+#undef rt
     return 0;
 }
