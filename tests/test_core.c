@@ -66,6 +66,10 @@ static void brick_controls_navigate_the_public_app_state(void) {
     assert(rs_app_overlay(app) == RS_OVERLAY_ABOUT);
     rs_app_dispatch(app, RS_ACTION_B);
     assert(rs_app_overlay(app) == RS_OVERLAY_NONE);
+    rs_app_dispatch(app, RS_ACTION_START);
+    rs_app_dispatch(app, RS_ACTION_A);
+    assert(rs_app_take_acknowledgement_request(app));
+    assert(rs_app_overlay(app) == RS_OVERLAY_NONE);
     rs_app_dispatch(app, RS_ACTION_R1);
     rs_app_dispatch(app, RS_ACTION_A);
     rs_app_dispatch(app, RS_ACTION_SELECT);

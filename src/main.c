@@ -58,6 +58,7 @@ typedef struct {
     char status[160];
     char favorite_driver[48];
     char favorite_constructor[48];
+    bool first_launch;
     int64_t now_override;
 } Runtime;
 
@@ -225,14 +226,14 @@ static void draw_standings(Runtime *rt) {
 
 static void draw_about(Runtime *rt) {
     fill(rt, 160, 116, 704, 536, (SDL_Color){18, 20, 24, 252});
-    draw_text(rt, rt->heading, "ABOUT RACESLATE", 204, 154, WHITE);
+    draw_text(rt, rt->heading, rt->first_launch ? "WELCOME TO RACESLATE" : "ABOUT RACESLATE", 204, 154, WHITE);
     draw_text(rt, rt->body, "An unofficial, non-commercial season companion.", 204, 222, WHITE);
     draw_text(rt, rt->small, "Not associated with Formula 1, FIA, teams, drivers, or circuits.", 204, 264, MUTED);
     draw_text(rt, rt->small, "Race data: Jolpica-F1  /  CC BY-NC-SA 4.0", 204, 328, WHITE);
     draw_text(rt, rt->small, "Circuit assets: F1DB  /  CC BY 4.0", 204, 364, WHITE);
     draw_text(rt, rt->small, "Weather: Open-Meteo  /  CC BY 4.0", 204, 400, WHITE);
     draw_text(rt, rt->small, "Fonts: Barlow Condensed + Inter  /  OFL 1.1", 204, 436, WHITE);
-    draw_text(rt, rt->small, "B  CLOSE", 204, 574, RED);
+    draw_text(rt, rt->small, rt->first_launch ? "A  ACCEPT AND CONTINUE" : "A / B  CLOSE", 204, 574, RED);
 }
 
 static void draw_profile_chart(Runtime *rt, const RsProfile *profile, bool points_mode) {
@@ -374,6 +375,13 @@ static void save_selected_favorite(Runtime *rt) {
     if(!rs_store_write_atomic(path,contents))snprintf(rt->status,sizeof(rt->status),"FAVORITE COULD NOT BE SAVED");
 }
 
+static void acknowledge_disclaimer(Runtime *rt) {
+    char path[1024];
+    snprintf(path,sizeof(path),"%s/acknowledged",rt->data_dir);
+    if(rs_store_write_atomic(path,"RaceSlate disclaimer acknowledged\n")){rt->first_launch=false;snprintf(rt->status,sizeof(rt->status),"WELCOME — BASELINE DATA READY");}
+    else snprintf(rt->status,sizeof(rt->status),"ACKNOWLEDGEMENT COULD NOT BE SAVED");
+}
+
 static int refresh_thread(void *context) {
     RefreshTask *task = context;
     memset(&task->results,0,sizeof(task->results));
@@ -509,6 +517,7 @@ int main(int argc, char **argv) {
     }
     if (!rt.window || !rt.renderer || !rt.display || !rt.heading || !rt.body || !rt.small || !rt.app || !load_data(&rt)) return 2;
     load_favorites(&rt);
+    {char path[1024];char *ack;snprintf(path,sizeof(path),"%s/acknowledged",rt.data_dir);ack=rs_store_read(path);rt.first_launch=ack==NULL;free(ack);if(rt.first_launch)rs_app_dispatch(rt.app,RS_ACTION_START);}
     if (offline) snprintf(rt.status,sizeof(rt.status),"OFFLINE BASELINE DATA");
     if(screen){if(!strcmp(screen,"calendar"))rs_app_dispatch(rt.app,RS_ACTION_R1);else if(!strcmp(screen,"standings")){rs_app_dispatch(rt.app,RS_ACTION_R1);rs_app_dispatch(rt.app,RS_ACTION_R1);}}
     while(selected-->0)rs_app_dispatch(rt.app,RS_ACTION_DOWN);
@@ -523,6 +532,8 @@ int main(int argc, char **argv) {
         }
         if (rs_app_take_refresh_request(rt.app)) start_refresh(&rt);
         if (rs_app_take_favorite_request(rt.app)) save_selected_favorite(&rt);
+        if (rs_app_take_acknowledgement_request(rt.app)) acknowledge_disclaimer(&rt);
+        if (rt.first_launch && rs_app_overlay(rt.app) == RS_OVERLAY_NONE) rs_app_dispatch(rt.app,RS_ACTION_START);
         SDL_LockMutex(rt.refresh.mutex);
         if (rt.refresh.ready) { if (rt.refresh.success) { rt.season = rt.refresh.season; rt.standings = rt.refresh.standings; rt.weather = rt.refresh.weather; rt.results=rt.refresh.results; }
             snprintf(rt.status, sizeof(rt.status), "%s", rt.refresh.status); rt.refresh.ready = 0; if(rt.refresh.thread){SDL_DetachThread(rt.refresh.thread);rt.refresh.thread=NULL;} }
