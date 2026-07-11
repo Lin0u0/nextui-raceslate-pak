@@ -12,13 +12,14 @@ for entry in \
   Tools/tg5040/RaceSlate.pak/lib/tg5040/libSDL2-2.0.so.0 \
   Tools/tg5040/RaceSlate.pak/lib/tg5040/libSDL2_ttf-2.0.so.0 \
   Tools/tg5040/RaceSlate.pak/res/cacert.pem \
-  Tools/tg5040/RaceSlate.pak/res/fonts/Inter.ttf \
+  Tools/tg5040/RaceSlate.pak/res/fonts/BarlowCondensed-SemiBold.ttf \
   Tools/tg5040/RaceSlate.pak/res/reference/history.tsv \
   Tools/tg5040/RaceSlate.pak/res/reference/profiles.tsv \
   Tools/tg5040/RaceSlate.pak/res/licenses/CC-BY-4.0.txt \
   Tools/tg5040/RaceSlate.pak/res/licenses/CC-BY-NC-SA-4.0.txt \
   Tools/tg5040/RaceSlate.pak/res/THIRD_PARTY_NOTICES.md \
   Tools/tg5040/.media/RaceSlate.png; do grep -Fx "$entry" "$manifest" >/dev/null || { echo "missing archive entry: $entry" >&2; exit 1; }; done
+! grep -F '/Inter.ttf' "$manifest" >/dev/null || { echo "unused Inter font must not be packaged" >&2; exit 1; }
 bytes=$(stat -f %z "$ARCHIVE" 2>/dev/null || stat -c %s "$ARCHIVE")
 (( bytes <= 15728640 )) || { echo "package exceeds 15 MiB: $bytes" >&2; exit 1; }
 unzip -p "$ARCHIVE" Tools/tg5040/RaceSlate.pak/launch.sh | grep -F 'CURL_CA_BUNDLE' >/dev/null

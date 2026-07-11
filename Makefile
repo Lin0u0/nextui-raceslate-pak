@@ -50,13 +50,14 @@ tg5040: $(APP_SRCS)
 
 nextui-release: tg5040
 	@rm -rf build/tg5040/stage/nextui dist/RaceSlate.pakz
-	@mkdir -p build/tg5040/stage/nextui/Tools/tg5040/RaceSlate.pak/bin/tg5040 build/tg5040/stage/nextui/Tools/tg5040/RaceSlate.pak/lib/tg5040 build/tg5040/stage/nextui/Tools/tg5040/RaceSlate.pak/res build/tg5040/stage/nextui/Tools/tg5040/.media dist
+	@mkdir -p build/tg5040/stage/nextui/Tools/tg5040/RaceSlate.pak/bin/tg5040 build/tg5040/stage/nextui/Tools/tg5040/RaceSlate.pak/lib/tg5040 build/tg5040/stage/nextui/Tools/tg5040/RaceSlate.pak/res/fonts build/tg5040/stage/nextui/Tools/tg5040/.media dist
 	cp $(TG5040_BIN) build/tg5040/stage/nextui/Tools/tg5040/RaceSlate.pak/bin/tg5040/raceslate
 	cp packaging/nextui/launch.sh build/tg5040/stage/nextui/Tools/tg5040/RaceSlate.pak/launch.sh
 	sed 's/@VERSION@/$(VERSION)/g' packaging/nextui/pak.json > build/tg5040/stage/nextui/Tools/tg5040/RaceSlate.pak/pak.json
 	cp assets/icons/raceslate.png build/tg5040/stage/nextui/Tools/tg5040/RaceSlate.pak/icon.png
 	cp assets/icons/raceslate.png build/tg5040/stage/nextui/Tools/tg5040/.media/RaceSlate.png
-	cp -R assets/fonts assets/circuits assets/baseline assets/reference build/tg5040/stage/nextui/Tools/tg5040/RaceSlate.pak/res/
+	cp assets/fonts/BarlowCondensed-SemiBold.ttf build/tg5040/stage/nextui/Tools/tg5040/RaceSlate.pak/res/fonts/
+	cp -R assets/circuits assets/baseline assets/reference build/tg5040/stage/nextui/Tools/tg5040/RaceSlate.pak/res/
 	cp assets/cacert.pem THIRD_PARTY_NOTICES.md build/tg5040/stage/nextui/Tools/tg5040/RaceSlate.pak/res/
 	cp -R licenses build/tg5040/stage/nextui/Tools/tg5040/RaceSlate.pak/res/
 	@for lib in libSDL2-2.0.so.0 libSDL2_ttf-2.0.so.0 libfreetype.so.6 libbz2.so.1.0 libssl.so.1.1 libcrypto.so.1.1 libz.so.1; do src=$$(find "$(TG5040_SDK_USR)/lib" -maxdepth 1 -name "$$lib" -print -quit); test -n "$$src" && cp -L "$$src" build/tg5040/stage/nextui/Tools/tg5040/RaceSlate.pak/lib/tg5040/; done
