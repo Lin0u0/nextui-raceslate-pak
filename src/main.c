@@ -10,6 +10,7 @@
 #include "rs_results.h"
 #include "rs_profiles.h"
 #include "rs_timezone.h"
+#include "rs_settings.h"
 #include "cJSON.h"
 
 #include <SDL.h>
@@ -72,6 +73,7 @@ typedef struct {
     bool haptics;
     bool haptic_available;
     bool weather_live;
+    RsTextSize text_size;
     int latest_season;
     int64_t now_override;
     SDL_Texture *track_texture;
@@ -82,6 +84,11 @@ static SDL_Color WHITE = {245, 242, 238, 255};
 static SDL_Color MUTED = {153, 157, 166, 255};
 static SDL_Color RED = {255, 38, 50, 255};
 static SDL_Color PANEL = {22, 24, 29, 255};
+
+typedef struct {int display,heading,small,metric,table,body;} FontSizes;
+static const char *text_size_label(RsTextSize value){static const char *labels[]={"COMPACT","STANDARD","LARGE"};return labels[value>=RS_TEXT_COMPACT&&value<RS_TEXT_SIZE_COUNT?value:RS_TEXT_COMPACT];}
+static void close_fonts(Runtime *rt){if(rt->display)TTF_CloseFont(rt->display);if(rt->heading)TTF_CloseFont(rt->heading);if(rt->body)TTF_CloseFont(rt->body);if(rt->small)TTF_CloseFont(rt->small);if(rt->metric)TTF_CloseFont(rt->metric);if(rt->table)TTF_CloseFont(rt->table);rt->display=rt->heading=rt->body=rt->small=rt->metric=rt->table=NULL;}
+static bool load_fonts(Runtime *rt){static const FontSizes sizes[]={{86,42,17,28,23,22},{90,44,18,30,24,23},{94,46,19,32,25,24}};char path[1024];const FontSizes *size=&sizes[rt->text_size>=RS_TEXT_COMPACT&&rt->text_size<RS_TEXT_SIZE_COUNT?rt->text_size:RS_TEXT_COMPACT];TTF_Font *display,*heading,*small,*metric,*table,*body;snprintf(path,sizeof(path),"%s/fonts/BarlowCondensed-SemiBold.ttf",rt->assets);display=TTF_OpenFont(path,size->display);heading=TTF_OpenFont(path,size->heading);small=TTF_OpenFont(path,size->small);metric=TTF_OpenFont(path,size->metric);table=TTF_OpenFont(path,size->table);snprintf(path,sizeof(path),"%s/fonts/Inter.ttf",rt->assets);body=TTF_OpenFont(path,size->body);if(!display||!heading||!small||!metric||!table||!body){if(display)TTF_CloseFont(display);if(heading)TTF_CloseFont(heading);if(small)TTF_CloseFont(small);if(metric)TTF_CloseFont(metric);if(table)TTF_CloseFont(table);if(body)TTF_CloseFont(body);return false;}close_fonts(rt);rt->display=display;rt->heading=heading;rt->small=small;rt->metric=metric;rt->table=table;rt->body=body;return true;}
 
 static int64_t now_utc(const Runtime *runtime) {
     return runtime->now_override > 0 ? runtime->now_override : (int64_t)time(NULL);
@@ -307,9 +314,9 @@ static void draw_standings(Runtime *rt) {
 static void draw_about(Runtime *rt) {
     fill(rt, 160, 116, 704, 536, (SDL_Color){18, 20, 24, 252});
     draw_text(rt, rt->heading, rt->first_launch ? "WELCOME TO RACESLATE" : "SETTINGS & ABOUT", 204, 154, WHITE);
-    draw_text(rt, rt->body, "An unofficial, non-commercial season companion.", 204, 222, WHITE);
+    draw_text(rt, rt->table, "AN UNOFFICIAL, NON-COMMERCIAL SEASON COMPANION.", 204, 222, WHITE);
     draw_text(rt, rt->small, "Not associated with Formula 1, FIA, teams, drivers, or circuits.", 204, 264, MUTED);
-    if(!rt->first_launch){int cursor=rs_app_settings_cursor(rt->app),row;const char *haptic_label=rt->haptic_available?(rt->haptics?"HAPTICS                         ON":"HAPTICS                         OFF"):"HAPTICS                 UNSUPPORTED";const char *labels[3]={haptic_label,"CLEAR DOWNLOADED CACHE","LICENSES & ATTRIBUTION"};for(row=0;row<3;row++){int y=310+row*48;if(row==cursor)fill(rt,196,y-7,632,40,(SDL_Color){44,46,53,255});draw_text(rt,rt->body,labels[row],212,y,row==cursor?WHITE:MUTED);}draw_text(rt,rt->small,"JOLPICA CC BY-NC-SA · F1DB / OPEN-METEO CC BY · FONTS OFL",204,480,MUTED);draw_text(rt,rt->small,"A SELECT   B CLOSE",204,574,RED);return;}
+    if(!rt->first_launch){int cursor=rs_app_settings_cursor(rt->app),row;const char *labels[RS_SETTING_COUNT]={[RS_SETTING_HAPTICS]="HAPTICS",[RS_SETTING_TEXT_SIZE]="TEXT SIZE",[RS_SETTING_CLEAR_CACHE]="CLEAR DOWNLOADED CACHE",[RS_SETTING_LICENSES]="LICENSES & ATTRIBUTION"};for(row=0;row<RS_SETTING_COUNT;row++){int y=292+row*48;SDL_Color color=row==cursor?WHITE:MUTED;if(row==cursor)fill(rt,196,y-7,632,40,(SDL_Color){44,46,53,255});draw_text(rt,rt->table,labels[row],212,y,color);if(row==RS_SETTING_HAPTICS)draw_text_right_center_y(rt,rt->table,rt->haptic_available?(rt->haptics?"ON":"OFF"):"UNSUPPORTED",804,y-7,40,color);else if(row==RS_SETTING_TEXT_SIZE)draw_text_right_center_y(rt,rt->table,text_size_label(rt->text_size),804,y-7,40,color);}draw_text(rt,rt->small,"JOLPICA CC BY-NC-SA · F1DB / OPEN-METEO CC BY · FONTS OFL",204,500,MUTED);draw_text(rt,rt->small,"A SELECT   B CLOSE",204,574,MUTED);return;}
     draw_text(rt, rt->small, "Race data: Jolpica-F1  /  CC BY-NC-SA 4.0", 204, 328, WHITE);
     draw_text(rt, rt->small, "Circuit assets: F1DB  /  CC BY 4.0", 204, 364, WHITE);
     draw_text(rt, rt->small, "Weather: Open-Meteo  /  CC BY 4.0", 204, 400, WHITE);
@@ -505,9 +512,9 @@ static char *cached_snapshot_weather(const char *data_dir,RsWeatherSnapshot *wea
 static bool write_device_value(const char *path,const char *value){FILE *file=fopen(path,"w");int written,closed;if(!file)return false;written=fputs(value,file);closed=fclose(file);return written>=0&&closed==0;}
 static bool initialize_haptics(void){if(access("/sys/class/gpio/gpio227/value",W_OK)==0)return write_device_value("/sys/class/gpio/gpio227/direction","out")&&write_device_value("/sys/class/gpio/gpio227/value","0");if(!write_device_value("/sys/class/gpio/export","227"))return false;SDL_Delay(50);return write_device_value("/sys/class/gpio/gpio227/direction","out")&&write_device_value("/sys/class/gpio/gpio227/value","0");}
 static void pulse_haptic(const Runtime *rt){if(!rt->haptics||!rt->haptic_available)return;if(!write_device_value("/sys/class/gpio/gpio227/value","1"))return;SDL_Delay(24);write_device_value("/sys/class/gpio/gpio227/value","0");}
-static void save_settings(Runtime *rt){char path[1024],text[32];snprintf(path,sizeof(path),"%s/settings.txt",rt->data_dir);snprintf(text,sizeof(text),"haptics=%d\n",rt->haptics?1:0);rs_store_write_atomic(path,text);}
-static void load_settings(Runtime *rt){char path[1024],*text;rt->haptics=true;snprintf(path,sizeof(path),"%s/settings.txt",rt->data_dir);text=rs_store_read(path);if(text){if(strstr(text,"haptics=0"))rt->haptics=false;free(text);}}
-static void perform_settings_action(Runtime *rt){int cursor=rs_app_settings_cursor(rt->app);char path[1024];if(cursor==0){if(!rt->haptic_available){snprintf(rt->status,sizeof(rt->status),"HAPTICS UNSUPPORTED ON THIS DEVICE");return;}rt->haptics=!rt->haptics;save_settings(rt);snprintf(rt->status,sizeof(rt->status),"HAPTICS %s",rt->haptics?"ENABLED":"DISABLED");}else if(cursor==1){int season;snprintf(path,sizeof(path),"%s/snapshot.json",rt->data_dir);unlink(path);snprintf(path,sizeof(path),"%s/weather.json",rt->data_dir);unlink(path);for(season=1950;season<=rt->latest_season;season++){snprintf(path,sizeof(path),"%s/seasons/%d/snapshot.json",rt->data_dir,season);unlink(path);snprintf(path,sizeof(path),"%s/seasons/%d",rt->data_dir,season);rmdir(path);}snprintf(path,sizeof(path),"%s/seasons",rt->data_dir);rmdir(path);snprintf(rt->status,sizeof(rt->status),"DOWNLOADED CACHE CLEARED · BASELINE KEPT");}else snprintf(rt->status,sizeof(rt->status),"JOLPICA CC BY-NC-SA · F1DB/OPEN-METEO CC BY · FONTS OFL");}
+static void save_settings(Runtime *rt){char path[1024],text[64];snprintf(path,sizeof(path),"%s/settings.txt",rt->data_dir);snprintf(text,sizeof(text),"haptics=%d\ntext_size=%d\n",rt->haptics?1:0,rt->text_size);rs_store_write_atomic(path,text);}
+static void load_settings(Runtime *rt){char path[1024],*text;rt->haptics=true;rt->text_size=RS_TEXT_COMPACT;snprintf(path,sizeof(path),"%s/settings.txt",rt->data_dir);text=rs_store_read(path);if(text){if(strstr(text,"haptics=0"))rt->haptics=false;rt->text_size=rs_text_size_decode(text,RS_TEXT_COMPACT);free(text);}}
+static void perform_settings_action(Runtime *rt){RsSettingsOption option=(RsSettingsOption)rs_app_settings_cursor(rt->app);char path[1024];if(option==RS_SETTING_HAPTICS){if(!rt->haptic_available){snprintf(rt->status,sizeof(rt->status),"HAPTICS UNSUPPORTED ON THIS DEVICE");return;}rt->haptics=!rt->haptics;save_settings(rt);snprintf(rt->status,sizeof(rt->status),"HAPTICS %s",rt->haptics?"ENABLED":"DISABLED");}else if(option==RS_SETTING_TEXT_SIZE){RsTextSize previous=rt->text_size;rt->text_size=rs_text_size_cycle(rt->text_size);if(!load_fonts(rt)){rt->text_size=previous;snprintf(rt->status,sizeof(rt->status),"TEXT SIZE CHANGE FAILED");return;}save_settings(rt);snprintf(rt->status,sizeof(rt->status),"TEXT SIZE %s",text_size_label(rt->text_size));}else if(option==RS_SETTING_CLEAR_CACHE){int season;snprintf(path,sizeof(path),"%s/snapshot.json",rt->data_dir);unlink(path);snprintf(path,sizeof(path),"%s/weather.json",rt->data_dir);unlink(path);for(season=1950;season<=rt->latest_season;season++){snprintf(path,sizeof(path),"%s/seasons/%d/snapshot.json",rt->data_dir,season);unlink(path);snprintf(path,sizeof(path),"%s/seasons/%d",rt->data_dir,season);rmdir(path);}snprintf(path,sizeof(path),"%s/seasons",rt->data_dir);rmdir(path);snprintf(rt->status,sizeof(rt->status),"DOWNLOADED CACHE CLEARED · BASELINE KEPT");}else snprintf(rt->status,sizeof(rt->status),"JOLPICA CC BY-NC-SA · F1DB/OPEN-METEO CC BY · FONTS OFL");}
 
 static int refresh_thread(void *context) {
     RefreshTask *task = context;
@@ -645,13 +652,8 @@ int main(int argc, char **argv) {
     rt.window = SDL_CreateWindow("RaceSlate", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_W, SCREEN_H,screenshot?0:SDL_WINDOW_FULLSCREEN_DESKTOP);
     rt.renderer = SDL_CreateRenderer(rt.window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (!rt.renderer) rt.renderer = SDL_CreateRenderer(rt.window, -1, SDL_RENDERER_SOFTWARE);
-    {
-        char path[1024];
-        snprintf(path, sizeof(path), "%s/fonts/BarlowCondensed-SemiBold.ttf", rt.assets);
-        rt.display = TTF_OpenFont(path, 86); rt.heading = TTF_OpenFont(path, 42); rt.small = TTF_OpenFont(path, 17);rt.metric=TTF_OpenFont(path,28);rt.table=TTF_OpenFont(path,23);
-        snprintf(path, sizeof(path), "%s/fonts/Inter.ttf", rt.assets);
-        rt.body = TTF_OpenFont(path, 22);
-    }
+    load_settings(&rt);
+    if(!load_fonts(&rt))return 2;
     rt.app = rs_app_create();
     rt.refresh.mutex = SDL_CreateMutex();
     snprintf(rt.refresh.data_dir, sizeof(rt.refresh.data_dir), "%s", rt.data_dir);
@@ -669,7 +671,6 @@ int main(int argc, char **argv) {
     if(!load_data(&rt)){fprintf(stderr,"season data initialization failed\n");return 2;}
     rt.latest_season=rt.season.season;
     load_favorites(&rt);
-    load_settings(&rt);
     rt.haptic_available=initialize_haptics();
     {char path[1024];char *ack;snprintf(path,sizeof(path),"%s/acknowledged",rt.data_dir);ack=rs_store_read(path);rt.first_launch=ack==NULL&&!screenshot;free(ack);if(rt.first_launch)rs_app_show_disclaimer(rt.app);}
     if (offline) snprintf(rt.status,sizeof(rt.status),"OFFLINE BASELINE DATA");
@@ -704,7 +705,7 @@ int main(int argc, char **argv) {
     }
     }
     if(rt.refresh.thread) SDL_WaitThread(rt.refresh.thread,NULL);
-    TTF_CloseFont(rt.display); TTF_CloseFont(rt.heading); TTF_CloseFont(rt.body); TTF_CloseFont(rt.small);TTF_CloseFont(rt.metric);TTF_CloseFont(rt.table);
+    close_fonts(&rt);
     SDL_DestroyMutex(rt.refresh.mutex); rs_app_destroy(rt.app);if(rt.joystick)SDL_JoystickClose(rt.joystick);if(rt.track_texture)SDL_DestroyTexture(rt.track_texture); SDL_DestroyRenderer(rt.renderer); SDL_DestroyWindow(rt.window);
     curl_global_cleanup(); TTF_Quit(); SDL_Quit();free(runtime);
 #undef rt

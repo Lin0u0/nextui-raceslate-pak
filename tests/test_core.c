@@ -8,6 +8,7 @@
 #include "rs_timezone.h"
 #include "rs_circuit_atlas.h"
 #include "rs_reference.h"
+#include "rs_settings.h"
 #include "cJSON.h"
 
 #include <assert.h>
@@ -83,7 +84,7 @@ static void brick_controls_navigate_the_public_app_state(void) {
     rs_app_dispatch(app, RS_ACTION_A);
     assert(rs_app_take_acknowledgement_request(app));
     assert(rs_app_overlay(app) == RS_OVERLAY_NONE);
-    rs_app_dispatch(app,RS_ACTION_START);rs_app_dispatch(app,RS_ACTION_DOWN);assert(rs_app_settings_cursor(app)==1);rs_app_dispatch(app,RS_ACTION_A);assert(rs_app_take_settings_action(app));rs_app_dispatch(app,RS_ACTION_B);
+    rs_app_dispatch(app,RS_ACTION_START);rs_app_dispatch(app,RS_ACTION_DOWN);assert(rs_app_settings_cursor(app)==RS_SETTING_TEXT_SIZE);rs_app_dispatch(app,RS_ACTION_A);assert(rs_app_take_settings_action(app));rs_app_dispatch(app,RS_ACTION_DOWN);rs_app_dispatch(app,RS_ACTION_DOWN);assert(rs_app_settings_cursor(app)==RS_SETTING_LICENSES);rs_app_dispatch(app,RS_ACTION_A);assert(rs_app_take_settings_action(app));rs_app_dispatch(app,RS_ACTION_B);
     rs_app_dispatch(app, RS_ACTION_R1);
     rs_app_dispatch(app, RS_ACTION_A);
     rs_app_dispatch(app, RS_ACTION_SELECT);
@@ -209,6 +210,8 @@ static void retired_venues_include_history_and_large_classifications(const char 
 
 static void historic_indianapolis_fields_keep_all_55_classified_entries(void){cJSON *root=cJSON_CreateObject(),*mr=cJSON_CreateObject(),*table=cJSON_CreateObject(),*races=cJSON_CreateArray(),*race=cJSON_CreateObject(),*rows=cJSON_CreateArray();char *json;int index;RsResultsCatalog catalog={0};const RsClassification *classification;cJSON_AddItemToObject(root,"MRData",mr);cJSON_AddItemToObject(mr,"RaceTable",table);cJSON_AddItemToObject(table,"Races",races);cJSON_AddItemToArray(races,race);cJSON_AddStringToObject(race,"round","2");cJSON_AddItemToObject(race,"Results",rows);for(index=1;index<=55;index++){cJSON *row=cJSON_CreateObject(),*driver=cJSON_CreateObject(),*constructor=cJSON_CreateObject();char value[16],id[32];snprintf(value,sizeof(value),"%d",index);snprintf(id,sizeof(id),"driver_%02d",index);cJSON_AddStringToObject(row,"position",value);cJSON_AddStringToObject(row,"grid",value);cJSON_AddStringToObject(row,"laps","200");cJSON_AddStringToObject(row,"points","0");cJSON_AddStringToObject(row,"status","Finished");cJSON_AddStringToObject(driver,"driverId",id);cJSON_AddStringToObject(driver,"code","IND");cJSON_AddStringToObject(driver,"givenName","Historic");cJSON_AddStringToObject(driver,"familyName",value);cJSON_AddStringToObject(constructor,"constructorId","indy_car");cJSON_AddStringToObject(constructor,"name","Indy Car");cJSON_AddItemToObject(row,"Driver",driver);cJSON_AddItemToObject(row,"Constructor",constructor);cJSON_AddItemToArray(rows,row);}json=cJSON_PrintUnformatted(root);assert(json);assert(rs_results_decode(json,RS_RESULT_RACE,&catalog));classification=rs_results_find(&catalog,2,RS_RESULT_RACE);assert(classification&&classification->entry_count==55);assert(strcmp(classification->entries[0].driver_id,"driver_01")==0);assert(strcmp(classification->entries[54].driver_id,"driver_55")==0);free(json);cJSON_Delete(root);}
 
+static void text_size_settings_cycle_and_decode(void){assert(rs_text_size_cycle(RS_TEXT_COMPACT)==RS_TEXT_STANDARD);assert(rs_text_size_cycle(RS_TEXT_STANDARD)==RS_TEXT_LARGE);assert(rs_text_size_cycle(RS_TEXT_LARGE)==RS_TEXT_COMPACT);assert(rs_text_size_decode("haptics=1\ntext_size=2\n",RS_TEXT_COMPACT)==RS_TEXT_LARGE);assert(rs_text_size_decode("text_size=9\n",RS_TEXT_COMPACT)==RS_TEXT_COMPACT);assert(rs_text_size_decode(NULL,RS_TEXT_STANDARD)==RS_TEXT_STANDARD);}
+
 int main(int argc, char **argv) {
     assert(argc == 2);
     user_sees_the_next_session_from_a_jolpica_schedule(argv[1]);
@@ -226,6 +229,7 @@ int main(int argc, char **argv) {
     historical_circuits_use_the_layout_raced_that_round(argv[1]);
     retired_venues_include_history_and_large_classifications(argv[1]);
     historic_indianapolis_fields_keep_all_55_classified_entries();
+    text_size_settings_cycle_and_decode();
     track_time_offsets_cover_calendar_regions();
     puts("ok: core behavior");
     return 0;

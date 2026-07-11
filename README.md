@@ -14,7 +14,7 @@ RaceSlate is unofficial and is not associated with Formula 1, FIA, any team, dri
 - `Y`: refresh through verified HTTPS
 - `L2 / R2`: previous/next season from CALENDAR or STANDINGS
 - `SELECT`: save one favorite driver and constructor from their profile
-- `START`: settings, haptics, cache controls, About and data licences
+- `START`: settings, three text-size levels, haptics, cache controls, About and data licences
 - `MENU`: exit
 
 Host keyboard equivalents are Q/E, arrows, Return/Escape, X/Y, S, and M.
