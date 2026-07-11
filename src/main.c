@@ -504,7 +504,7 @@ static int refresh_thread(void *context) {
     RefreshTask *task = context;
     memset(&task->results,0,sizeof(task->results));
     RsHttpResponse schedule = {0}, drivers = {0}, constructors = {0}, results={0}, qualifying={0}, sprint={0},weather_response={0};
-    RsSeasonSnapshot season;
+    RsSeasonSnapshot season=task->season;
     RsStandings driver_data, constructor_data;
     RsWeatherSnapshot weather = {0};
     bool weather_ok = false;
@@ -525,7 +525,7 @@ static int refresh_thread(void *context) {
         {bool constructor_ok=rs_http_get_https(url,task->ca_file,&constructors)&&rs_standings_decode_constructors(constructors.bytes,&constructor_data);if(!constructor_ok&&season.season<1958){memset(&constructor_data,0,sizeof(constructor_data));constructor_ok=constructors.bytes!=NULL;}ok=ok&&constructor_ok;}
     }
     if(ok){char url[256];SDL_Delay(300);snprintf(url,sizeof(url),"https://api.jolpi.ca/ergast/f1/%d/results.json?limit=1000",season.season);ok=rs_http_get_https(url,task->ca_file,&results)&&rs_results_decode(results.bytes,RS_RESULT_RACE,&task->results);SDL_Delay(300);snprintf(url,sizeof(url),"https://api.jolpi.ca/ergast/f1/%d/qualifying.json?limit=1000",season.season);qualifying_valid=rs_http_get_https(url,task->ca_file,&qualifying)&&rs_results_decode(qualifying.bytes,RS_RESULT_QUALIFYING,&task->results);SDL_Delay(300);snprintf(url,sizeof(url),"https://api.jolpi.ca/ergast/f1/%d/sprint.json?limit=1000",season.season);sprint_valid=rs_http_get_https(url,task->ca_file,&sprint)&&rs_results_decode(sprint.bytes,RS_RESULT_SPRINT,&task->results);}
-    if (ok && requested==0) {
+    if (requested==0) {
         const RsSession *next = rs_season_next_session(&season, (int64_t)time(NULL));
         const RsEvent *event = event_for_session(&season, next);
         if (event && next) {
@@ -537,6 +537,7 @@ static int refresh_thread(void *context) {
             }
         }
     }
+    if(weather_fetched){char weather_path[1024];snprintf(weather_path,sizeof(weather_path),"%s/weather.json",task->data_dir);rs_store_write_atomic(weather_path,weather_response.bytes);}
     if(ok&&!weather_fetched&&requested==0){cached_weather=cached_snapshot_weather(task->data_dir,&weather);weather_ok=cached_weather!=NULL;}
     if (ok) {
         char path[1024]; const char *empty_results="{\"MRData\":{\"RaceTable\":{\"Races\":[]}}}";const char *qualifying_json=qualifying_valid?qualifying.bytes:empty_results;const char *sprint_json=sprint_valid?sprint.bytes:empty_results;const char *weather_json=weather_fetched?weather_response.bytes:cached_weather?cached_weather:"null"; size_t length=schedule.length+drivers.length+constructors.length+results.length+strlen(qualifying_json)+strlen(sprint_json)+strlen(weather_json)+192; char *generation=malloc(length);
@@ -552,7 +553,7 @@ static int refresh_thread(void *context) {
         task->weather_live=weather_fetched;
         memcpy(task->standings.constructors, constructor_data.constructors, sizeof(constructor_data.constructors));
         if(requested>0)snprintf(task->status,sizeof(task->status),"%d SEASON DOWNLOADED · CACHED OFFLINE",season.season);else snprintf(task->status, sizeof(task->status), weather_fetched ? "ONLINE DATA AND WEATHER UPDATED" : weather_ok?"RACE DATA UPDATED · CACHED WEATHER KEPT":"RACE DATA UPDATED · WEATHER UNAVAILABLE");
-    } else snprintf(task->status, sizeof(task->status), "REFRESH FAILED — USING LAST COMPLETE SNAPSHOT");
+    } else if(weather_fetched){task->weather=weather;task->weather_live=1;snprintf(task->status,sizeof(task->status),"WEATHER UPDATED · RACE DATA SOURCE UNAVAILABLE");}else snprintf(task->status, sizeof(task->status), "REFRESH FAILED — USING LAST COMPLETE SNAPSHOT");
     task->success = ok;
     task->ready = 1;
     task->running = 0;
@@ -568,6 +569,7 @@ static void start_refresh(Runtime *rt) {
     if (rt->last_refresh_at && now-rt->last_refresh_at<60000) { snprintf(rt->status,sizeof(rt->status),"REFRESH COOLDOWN — LAST REQUEST WAS RECENT"); SDL_UnlockMutex(rt->refresh.mutex); return; }
     rt->refresh.running = 1; rt->refresh.ready = 0; rt->last_refresh_at=now;
     rt->refresh.requested_season=0;
+    rt->refresh.season=rt->season;
     SDL_UnlockMutex(rt->refresh.mutex);
     snprintf(rt->status, sizeof(rt->status), "REFRESHING VERIFIED HTTPS DATA…");
     rt->refresh.thread=SDL_CreateThread(refresh_thread, "raceslate-refresh", &rt->refresh);
@@ -601,7 +603,7 @@ static RsAction map_event(const SDL_Event *event) {
         if (event->jhat.value & SDL_HAT_LEFT) return RS_ACTION_LEFT;
         if (event->jhat.value & SDL_HAT_RIGHT) return RS_ACTION_RIGHT;
     }
-    if(event->type==SDL_JOYAXISMOTION){const Sint16 threshold=16000;if(event->jaxis.axis==0&&event->jaxis.value<=-threshold)return RS_ACTION_LEFT;if(event->jaxis.axis==0&&event->jaxis.value>=threshold)return RS_ACTION_RIGHT;if(event->jaxis.axis==1&&event->jaxis.value<=-threshold)return RS_ACTION_UP;if(event->jaxis.axis==1&&event->jaxis.value>=threshold)return RS_ACTION_DOWN;}
+    if(event->type==SDL_JOYAXISMOTION){const Sint16 threshold=16000;if(event->jaxis.axis==0&&event->jaxis.value<=-threshold)return RS_ACTION_LEFT;if(event->jaxis.axis==0&&event->jaxis.value>=threshold)return RS_ACTION_RIGHT;if(event->jaxis.axis==1&&event->jaxis.value<=-threshold)return RS_ACTION_UP;if(event->jaxis.axis==1&&event->jaxis.value>=threshold)return RS_ACTION_DOWN;if(event->jaxis.axis==2&&event->jaxis.value>=threshold)return RS_ACTION_L2;if(event->jaxis.axis==5&&event->jaxis.value>=threshold)return RS_ACTION_R2;}
     return RS_ACTION_NONE;
 }
 
@@ -631,7 +633,7 @@ int main(int argc, char **argv) {
     }
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) != 0 || TTF_Init() != 0 || curl_global_init(CURL_GLOBAL_DEFAULT) != 0) return 1;
     SDL_JoystickEventState(SDL_ENABLE);if(SDL_NumJoysticks()>0)rt.joystick=SDL_JoystickOpen(0);
-    rt.window = SDL_CreateWindow("RaceSlate", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_W, SCREEN_H, 0);
+    rt.window = SDL_CreateWindow("RaceSlate", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_W, SCREEN_H, SDL_WINDOW_FULLSCREEN_DESKTOP);
     rt.renderer = SDL_CreateRenderer(rt.window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (!rt.renderer) rt.renderer = SDL_CreateRenderer(rt.window, -1, SDL_RENDERER_SOFTWARE);
     {
@@ -668,7 +670,7 @@ int main(int argc, char **argv) {
     render(&rt);
     if (screenshot) { SDL_Surface *shot=SDL_CreateRGBSurfaceWithFormat(0, SCREEN_W, SCREEN_H, 32, SDL_PIXELFORMAT_ARGB8888);
         SDL_RenderReadPixels(rt.renderer, NULL, SDL_PIXELFORMAT_ARGB8888, shot->pixels, shot->pitch); SDL_SaveBMP(shot, screenshot); SDL_FreeSurface(shot); rs_app_dispatch(rt.app, RS_ACTION_MENU); }
-    else SDL_RenderPresent(rt.renderer);
+    else{SDL_RenderPresent(rt.renderer);if(!offline&&!rt.weather.count)start_refresh(&rt);}
     while (rs_app_running(rt.app)) {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) rs_app_dispatch(rt.app, RS_ACTION_MENU);
@@ -681,7 +683,7 @@ int main(int argc, char **argv) {
         if(rs_app_take_settings_action(rt.app))perform_settings_action(&rt);
         if (rt.first_launch && rs_app_overlay(rt.app) == RS_OVERLAY_NONE) rs_app_show_disclaimer(rt.app);
         SDL_LockMutex(rt.refresh.mutex);
-        if (rt.refresh.ready) { if (rt.refresh.success) { rt.season = rt.refresh.season; rt.standings = rt.refresh.standings; if(rt.refresh.weather.count)rt.weather = rt.refresh.weather;else memset(&rt.weather,0,sizeof(rt.weather));rt.weather_live=rt.refresh.weather_live!=0; rt.results=rt.refresh.results;rs_profiles_build_season(&rt.profiles,&rt.standings,&rt.results);apply_career_profiles(&rt);rs_app_set_cursor(rt.app,rs_app_route(rt.app),0);if(rt.refresh.requested_season==0)rt.latest_season=rt.season.season; }
+        if (rt.refresh.ready) { if(rt.refresh.weather.count){rt.weather=rt.refresh.weather;rt.weather_live=rt.refresh.weather_live!=0;}if (rt.refresh.success) { rt.season = rt.refresh.season; rt.standings = rt.refresh.standings; rt.results=rt.refresh.results;rs_profiles_build_season(&rt.profiles,&rt.standings,&rt.results);apply_career_profiles(&rt);rs_app_set_cursor(rt.app,rs_app_route(rt.app),0);if(rt.refresh.requested_season==0)rt.latest_season=rt.season.season; }
             snprintf(rt.status, sizeof(rt.status), "%s", rt.refresh.status); rt.refresh.ready = 0; if(rt.refresh.thread){SDL_DetachThread(rt.refresh.thread);rt.refresh.thread=NULL;} }
         SDL_UnlockMutex(rt.refresh.mutex);
         render(&rt);
