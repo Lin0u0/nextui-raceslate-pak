@@ -4,6 +4,8 @@ RaceSlate is an independent, non-commercial Formula 1 season companion for the T
 
 RaceSlate is unofficial and is not associated with Formula 1, FIA, any team, driver, or circuit. It does not include official logos, photographs, typefaces, live timing, telemetry, radio, or scraped content.
 
+![RaceSlate weekend overview](marketing/promo-01-weekend.png)
+
 ## Controls
 
 - `L1 / R1`: NEXT, CALENDAR, STANDINGS
@@ -36,7 +38,10 @@ make tg5040-bootstrap
 make nextui-release
 ```
 
-The output is `dist/RaceSlate.pakz`. Copy it to the SD-card root and let NextUI import it.
+The build produces two packages:
+
+- `dist/RaceSlate.pak.zip` for installation and updates through the NextUI Pak Store.
+- `dist/RaceSlate.pakz` as a complete SD-card import package for manual installation.
 
 ## Regenerating attributed reference assets
 

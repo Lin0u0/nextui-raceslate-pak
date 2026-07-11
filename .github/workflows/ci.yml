@@ -22,5 +22,7 @@ jobs:
       - run: make nextui-release
       - uses: actions/upload-artifact@v4
         with:
-          name: RaceSlate-pakz
-          path: dist/RaceSlate.pakz
+          name: RaceSlate-packages
+          path: |
+            dist/RaceSlate.pakz
+            dist/RaceSlate.pak.zip

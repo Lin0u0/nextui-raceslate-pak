@@ -2,8 +2,20 @@
   "name": "RaceSlate",
   "version": "v0.1.0",
   "type": "TOOL",
-  "description": "Independent Formula 1 season companion for TrimUI Brick",
+  "description": "Independent open-source Formula racing season companion with offline history, standings, classifications, circuit maps, and weather.",
   "author": "Lin0u0",
-  "launch": "launch.sh",
-  "release_filename": "RaceSlate.pakz"
+  "repo_url": "https://github.com/Lin0u0/nextui-raceslate-pak",
+  "release_filename": "RaceSlate.pak.zip",
+  "changelog": {
+    "v0.1.0": "Initial public release with 1950-2026 offline seasons, current-season refresh, circuit history, classifications, standings progression, weather, haptics, and adjustable text sizes."
+  },
+  "screenshots": [
+    "marketing/promo-01-weekend.png",
+    "marketing/promo-02-results.png",
+    "marketing/promo-03-standings.png"
+  ],
+  "platforms": [
+    "tg5040"
+  ],
+  "launch": "launch.sh"
 }

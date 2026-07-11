@@ -49,7 +49,7 @@ tg5040: $(APP_SRCS)
 	  $(TG5040_CURL_PREFIX)/lib/libcurl.a $(TG5040_SDK_USR)/lib/libssl.so.1.1 $(TG5040_SDK_USR)/lib/libcrypto.so.1.1 $(TG5040_SDK_USR)/lib/libz.so -ldl -lpthread -lm
 
 nextui-release: tg5040
-	@rm -rf build/tg5040/stage/nextui dist/RaceSlate.pakz
+	@rm -rf build/tg5040/stage/nextui dist/RaceSlate.pakz dist/RaceSlate.pak.zip
 	@mkdir -p build/tg5040/stage/nextui/Tools/tg5040/RaceSlate.pak/bin/tg5040 build/tg5040/stage/nextui/Tools/tg5040/RaceSlate.pak/lib/tg5040 build/tg5040/stage/nextui/Tools/tg5040/RaceSlate.pak/res/fonts build/tg5040/stage/nextui/Tools/tg5040/.media dist
 	cp $(TG5040_BIN) build/tg5040/stage/nextui/Tools/tg5040/RaceSlate.pak/bin/tg5040/raceslate
 	cp packaging/nextui/launch.sh build/tg5040/stage/nextui/Tools/tg5040/RaceSlate.pak/launch.sh
@@ -64,10 +64,12 @@ nextui-release: tg5040
 	cp -L "$$($(TG5040_CC) -print-file-name=libgcc_s.so.1)" build/tg5040/stage/nextui/Tools/tg5040/RaceSlate.pak/lib/tg5040/libgcc_s.so.1
 	chmod +x build/tg5040/stage/nextui/Tools/tg5040/RaceSlate.pak/launch.sh build/tg5040/stage/nextui/Tools/tg5040/RaceSlate.pak/bin/tg5040/raceslate
 	cd build/tg5040/stage/nextui && zip -qr "$(abspath dist/RaceSlate.pakz)" Tools
+	cd build/tg5040/stage/nextui/Tools/tg5040/RaceSlate.pak && zip -qr "$(abspath dist/RaceSlate.pak.zip)" .
 	$(MAKE) verify-nextui-release
 
 verify-nextui-release:
 	./tests/verify_nextui_release.sh
+	python3 tests/verify_pak_store.py . dist/RaceSlate.pak.zip
 
 $(BUILD)/test_core: tests/test_core.c src/rs_store.c $(CORE_SRCS)
 	@mkdir -p $(BUILD)
