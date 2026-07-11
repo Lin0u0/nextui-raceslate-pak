@@ -158,6 +158,8 @@ static const RsEvent *event_for_session(const RsSeasonSnapshot *season, const Rs
     return NULL;
 }
 
+static void select_upcoming_calendar(Runtime *rt){const RsSession *next=rs_season_next_session(&rt->season,now_utc(rt));const RsEvent *event=event_for_session(&rt->season,next);int index=event?(int)(event-rt->season.events):(rt->season.event_count?(int)rt->season.event_count-1:0);rs_app_set_cursor(rt->app,RS_ROUTE_CALENDAR,index);}
+
 static void format_time(int64_t value, char *out, size_t size) {
     time_t raw = (time_t)value;
     struct tm local;
@@ -268,7 +270,7 @@ static void draw_standings(Runtime *rt) {
     draw_text(rt, rt->heading, constructors ? "CONSTRUCTOR STANDINGS" : "DRIVER STANDINGS", 42, 112, WHITE);
     draw_text(rt, rt->small, "X  SWITCH TABLE", 846, 138, MUTED);
     fill(rt,38,174,948,26,(SDL_Color){18,20,24,255});draw_text(rt,rt->small,"POS",52,177,MUTED);
-    if(constructors){draw_text(rt,rt->small,"CONSTRUCTOR",108,177,MUTED);draw_text(rt,rt->small,"WINS",650,177,MUTED);draw_text(rt,rt->small,"POINTS",812,177,MUTED);}else{draw_text(rt,rt->small,"CODE",108,177,MUTED);draw_text(rt,rt->small,"DRIVER",176,177,MUTED);draw_text(rt,rt->small,"CONSTRUCTOR",430,177,MUTED);draw_text(rt,rt->small,"POINTS",812,177,MUTED);}
+    if(constructors){draw_text(rt,rt->small,"CONSTRUCTOR",108,177,MUTED);draw_text_right_center_y(rt,rt->small,"WINS",700,174,26,MUTED);draw_text_right_center_y(rt,rt->small,"POINTS",870,174,26,MUTED);}else{draw_text(rt,rt->small,"CODE",108,177,MUTED);draw_text(rt,rt->small,"DRIVER",176,177,MUTED);draw_text(rt,rt->small,"CONSTRUCTOR",430,177,MUTED);draw_text_right_center_y(rt,rt->small,"POINTS",870,174,26,MUTED);}
     for (row = 0; row < 11; row++) {
         int index = first + row;
         int top = 204 + row * 40;
@@ -610,7 +612,7 @@ int main(int argc, char **argv) {
     rt.haptic_available=initialize_haptics();
     {char path[1024];char *ack;snprintf(path,sizeof(path),"%s/acknowledged",rt.data_dir);ack=rs_store_read(path);rt.first_launch=ack==NULL&&!screenshot;free(ack);if(rt.first_launch)rs_app_show_disclaimer(rt.app);}
     if (offline) snprintf(rt.status,sizeof(rt.status),"OFFLINE BASELINE DATA");
-    if(screen){if(!strcmp(screen,"calendar"))rs_app_dispatch(rt.app,RS_ACTION_R1);else if(!strcmp(screen,"standings")){rs_app_dispatch(rt.app,RS_ACTION_R1);rs_app_dispatch(rt.app,RS_ACTION_R1);}}
+    if(screen){if(!strcmp(screen,"calendar")){rs_app_dispatch(rt.app,RS_ACTION_R1);select_upcoming_calendar(&rt);}else if(!strcmp(screen,"standings")){rs_app_dispatch(rt.app,RS_ACTION_R1);rs_app_dispatch(rt.app,RS_ACTION_R1);}}
     while(selected-->0)rs_app_dispatch(rt.app,RS_ACTION_DOWN);
     if(detail){int cycles=!strcmp(detail,"race")?1:!strcmp(detail,"qualifying")?2:!strcmp(detail,"sprint")?3:0;rs_app_dispatch(rt.app,RS_ACTION_A);while(cycles-->0)rs_app_dispatch(rt.app,RS_ACTION_X);}
     if(actions){char action_list[256];snprintf(action_list,sizeof(action_list),"%s",actions);dispatch_action_list(rt.app,action_list);}
@@ -621,7 +623,7 @@ int main(int argc, char **argv) {
     while (rs_app_running(rt.app)) {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) rs_app_dispatch(rt.app, RS_ACTION_MENU);
-            else { RsAction action = map_event(&event); if (action != RS_ACTION_NONE) rs_app_dispatch(rt.app, action); }
+            else { RsAction action = map_event(&event); if (action != RS_ACTION_NONE) {RsRoute before=rs_app_route(rt.app);rs_app_dispatch(rt.app, action);if(before!=RS_ROUTE_CALENDAR&&rs_app_route(rt.app)==RS_ROUTE_CALENDAR)select_upcoming_calendar(&rt);} }
         }
         if (rs_app_take_refresh_request(rt.app)) start_refresh(&rt);
         if (rs_app_take_favorite_request(rt.app)) save_selected_favorite(&rt);

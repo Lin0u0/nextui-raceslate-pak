@@ -68,6 +68,7 @@ RsStandingsMode rs_app_standings_mode(const RsApp *app) {
 }
 bool rs_app_running(const RsApp *app) { return app && app->running; }
 int rs_app_cursor(const RsApp *app) { return app ? app->cursor[app->route] : 0; }
+void rs_app_set_cursor(RsApp *app,RsRoute route,int cursor){if(app&&route>=RS_ROUTE_NEXT&&route<=RS_ROUTE_STANDINGS)app->cursor[route]=cursor<0?0:cursor;}
 bool rs_app_take_refresh_request(RsApp *app) {
     bool requested;
     if (!app) return false;

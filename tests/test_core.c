@@ -60,6 +60,7 @@ static void brick_controls_navigate_the_public_app_state(void) {
     rs_app_dispatch(app,RS_ACTION_X);assert(rs_app_track_time(app));rs_app_dispatch(app,RS_ACTION_X);assert(!rs_app_track_time(app));
     rs_app_dispatch(app, RS_ACTION_R1);
     assert(rs_app_route(app) == RS_ROUTE_CALENDAR);
+    rs_app_set_cursor(app,RS_ROUTE_CALENDAR,7);assert(rs_app_cursor(app)==7);rs_app_set_cursor(app,RS_ROUTE_CALENDAR,0);
     rs_app_dispatch(app, RS_ACTION_R1);
     assert(rs_app_route(app) == RS_ROUTE_STANDINGS);
     rs_app_dispatch(app, RS_ACTION_X);
