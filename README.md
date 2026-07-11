@@ -27,7 +27,7 @@ make host
 SDL_VIDEODRIVER=dummy ./build/host/raceslate --offline --screenshot next.bmp
 ```
 
-The app starts from the bundled snapshot and refreshes Jolpica-F1 and Open-Meteo on a worker thread. Historical seasons load one year at a time back to 1950 and are retained as separate offline snapshots. Historical standings combine F1DB career totals for more than 1,000 driver and constructor identities with progression charts derived from the selected season. A compact F1DB atlas selects the circuit layout actually raced at each venue, year and round; 78 current and retired venues include geometry, records, winners and poles. Classifications retain up to 64 entries so early Indianapolis fields remain complete. Validated responses are committed atomically under the data directory. Weather responses tolerate unavailable far-future hours while retaining valid forecast points. TLS peer and hostname checks are never disabled.
+The app starts from bundled current data and complete offline season snapshots from 1950 onward. Historical seasons switch locally without network access; only current-season increments and the independent Open-Meteo forecast use the refresh worker. Historical standings combine F1DB career totals for more than 1,000 driver and constructor identities with official per-round progression from the selected season. A compact F1DB atlas selects the circuit layout actually raced at each venue, year and round; 78 current and retired venues include geometry, records, winners and poles. Classifications retain up to 64 entries so early Indianapolis fields remain complete. Validated responses are committed atomically under the data directory. Weather responses tolerate unavailable far-future hours while retaining valid forecast points. TLS peer and hostname checks are never disabled.
 
 For a device package:
 
@@ -48,6 +48,7 @@ git -C build/f1db-source checkout 0921cd9a6f79029290b61544965f91201373e960
 python3 -m pip install PyYAML
 python3 scripts/generate_circuits.py build/f1db-source assets/circuits
 python3 scripts/generate_profiles.py build/f1db-source assets/reference/profiles.tsv
+python3 scripts/generate_offline_seasons.py build/f1db-source assets/reference/profiles.tsv assets/baseline/seasons
 ```
 
 Profile generation also resolves the public Jolpica driver and constructor identifiers used by runtime snapshots.

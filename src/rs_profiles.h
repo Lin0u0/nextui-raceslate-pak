@@ -7,7 +7,7 @@
 #include "rs_standings.h"
 
 #define RS_MAX_PROFILES (RS_MAX_DRIVERS + RS_MAX_CONSTRUCTORS)
-#define RS_MAX_PROFILE_SERIES 24
+#define RS_MAX_PROFILE_SERIES 32
 
 typedef enum { RS_PROFILE_DRIVER, RS_PROFILE_CONSTRUCTOR } RsProfileType;
 
@@ -42,5 +42,6 @@ const RsProfile *rs_profiles_find(const RsProfileCatalog *catalog, RsProfileType
 void rs_profiles_rebuild_series(RsProfileCatalog *catalog, const RsResultsCatalog *results);
 void rs_profiles_build_season(RsProfileCatalog *catalog,const RsStandings *standings,const RsResultsCatalog *results);
 bool rs_profiles_apply_career(const char *path,RsProfileCatalog *catalog);
+bool rs_profiles_decode_progression(const char *json,RsProfileCatalog *catalog);
 
 #endif

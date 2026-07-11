@@ -72,6 +72,7 @@ bool rs_standings_decode_constructors(const char *json, RsStandings *out) {
     const cJSON *list, *array, *item;
     bool ok = false;
     if (!json || !out) return false;
+    memset(out, 0, sizeof(*out));
     root = cJSON_Parse(json);
     if (!root) return false;
     list = standings_list(root, &out->season, &out->round);

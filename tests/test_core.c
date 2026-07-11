@@ -189,10 +189,12 @@ static void live_results_rebuild_profile_progression(const char *fixtures) {
     driver=rs_profiles_find(&profiles,RS_PROFILE_DRIVER,"max_verstappen");assert(driver);assert(driver->series_count>0);assert(driver->series[0].points>=0.0);
 }
 
+static void official_progression_overrides_naive_race_point_totals(const char *fixtures){char path[512];RsProfileCatalog profiles;const RsProfile *driver;const char *json="{\"drivers\":{\"max_verstappen\":[{\"round\":1,\"position\":2,\"points\":18},{\"round\":2,\"position\":1,\"points\":43}]},\"constructors\":{}}";snprintf(path,sizeof(path),"%s/profiles.tsv",fixtures);assert(rs_profiles_load(path,&profiles));assert(rs_profiles_decode_progression(json,&profiles));driver=rs_profiles_find(&profiles,RS_PROFILE_DRIVER,"max_verstappen");assert(driver&&driver->series_count==2);assert(driver->series[1].round==2);assert(driver->series[1].position==1);assert(driver->series[1].points==43);}
+
 static void historical_standings_build_season_profiles(const char *fixtures){
     char path[512];char *json;RsStandings standings,constructors={0};RsResultsCatalog results={0};RsProfileCatalog profiles;const RsProfile *driver,*team;
     snprintf(path,sizeof(path),"%s/driver_standings.json",fixtures);json=read_file(path);assert(rs_standings_decode_drivers(json,&standings));free(json);
-    snprintf(path,sizeof(path),"%s/constructor_standings.json",fixtures);json=read_file(path);assert(rs_standings_decode_constructors(json,&constructors));free(json);standings.constructor_count=constructors.constructor_count;memcpy(standings.constructors,constructors.constructors,sizeof(constructors.constructors));
+    memset(&constructors,0xA5,sizeof(constructors));snprintf(path,sizeof(path),"%s/constructor_standings.json",fixtures);json=read_file(path);assert(rs_standings_decode_constructors(json,&constructors));free(json);standings.constructor_count=constructors.constructor_count;memcpy(standings.constructors,constructors.constructors,sizeof(constructors.constructors));
     snprintf(path,sizeof(path),"%s/results.json",fixtures);json=read_file(path);assert(rs_results_decode(json,RS_RESULT_RACE,&results));free(json);
     snprintf(path,sizeof(path),"%s/qualifying.json",fixtures);json=read_file(path);assert(rs_results_decode(json,RS_RESULT_QUALIFYING,&results));free(json);
     rs_profiles_build_season(&profiles,&standings,&results);
@@ -219,6 +221,7 @@ int main(int argc, char **argv) {
     completed_sessions_expose_full_classifications(argv[1]);
     current_grid_profiles_include_career_totals_and_chart_series(argv[1]);
     live_results_rebuild_profile_progression(argv[1]);
+    official_progression_overrides_naive_race_point_totals(argv[1]);
     historical_standings_build_season_profiles(argv[1]);
     historical_circuits_use_the_layout_raced_that_round(argv[1]);
     retired_venues_include_history_and_large_classifications(argv[1]);

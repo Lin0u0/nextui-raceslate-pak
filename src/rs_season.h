@@ -33,6 +33,7 @@ typedef struct {
     double latitude;
     double longitude;
     bool is_sprint_weekend;
+    bool time_estimated;
     size_t session_count;
     RsSession sessions[RS_MAX_SESSIONS];
 } RsEvent;

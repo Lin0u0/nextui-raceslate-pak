@@ -37,35 +37,77 @@ D	williams	jonathan-williams	Jonathan Williams	united-kingdom	1	0	0	0	0
 C	adams	adams	Adams	united-states-of-america	1	0	0	0	0	
 C	afm	afm	AFM	germany	4	0	0	0	0	
 C	ags	ags	AGS	france	80	0	0	0	0	
+C	ags-ford	ags	AGS	france	80	0	0	0	0	
 C	alfa	alfa-romeo	Alfa Romeo	italy	214	11	28	12	0	
+C	alfa-romeo	alfa-romeo	Alfa Romeo	italy	214	11	28	12	0	
+C	alfa-romeo	alfa-romeo	Alfa Romeo	italy	214	11	28	12	0	
+C	alfa-romeo-ferrari	alfa-romeo	Alfa Romeo	italy	214	11	28	12	0	
+C	alfa-special	alfa-special	Alfa Special	south-africa	2	0	0	0	0	
 C	alphatauri	alphatauri	AlphaTauri	italy	83	1	2	0	0	
+C	alphatauri-honda	alphatauri	AlphaTauri	italy	83	1	2	0	0	
+C	alphatauri-honda-rbpt	alphatauri	AlphaTauri	italy	83	1	2	0	0	
+C	alphatauri-rbpt	alphatauri	AlphaTauri	italy	83	1	2	0	0	
+C	alpine-mercedes	alpine	Alpine	france	123	1	7	0	0	
+C	alpine-renault	alpine	Alpine	france	123	1	7	0	0	
 C	alta	alta	Alta	united-kingdom	5	0	0	0	0	
 C	amon	amon	Amon	new-zealand	4	0	0	0	0	
+C	andrea-moda	andrea-moda	Andrea Moda	italy	10	0	0	0	0	
 C	apollon	apollon	Apollon	switzerland	1	0	0	0	0	
 C	arrows	arrows	Arrows	united-kingdom	296	0	8	1	0	
+C	arrows-asiatech	arrows	Arrows	united-kingdom	296	0	8	1	0	
+C	arrows-bmw	arrows	Arrows	united-kingdom	296	0	8	1	0	
+C	arrows-cosworth	arrows	Arrows	united-kingdom	296	0	8	1	0	
+C	arrows-ford	arrows	Arrows	united-kingdom	296	0	8	1	0	
+C	arrows-megatron	arrows	Arrows	united-kingdom	296	0	8	1	0	
+C	arrows-supertec	arrows	Arrows	united-kingdom	296	0	8	1	0	
+C	arrows-yamaha	arrows	Arrows	united-kingdom	296	0	8	1	0	
 C	arzani-volpini	arzani-volpini	Arzani-Volpini	italy	1	0	0	0	0	
+C	aston-butterworth	aston-butterworth	Aston Butterworth	united-kingdom	4	0	0	0	0	
+C	aston-martin	aston-martin	Aston Martin	united-kingdom	129	0	9	0	0	
+C	aston-martin-honda	aston-martin	Aston Martin	united-kingdom	129	0	9	0	0	
+C	aston-martin-mercedes	aston-martin	Aston Martin	united-kingdom	129	0	9	0	0	
 C	ats	ats	ATS	italy	5	0	0	0	0	
+C	ats-wheels	ats-wheels	ATS	germany	107	0	0	0	0	
+C	ats-wheels-ford	ats-wheels	ATS	germany	107	0	0	0	0	
+C	balsa	balsa	Balsa	germany	1	0	0	0	0	
 C	bar	bar	BAR	united-kingdom	118	0	15	2	0	
+C	bar-honda	bar	BAR	united-kingdom	118	0	15	2	0	
 C	behra-porsche	behra-porsche	Behra-Porsche	germany	4	0	0	0	0	
 C	bellasi	bellasi	Bellasi	italy	6	0	0	0	0	
 C	benetton	benetton	Benetton	italy	260	27	102	15	1	
+C	benetton-bmw	benetton	Benetton	italy	260	27	102	15	1	
+C	benetton-ford	benetton	Benetton	italy	260	27	102	15	1	
+C	benetton-playlife	benetton	Benetton	italy	260	27	102	15	1	
+C	benetton-renault	benetton	Benetton	italy	260	27	102	15	1	
 C	bmw	bmw	BMW	germany	1	0	0	0	0	
+C	bmw-sauber	bmw-sauber	BMW Sauber	germany	70	1	17	1	0	
+C	bmw-sauber-bmw	bmw-sauber	BMW Sauber	germany	70	1	17	1	0	
 C	bmw_sauber	bmw-sauber	BMW Sauber	germany	70	1	17	1	0	
 C	boro	boro	Boro	netherlands	8	0	0	0	0	
 C	brabham	brabham	Brabham	united-kingdom	402	35	124	39	2	
+C	brabham-alfa-romeo	brabham	Brabham	united-kingdom	402	35	124	39	2	
 C	brabham-alfa_romeo	brabham	Brabham	united-kingdom	402	35	124	39	2	
+C	brabham-bmw	brabham	Brabham	united-kingdom	402	35	124	39	2	
 C	brabham-brm	brabham	Brabham	united-kingdom	402	35	124	39	2	
 C	brabham-climax	brabham	Brabham	united-kingdom	402	35	124	39	2	
 C	brabham-ford	brabham	Brabham	united-kingdom	402	35	124	39	2	
+C	brabham-judd	brabham	Brabham	united-kingdom	402	35	124	39	2	
 C	brabham-repco	brabham	Brabham	united-kingdom	402	35	124	39	2	
+C	brabham-yamaha	brabham	Brabham	united-kingdom	402	35	124	39	2	
 C	brawn	brawn	Brawn	united-kingdom	17	8	15	5	1	
+C	brawn-mercedes	brawn	Brawn	united-kingdom	17	8	15	5	1	
 C	brm	brm	BRM	united-kingdom	208	17	61	11	1	
+C	brm-climax	brm	BRM	united-kingdom	208	17	61	11	1	
 C	brm-ford	brm	BRM	united-kingdom	208	17	61	11	1	
 C	bromme	bromme	Bromme	united-states-of-america	4	0	0	0	0	
 C	brp	brp	BRP	united-kingdom	13	0	0	0	0	
+C	brp-brm	brp	BRP	united-kingdom	13	0	0	0	0	
 C	bugatti	bugatti	Bugatti	france	1	0	0	0	0	
 C	butterworth	aston-butterworth	Aston Butterworth	united-kingdom	4	0	0	0	0	
+C	cadillac-ferrari	cadillac	Cadillac	united-states-of-america	9	0	0	0	0	
 C	caterham	caterham	Caterham	malaysia	56	0	0	0	0	
+C	caterham-renault	caterham	Caterham	malaysia	56	0	0	0	0	
+C	christensen	christensen	Christensen	united-states-of-america	2	0	0	0	0	
 C	cisitalia	cisitalia	Cisitalia	italy	1	0	0	0	0	
 C	coloni	coloni	Coloni	italy	65	0	0	0	0	
 C	connaught	connaught	Connaught	united-kingdom	18	0	1	0	0	
@@ -82,76 +124,147 @@ C	cooper-ford	cooper	Cooper	united-kingdom	129	16	59	11	2
 C	cooper-maserati	cooper	Cooper	united-kingdom	129	16	59	11	2	
 C	cooper-osca	cooper	Cooper	united-kingdom	129	16	59	11	2	
 C	dallara	dallara	Dallara	italy	80	0	2	0	0	
+C	dallara-ferrari	dallara	Dallara	italy	80	0	2	0	0	
+C	dallara-ford	dallara	Dallara	italy	80	0	2	0	0	
+C	dallara-judd	dallara	Dallara	italy	80	0	2	0	0	
+C	de-tomaso	de-tomaso	De Tomaso	italy	15	0	0	0	0	
 C	de_tomaso-alfa_romeo	de-tomaso	De Tomaso	italy	15	0	0	0	0	
 C	de_tomaso-ferrari	de-tomaso	De Tomaso	italy	15	0	0	0	0	
 C	de_tomaso-osca	de-tomaso	De Tomaso	italy	15	0	0	0	0	
 C	deidt	deidt	Deidt	united-states-of-america	3	0	2	0	0	
+C	del-roy	del-roy	Del Roy	united-states-of-america	1	0	0	0	0	
 C	del_roy	del-roy	Del Roy	united-states-of-america	1	0	0	0	0	
+C	derrington-francis	derrington-francis	Derrington-Francis	united-kingdom	1	0	0	0	0	
 C	dunn	dunn	Dunn	united-states-of-america	3	0	0	0	0	
 C	eagle	eagle	Eagle	united-states-of-america	26	1	2	0	0	
 C	eagle-climax	eagle	Eagle	united-states-of-america	26	1	2	0	0	
 C	eagle-weslake	eagle	Eagle	united-states-of-america	26	1	2	0	0	
+C	eifelland	eifelland	Eifelland	germany	8	0	0	0	0	
 C	elder	elder	Elder	united-states-of-america	1	0	0	0	0	
 C	emeryson	emeryson	Emeryson	united-kingdom	6	0	0	0	0	
 C	emw	emw	EMW	germany	1	0	0	0	0	
 C	enb	enb	ENB	belgium	1	0	0	0	0	
 C	ensign	ensign	Ensign	united-kingdom	133	0	0	0	0	
+C	ensign-ford	ensign	Ensign	united-kingdom	133	0	0	0	0	
 C	epperly	epperly	Epperly	united-states-of-america	5	2	5	0	0	
 C	era	era	ERA	united-kingdom	7	0	0	0	0	
 C	eurobrun	eurobrun	EuroBrun	italy	46	0	0	0	0	
 C	ewing	ewing	Ewing	united-states-of-america	2	0	0	1	0	
 C	ferguson	ferguson	Ferguson	united-kingdom	1	0	0	0	0	
+C	first	first	FIRST	italy	0	0	0	0	0	
 C	fittipaldi	fittipaldi	Fittipaldi	brazil	120	0	3	0	0	
+C	fittipaldi-ford	fittipaldi	Fittipaldi	brazil	120	0	3	0	0	
 C	fondmetal	fondmetal	Fondmetal	italy	29	0	0	0	0	
 C	footwork	footwork	Footwork	united-kingdom	97	0	1	0	0	
+C	footwork-ford	footwork	Footwork	united-kingdom	97	0	1	0	0	
+C	footwork-hart	footwork	Footwork	united-kingdom	97	0	1	0	0	
+C	footwork-mugen-honda	footwork	Footwork	united-kingdom	97	0	1	0	0	
+C	force-india	force-india	Force India	india	212	0	6	1	0	
+C	force-india-ferrari	force-india	Force India	india	212	0	6	1	0	
+C	force-india-mercedes	force-india	Force India	india	212	0	6	1	0	
+C	force-india-mercedes-excluded	force-india	Force India	india	212	0	6	1	0	
 C	force_india	force-india	Force India	india	212	0	6	1	0	
 C	forti	forti	Forti	italy	27	0	0	0	0	
+C	frank-williams-racing-cars	frank-williams-racing-cars	Frank Williams Racing Cars	united-kingdom	14	0	1	0	0	
+C	frank-williams-racing-cars-ford	frank-williams-racing-cars	Frank Williams Racing Cars	united-kingdom	14	0	1	0	0	
+C	frazer-nash	frazer-nash	Frazer-Nash	united-kingdom	4	0	0	0	0	
 C	frazer_nash	frazer-nash	Frazer-Nash	united-kingdom	4	0	0	0	0	
 C	fry	fry	Fry	united-kingdom	1	0	0	0	0	
 C	gilby	gilby	Gilby	united-kingdom	6	0	0	0	0	
 C	gordini	gordini	Gordini	france	33	0	2	0	0	
+C	greifzu	greifzu	Greifzu	germany	1	0	0	0	0	
+C	haas-ferrari	haas	Haas	united-states-of-america	223	0	0	1	0	
 C	hall	hall	Hall	united-states-of-america	1	0	0	0	0	
+C	heck	heck	Heck	germany	2	0	0	0	0	
 C	hesketh	hesketh	Hesketh	united-kingdom	60	1	7	0	0	
+C	hesketh-ford	hesketh	Hesketh	united-kingdom	60	1	7	0	0	
+C	hill	hill	Hill	united-kingdom	11	0	0	0	0	
+C	hill-ford	hill	Hill	united-kingdom	11	0	0	0	0	
 C	honda	honda	Honda	japan	88	3	9	2	0	
 C	hrt	hrt	HRT	spain	57	0	0	0	0	
+C	hrt-cosworth	hrt	HRT	spain	57	0	0	0	0	
 C	hwm	hwm	HWM	united-kingdom	16	0	0	0	0	
+C	iso-marlboro	iso-marlboro	Iso-Marlboro	united-kingdom	30	0	0	0	0	
+C	iso-marlboro-ford	iso-marlboro	Iso-Marlboro	united-kingdom	30	0	0	0	0	
 C	iso_marlboro	iso-marlboro	Iso-Marlboro	united-kingdom	30	0	0	0	0	
 C	jaguar	jaguar	Jaguar	united-kingdom	85	0	2	0	0	
+C	jaguar-cosworth	jaguar	Jaguar	united-kingdom	85	0	2	0	0	
 C	jbw	jbw	JBW	united-kingdom	6	0	0	0	0	
 C	jordan	jordan	Jordan	ireland	250	4	19	2	0	
+C	jordan-ford	jordan	Jordan	ireland	250	4	19	2	0	
+C	jordan-hart	jordan	Jordan	ireland	250	4	19	2	0	
+C	jordan-honda	jordan	Jordan	ireland	250	4	19	2	0	
+C	jordan-mugen-honda	jordan	Jordan	ireland	250	4	19	2	0	
+C	jordan-peugeot	jordan	Jordan	ireland	250	4	19	2	0	
+C	jordan-toyota	jordan	Jordan	ireland	250	4	19	2	0	
+C	jordan-yamaha	jordan	Jordan	ireland	250	4	19	2	0	
 C	kauhsen	kauhsen	Kauhsen	germany	2	0	0	0	0	
+C	kick-sauber	kick-sauber	Kick Sauber	switzerland	48	0	1	0	0	
+C	kick-sauber-ferrari	kick-sauber	Kick Sauber	switzerland	48	0	1	0	0	
 C	klenk	klenk	Klenk	germany	1	0	0	0	0	
 C	kojima	kojima	Kojima	japan	2	0	0	0	0	
+C	krakau	krakau	Krakau	germany	1	0	0	0	0	
+C	kurtis-kraft	kurtis-kraft	Kurtis Kraft	united-states-of-america	12	5	19	6	0	
 C	kurtis_kraft	kurtis-kraft	Kurtis Kraft	united-states-of-america	12	5	19	6	0	
 C	kuzma	kuzma	Kuzma	united-states-of-america	10	1	3	0	0	
 C	lago	talbot-lago	Talbot-Lago	france	13	0	2	0	0	
 C	lancia	lancia	Lancia	italy	5	0	1	2	0	
 C	langley	langley	Langley	united-states-of-america	1	0	0	0	0	
 C	larrousse	larrousse	Larrousse	france	32	0	0	0	0	
+C	larrousse-ford	larrousse	Larrousse	france	32	0	0	0	0	
+C	larrousse-lamborghini	larrousse	Larrousse	france	32	0	0	0	0	
 C	lds	lds	LDS	south-africa	5	0	0	0	0	
 C	lds-alfa_romeo	lds	LDS	south-africa	5	0	0	0	0	
 C	lds-climax	lds	LDS	south-africa	5	0	0	0	0	
 C	lec	lec	LEC	united-kingdom	5	0	0	0	0	
 C	lesovsky	lesovsky	Lesovsky	united-states-of-america	9	0	1	1	0	
 C	leyton	leyton-house	Leyton House	united-kingdom	32	0	1	0	0	
+C	leyton-house	leyton-house	Leyton House	united-kingdom	32	0	1	0	0	
+C	leyton-house-ilmor	leyton-house	Leyton House	united-kingdom	32	0	1	0	0	
+C	leyton-house-judd	leyton-house	Leyton House	united-kingdom	32	0	1	0	0	
 C	life	life	Life	italy	14	0	0	0	0	
 C	ligier	ligier	Ligier	france	330	9	50	9	0	
+C	ligier-ford	ligier	Ligier	france	330	9	50	9	0	
+C	ligier-matra	ligier	Ligier	france	330	9	50	9	0	
+C	ligier-megatron	ligier	Ligier	france	330	9	50	9	0	
+C	ligier-mugen-honda	ligier	Ligier	france	330	9	50	9	0	
+C	ligier-renault	ligier	Ligier	france	330	9	50	9	0	
 C	lola	lola	Lola	united-kingdom	152	0	3	1	0	
+C	lola-climax	lola	Lola	united-kingdom	152	0	3	1	0	
+C	lola-ford	lola	Lola	united-kingdom	152	0	3	1	0	
+C	lola-lamborghini	lola	Lola	united-kingdom	152	0	3	1	0	
+C	lotus	lotus	Lotus	united-kingdom	493	79	172	107	7	
 C	lotus-borgward	lotus	Lotus	united-kingdom	493	79	172	107	7	
 C	lotus-brm	lotus	Lotus	united-kingdom	493	79	172	107	7	
 C	lotus-climax	lotus	Lotus	united-kingdom	493	79	172	107	7	
+C	lotus-f1	lotus-f1	Lotus	united-kingdom	77	2	25	0	0	
+C	lotus-f1-mercedes	lotus-f1	Lotus	united-kingdom	77	2	25	0	0	
+C	lotus-f1-renault	lotus-f1	Lotus	united-kingdom	77	2	25	0	0	
 C	lotus-ford	lotus	Lotus	united-kingdom	493	79	172	107	7	
+C	lotus-honda	lotus	Lotus	united-kingdom	493	79	172	107	7	
+C	lotus-judd	lotus	Lotus	united-kingdom	493	79	172	107	7	
+C	lotus-lamborghini	lotus	Lotus	united-kingdom	493	79	172	107	7	
 C	lotus-maserati	lotus	Lotus	united-kingdom	493	79	172	107	7	
 C	lotus-pw	lotus	Lotus	united-kingdom	493	79	172	107	7	
+C	lotus-racing	lotus-racing	Lotus Racing	malaysia	38	0	0	0	0	
+C	lotus-racing-cosworth	lotus-racing	Lotus Racing	malaysia	38	0	0	0	0	
+C	lotus-racing-renault	lotus-racing	Lotus Racing	malaysia	38	0	0	0	0	
+C	lotus-renault	lotus	Lotus	united-kingdom	493	79	172	107	7	
 C	lotus_racing	lotus	Lotus	united-kingdom	493	79	172	107	7	
 C	lyncar	lyncar	Lyncar	united-kingdom	2	0	0	0	0	
 C	maki	maki	Maki	japan	8	0	0	0	0	
+C	manor	manor	Manor	united-kingdom	21	0	0	0	0	
+C	manor-mercedes	manor	Manor	united-kingdom	21	0	0	0	0	
 C	march	march	March	united-kingdom	208	3	21	5	0	
 C	march-alfa_romeo	march	March	united-kingdom	208	3	21	5	0	
 C	march-ford	march	March	united-kingdom	208	3	21	5	0	
+C	march-ilmor	march	March	united-kingdom	208	3	21	5	0	
+C	march-judd	march	March	united-kingdom	208	3	21	5	0	
 C	marchese	marchese	Marchese	united-states-of-america	2	0	0	0	0	
 C	martini	martini	Martini	france	7	0	0	0	0	
 C	marussia	marussia	Marussia	united-kingdom	74	0	0	0	0	
+C	marussia-cosworth	marussia	Marussia	united-kingdom	74	0	0	0	0	
+C	marussia-ferrari	marussia	Marussia	united-kingdom	74	0	0	0	0	
 C	maserati	maserati	Maserati	italy	73	9	40	10	0	
 C	matra	matra	Matra	france	63	9	21	4	1	
 C	matra-ford	matra	Matra	france	63	9	21	4	1	
@@ -159,34 +272,81 @@ C	mcguire	mcguire	McGuire	australia	1	0	0	0	0
 C	mclaren-alfa_romeo	mclaren	McLaren	united-kingdom	1007	203	562	177	10	
 C	mclaren-brm	mclaren	McLaren	united-kingdom	1007	203	562	177	10	
 C	mclaren-ford	mclaren	McLaren	united-kingdom	1007	203	562	177	10	
+C	mclaren-honda	mclaren	McLaren	united-kingdom	1007	203	562	177	10	
+C	mclaren-mercedes	mclaren	McLaren	united-kingdom	1007	203	562	177	10	
+C	mclaren-mercedes-excluded	mclaren	McLaren	united-kingdom	1007	203	562	177	10	
+C	mclaren-peugeot	mclaren	McLaren	united-kingdom	1007	203	562	177	10	
+C	mclaren-renault	mclaren	McLaren	united-kingdom	1007	203	562	177	10	
 C	mclaren-seren	mclaren	McLaren	united-kingdom	1007	203	562	177	10	
+C	mclaren-serenissima	mclaren	McLaren	united-kingdom	1007	203	562	177	10	
+C	mclaren-tag	mclaren	McLaren	united-kingdom	1007	203	562	177	10	
 C	merzario	merzario	Merzario	italy	31	0	0	0	0	
 C	meskowski	meskowski	Meskowski	united-states-of-america	1	0	0	0	0	
+C	midland	midland	Midland	russia	18	0	0	0	0	
+C	midland-toyota	midland	Midland	russia	18	0	0	0	0	
 C	minardi	minardi	Minardi	italy	346	0	0	0	0	
+C	minardi-asiatech	minardi	Minardi	italy	346	0	0	0	0	
+C	minardi-cosworth	minardi	Minardi	italy	346	0	0	0	0	
+C	minardi-european	minardi	Minardi	italy	346	0	0	0	0	
+C	minardi-ferrari	minardi	Minardi	italy	346	0	0	0	0	
+C	minardi-fondmetal	minardi	Minardi	italy	346	0	0	0	0	
+C	minardi-ford	minardi	Minardi	italy	346	0	0	0	0	
+C	minardi-lamborghini	minardi	Minardi	italy	346	0	0	0	0	
 C	moda	andrea-moda	Andrea Moda	italy	10	0	0	0	0	
+C	modena	modena	Modena	italy	16	0	0	0	0	
 C	moore	moore	Moore	united-states-of-america	3	0	0	0	0	
+C	nacke	nacke	Nacke	germany	1	0	0	0	0	
 C	nichels	nichels	Nichels	united-states-of-america	2	0	0	0	0	
 C	olson	olson	Olson	united-states-of-america	1	0	0	0	0	
 C	onyx	onyx	Onyx	united-kingdom	26	0	1	0	0	
+C	onyx-ford	onyx	Onyx	united-kingdom	26	0	1	0	0	
 C	osca	osca	O.S.C.A.	italy	7	0	0	0	0	
 C	osella	osella	Osella	italy	172	0	0	0	0	
+C	osella-alfa-romeo	osella	Osella	italy	172	0	0	0	0	
+C	osella-ford	osella	Osella	italy	172	0	0	0	0	
 C	pacific	pacific	Pacific	united-kingdom	33	0	0	0	0	
 C	pankratz	pankratz	Pankratz	united-states-of-america	2	0	0	0	0	
 C	parnelli	parnelli	Parnelli	united-states-of-america	16	0	0	0	0	
+C	parnelli-ford	parnelli	Parnelli	united-states-of-america	16	0	0	0	0	
 C	pawl	pawl	Pawl	united-states-of-america	3	0	0	0	0	
 C	penske	penske	Penske	united-states-of-america	41	1	3	0	0	
+C	penske-ford	penske	Penske	united-states-of-america	41	1	3	0	0	
 C	phillips	phillips	Phillips	united-states-of-america	7	0	1	0	0	
 C	politoys	politoys	Politoys	united-kingdom	1	0	0	0	0	
 C	porsche	porsche	Porsche	germany	35	1	5	1	0	
 C	prost	prost	Prost	france	83	0	3	0	0	
+C	prost-acer	prost	Prost	france	83	0	3	0	0	
+C	prost-mugen-honda	prost	Prost	france	83	0	3	0	0	
+C	prost-peugeot	prost	Prost	france	83	0	3	0	0	
 C	protos	protos	Protos	united-kingdom	1	0	0	0	0	
+C	racing-bulls	racing-bulls	Racing Bulls	italy	33	0	1	0	0	
+C	racing-bulls-honda-rbpt	racing-bulls	Racing Bulls	italy	33	0	1	0	0	
+C	racing-bulls-red-bull-ford	racing-bulls	Racing Bulls	italy	33	0	1	0	0	
+C	racing-point	racing-point	Racing Point	united-kingdom	38	1	4	1	0	
+C	racing-point-bwt-mercedes	racing-point	Racing Point	united-kingdom	38	1	4	1	0	
 C	racing_point	racing-point	Racing Point	united-kingdom	38	1	4	1	0	
 C	rae	rae	Rae	united-states-of-america	1	0	0	0	0	
 C	ram	ram	RAM	united-kingdom	44	0	0	0	0	
+C	rb-honda-rbpt	rb	RB	italy	24	0	0	0	0	
 C	rebaque	rebaque	Rebaque	mexico	3	0	0	0	0	
+C	red-bull	red-bull	Red Bull	austria	427	130	299	114	6	
+C	red-bull-cosworth	red-bull	Red Bull	austria	427	130	299	114	6	
+C	red-bull-ferrari	red-bull	Red Bull	austria	427	130	299	114	6	
+C	red-bull-honda	red-bull	Red Bull	austria	427	130	299	114	6	
+C	red-bull-honda-rbpt	red-bull	Red Bull	austria	427	130	299	114	6	
+C	red-bull-rbpt	red-bull	Red Bull	austria	427	130	299	114	6	
+C	red-bull-red-bull-ford	red-bull	Red Bull	austria	427	130	299	114	6	
+C	red-bull-renault	red-bull	Red Bull	austria	427	130	299	114	6	
+C	red-bull-tag-heuer	red-bull	Red Bull	austria	427	130	299	114	6	
+C	reif	reif	Reif	germany	1	0	0	0	0	
 C	renault	renault	Renault	france	403	35	103	51	2	
 C	rial	rial	Rial	germany	32	0	0	0	0	
+C	rial-ford	rial	Rial	germany	32	0	0	0	0	
 C	sauber	sauber	Sauber	switzerland	395	0	10	0	0	
+C	sauber-ferrari	sauber	Sauber	switzerland	395	0	10	0	0	
+C	sauber-ford	sauber	Sauber	switzerland	395	0	10	0	0	
+C	sauber-mercedes	sauber	Sauber	switzerland	395	0	10	0	0	
+C	sauber-petronas	sauber	Sauber	switzerland	395	0	10	0	0	
 C	scarab	scarab	Scarab	united-states-of-america	5	0	0	0	0	
 C	schroeder	schroeder	Schroeder	united-states-of-america	4	0	0	0	0	
 C	scirocco	scirocco	Scirocco	united-kingdom	7	0	0	0	0	
@@ -195,36 +355,72 @@ C	shadow-ford	shadow	Shadow	united-kingdom	112	1	7	3	0
 C	shadow-matra	shadow	Shadow	united-kingdom	112	1	7	3	0	
 C	shannon	shannon	Shannon	united-kingdom	1	0	0	0	0	
 C	sherman	sherman	Sherman	united-states-of-america	2	0	0	0	0	
+C	simca-gordini	simca-gordini	Simca-Gordini	france	15	0	0	0	0	
 C	simtek	simtek	Simtek	united-kingdom	21	0	0	0	0	
 C	snowberger	snowberger	Snowberger	united-states-of-america	1	0	0	0	0	
 C	spirit	spirit	Spirit	united-kingdom	25	0	0	0	0	
 C	spyker	spyker	Spyker	netherlands	17	0	0	0	0	
+C	spyker-ferrari	spyker	Spyker	netherlands	17	0	0	0	0	
 C	stebro	stebro	Stebro	canada	1	0	0	0	0	
 C	stevens	stevens	Stevens	united-states-of-america	6	0	0	1	0	
 C	stewart	stewart	Stewart	united-kingdom	49	1	5	1	0	
+C	stewart-ford	stewart	Stewart	united-kingdom	49	1	5	1	0	
+C	super-aguri	super-aguri	Super Aguri	japan	39	0	0	0	0	
+C	super-aguri-honda	super-aguri	Super Aguri	japan	39	0	0	0	0	
 C	super_aguri	super-aguri	Super Aguri	japan	39	0	0	0	0	
 C	surtees	surtees	Surtees	united-kingdom	119	0	2	0	0	
+C	surtees-ford	surtees	Surtees	united-kingdom	119	0	2	0	0	
 C	sutton	sutton	Sutton	united-states-of-america	1	0	0	0	0	
+C	talbot-lago	talbot-lago	Talbot-Lago	france	13	0	2	0	0	
 C	team_lotus	lotus	Lotus	united-kingdom	493	79	172	107	7	
 C	tec-mec	tec-mec	Tec-Mec	united-states-of-america	1	0	0	0	0	
 C	tecno	tecno	Tecno	italy	14	0	0	0	0	
 C	theodore	theodore	Theodore	hong-kong	51	0	0	0	0	
+C	theodore-ford	theodore	Theodore	hong-kong	51	0	0	0	0	
 C	token	token	Token	united-kingdom	4	0	0	0	0	
 C	toleman	toleman	Toleman	united-kingdom	70	0	3	1	0	
+C	toleman-hart	toleman	Toleman	united-kingdom	70	0	3	1	0	
 C	tomaso	de-tomaso	De Tomaso	italy	15	0	0	0	0	
+C	toro-rosso	toro-rosso	Toro Rosso	italy	268	1	3	1	0	
+C	toro-rosso	toro-rosso	Toro Rosso	italy	268	1	3	1	0	
+C	toro-rosso-cosworth	toro-rosso	Toro Rosso	italy	268	1	3	1	0	
+C	toro-rosso-ferrari	toro-rosso	Toro Rosso	italy	268	1	3	1	0	
+C	toro-rosso-honda	toro-rosso	Toro Rosso	italy	268	1	3	1	0	
+C	toro-rosso-renault	toro-rosso	Toro Rosso	italy	268	1	3	1	0	
 C	toro_rosso	toro-rosso	Toro Rosso	italy	268	1	3	1	0	
 C	toyota	toyota	Toyota	japan	140	0	13	3	0	
 C	trevis	trevis	Trevis	united-states-of-america	4	0	0	0	0	
 C	trojan	trojan	Trojan	united-kingdom	8	0	0	0	0	
 C	turner	turner	Turner	united-states-of-america	1	0	0	0	0	
 C	tyrrell	tyrrell	Tyrrell	united-kingdom	433	23	77	14	1	
+C	tyrrell-ford	tyrrell	Tyrrell	united-kingdom	433	23	77	14	1	
+C	tyrrell-ford-excluded	tyrrell	Tyrrell	united-kingdom	433	23	77	14	1	
+C	tyrrell-honda	tyrrell	Tyrrell	united-kingdom	433	23	77	14	1	
+C	tyrrell-ilmor	tyrrell	Tyrrell	united-kingdom	433	23	77	14	1	
+C	tyrrell-renault	tyrrell	Tyrrell	united-kingdom	433	23	77	14	1	
+C	tyrrell-yamaha	tyrrell	Tyrrell	united-kingdom	433	23	77	14	1	
 C	vanwall	vanwall	Vanwall	united-kingdom	29	10	14	7	1	
+C	venturi	venturi	Venturi	france	16	0	0	0	0	
+C	venturi-lamborghini	venturi	Venturi	france	16	0	0	0	0	
 C	veritas	veritas	Veritas	germany	6	0	0	0	0	
 C	vhristensen	christensen	Christensen	united-states-of-america	2	0	0	0	0	
 C	virgin	virgin	Virgin	united-kingdom	38	0	0	0	0	
+C	virgin-cosworth	virgin	Virgin	united-kingdom	38	0	0	0	0	
 C	watson	watson	Watson	united-states-of-america	9	3	5	2	0	
 C	wetteroth	wetteroth	Wetteroth	united-states-of-america	1	0	0	0	0	
+C	williams-bmw	williams	Williams	united-kingdom	860	114	314	128	9	
+C	williams-cosworth	williams	Williams	united-kingdom	860	114	314	128	9	
+C	williams-ford	williams	Williams	united-kingdom	860	114	314	128	9	
+C	williams-honda	williams	Williams	united-kingdom	860	114	314	128	9	
+C	williams-judd	williams	Williams	united-kingdom	860	114	314	128	9	
+C	williams-mecachrome	williams	Williams	united-kingdom	860	114	314	128	9	
+C	williams-mercedes	williams	Williams	united-kingdom	860	114	314	128	9	
+C	williams-renault	williams	Williams	united-kingdom	860	114	314	128	9	
+C	williams-supertec	williams	Williams	united-kingdom	860	114	314	128	9	
+C	williams-toyota	williams	Williams	united-kingdom	860	114	314	128	9	
 C	wolf	wolf	Wolf	canada	48	3	13	1	0	
+C	wolf-ford	wolf	Wolf	canada	48	3	13	1	0	
+C	wolf-williams	wolf-williams	Wolf-Williams	united-kingdom	16	0	0	0	0	
 C	zakspeed	zakspeed	Zakspeed	germany	74	0	0	0	0	
 D	Cannoc	john-cannon	John Cannon	canada	1	0	0	0	0	
 D	Changy	alain-de-changy	Alain de Changy	belgium	1	0	0	0	0	
@@ -232,16 +428,59 @@ D	abecassis	george-abecassis	George Abecassis	united-kingdom	2	0	0	0	0
 D	acheson	kenny-acheson	Kenny Acheson	united-kingdom	10	0	0	0	0	
 D	adamich	andrea-de-adamich	Andrea de Adamich	italy	36	0	0	0	0	
 D	adams	philippe-adams	Philippe Adams	belgium	2	0	0	0	0	
+D	adderly-fong	adderly-fong	Adderly Fong	hong-kong	0	0	0	0	0	
 D	ader	walt-ader	Walt Ader	united-states-of-america	1	0	0	0	0	
+D	adolf-brudes	adolf-brudes	Adolf Brudes	germany	1	0	0	0	0	
 D	adolff	kurt-adolff	Kurt Adolff	germany	1	0	0	0	0	
+D	adolfo-schwelm-cruz	adolfo-schwelm-cruz	Adolfo Schwelm Cruz	argentina	1	0	0	0	0	
+D	adrian-campos	adrian-campos	Adrián Campos	spain	21	0	0	0	0	
+D	adrian-sutil	adrian-sutil	Adrian Sutil	germany	128	0	0	0	0	
 D	agabashian	fred-agabashian	Fred Agabashian	united-states-of-america	9	0	0	1	0	
+D	aguri-suzuki	aguri-suzuki	Aguri Suzuki	japan	88	0	1	0	0	
 D	aitken	jack-aitken	Jack Aitken	united-kingdom	1	0	0	0	0	
+D	al-herman	al-herman	Al Herman	united-states-of-america	5	0	0	0	0	
+D	al-keller	al-keller	Al Keller	united-states-of-america	5	0	0	0	0	
+D	al-pease	al-pease	Al Pease	canada	3	0	0	0	0	
+D	alain-de-changy	alain-de-changy	Alain de Changy	belgium	1	0	0	0	0	
+D	alain-prost	alain-prost	Alain Prost	france	202	51	106	33	4	
+D	alan-brown	alan-brown	Alan Brown	united-kingdom	9	0	0	0	0	
+D	alan-jones	alan-jones	Alan Jones	australia	117	12	24	6	1	
+D	alan-rees	alan-rees	Alan Rees	united-kingdom	3	0	0	0	0	
+D	alan-rollinson	alan-rollinson	Alan Rollinson	united-kingdom	1	0	0	0	0	
+D	alan-stacey	alan-stacey	Alan Stacey	united-kingdom	7	0	0	0	0	
 D	alan_brown	alan-brown	Alan Brown	united-kingdom	9	0	0	0	0	
 D	albers	christijan-albers	Christijan Albers	netherlands	46	0	0	0	0	
+D	albert-scherrer	albert-scherrer	Albert Scherrer	switzerland	1	0	0	0	0	
+D	alberto-ascari	alberto-ascari	Alberto Ascari	italy	36	13	17	14	2	
+D	alberto-colombo	alberto-colombo	Alberto Colombo	italy	3	0	0	0	0	
+D	alberto-crespo	alberto-crespo	Alberto Crespo	argentina	1	0	0	0	0	
+D	alberto-rodriguez-larreta	alberto-rodriguez-larreta	Alberto Rodriguez Larreta	argentina	1	0	0	0	0	
+D	alberto-uria	alberto-uria	Alberto Uria	uruguay	2	0	0	0	0	
 D	alboreto	michele-alboreto	Michele Alboreto	italy	215	5	23	2	0	
+D	aldo-gordini	aldo-gordini	Aldo Gordini	france	1	0	0	0	0	
+D	alejandro-de-tomaso	alejandro-de-tomaso	Alejandro de Tomaso	argentina	2	0	0	0	0	
 D	alesi	jean-alesi	Jean Alesi	france	202	1	32	2	0	
+D	alessandro-nannini	alessandro-nannini	Alessandro Nannini	italy	78	1	9	0	0	
+D	alessandro-pesenti-rossi	alessandro-pesenti-rossi	Alessandro Pesenti-Rossi	italy	4	0	0	0	0	
+D	alex-caffi	alex-caffi	Alex Caffi	italy	76	0	0	0	0	
+D	alex-palou	alex-palou	Álex Palou	spain	0	0	0	0	0	
+D	alex-ribeiro	alex-ribeiro	Alex Ribeiro	brazil	20	0	0	0	0	
+D	alex-soler-roig	alex-soler-roig	Alex Soler-Roig	spain	10	0	0	0	0	
+D	alex-yoong	alex-yoong	Alex Yoong	malaysia	18	0	0	0	0	
+D	alex-zanardi	alex-zanardi	Alex Zanardi	italy	44	0	0	0	0	
+D	alexander-albon	alexander-albon	Alexander Albon	thailand	138	0	2	0	0	
+D	alexander-dunne	alexander-dunne	Alexander Dunne	ireland	0	0	0	0	0	
+D	alexander-rossi	alexander-rossi	Alexander Rossi	united-states-of-america	5	0	0	0	0	
+D	alexander-wurz	alexander-wurz	Alexander Wurz	austria	69	0	3	0	0	
 D	alexander_dunne	alexander-dunne	Alexander Dunne	ireland	0	0	0	0	0	
+D	alexandre-premat	alexandre-premat	Alexandre Prémat	france	0	0	0	0	0	
+D	alfonso-celis-jr	alfonso-celis-jr	Alfonso Celis Jr.	mexico	0	0	0	0	0	
+D	alfonso-de-portago	alfonso-de-portago	Alfonso de Portago	spain	6	0	1	0	0	
+D	alfonso-thiele	alfonso-thiele	Alfonso Thiele	united-states-of-america	1	0	0	0	0	
+D	alfredo-pian	alfredo-pian	Alfredo Pián	argentina	1	0	0	0	0	
 D	alguersuari	jaime-alguersuari	Jaime Alguersuari	spain	46	0	0	0	0	
+D	allan-mcnish	allan-mcnish	Allan McNish	united-kingdom	17	0	0	0	0	
+D	allen-berg	allen-berg	Allen Berg	canada	9	0	0	0	0	
 D	alliot	philippe-alliot	Philippe Alliot	france	116	0	0	0	0	
 D	allison	cliff-allison	Cliff Allison	united-kingdom	18	0	1	1	0	
 D	amati	giovanna-amati	Giovanna Amati	italy	3	0	0	0	0	
@@ -250,24 +489,54 @@ D	amick	red-amick	Red Amick	united-states-of-america	2	0	0	0	0
 D	amon	chris-amon	Chris Amon	new-zealand	108	0	11	5	0	
 D	anderson	bob-anderson	Bob Anderson	united-kingdom	29	0	1	0	0	
 D	andersson	conny-andersson	Conny Andersson	sweden	5	0	0	0	0	
+D	andre-guelfi	andre-guelfi	André Guelfi	france	1	0	0	0	0	
+D	andre-lotterer	andre-lotterer	André Lotterer	germany	1	0	0	0	0	
+D	andre-milhoux	andre-milhoux	André Milhoux	belgium	1	0	0	0	0	
+D	andre-pilette	andre-pilette	André Pilette	belgium	14	0	0	0	0	
+D	andre-simon	andre-simon	André Simon	france	12	0	0	0	0	
+D	andre-testut	andre-testut	André Testut	monaco	2	0	0	0	0	
 D	andre_pilette	andre-pilette	André Pilette	belgium	14	0	0	0	0	
+D	andrea-chiesa	andrea-chiesa	Andrea Chiesa	switzerland	10	0	0	0	0	
+D	andrea-de-adamich	andrea-de-adamich	Andrea de Adamich	italy	36	0	0	0	0	
+D	andrea-de-cesaris	andrea-de-cesaris	Andrea de Cesaris	italy	214	0	5	1	0	
+D	andrea-montermini	andrea-montermini	Andrea Montermini	italy	28	0	0	0	0	
 D	andretti	michael-andretti	Michael Andretti	united-states-of-america	13	0	1	0	0	
 D	andrews	keith-andrews	Keith Andrews	united-states-of-america	2	0	0	0	0	
+D	andy-linden	andy-linden	Andy Linden	united-states-of-america	11	0	0	0	0	
+D	andy-sutcliffe	andy-sutcliffe	Andy Sutcliffe	united-kingdom	1	0	0	0	0	
 D	angelis	elio-de-angelis	Elio de Angelis	italy	109	2	9	3	0	
+D	anthony-davidson	anthony-davidson	Anthony Davidson	united-kingdom	24	0	0	0	0	
+D	anthony-joseph-foyt	anthony-joseph-foyt	Anthony Joseph Foyt	united-states-of-america	3	0	0	0	0	
+D	antonio-creus	antonio-creus	Antonio Creus	spain	1	0	0	0	0	
+D	antonio-fuoco	antonio-fuoco	Antonio Fuoco	italy	0	0	0	0	0	
+D	antonio-giovinazzi	antonio-giovinazzi	Antonio Giovinazzi	italy	62	0	0	0	0	
+D	antonio-pizzonia	antonio-pizzonia	Antônio Pizzonia	brazil	20	0	0	0	0	
 D	antonio_fuoco	antonio-fuoco	Antonio Fuoco	italy	0	0	0	0	0	
 D	apicella	marco-apicella	Marco Apicella	italy	1	0	0	0	0	
+D	archie-scott-brown	archie-scott-brown	Archie Scott Brown	united-kingdom	1	0	0	0	0	
 D	armi	frank-armi	Frank Armi	united-states-of-america	1	0	0	0	0	
 D	arnold	chuck-arnold	Chuck Arnold	united-states-of-america	1	0	0	0	0	
 D	arnoux	rene-arnoux	René Arnoux	france	164	7	22	18	0	
+D	art-bisch	art-bisch	Art Bisch	united-states-of-america	1	0	0	0	0	
+D	art-cross	art-cross	Art Cross	united-states-of-america	4	0	1	0	0	
+D	artem-markelov	artem-markelov	Artem Markelov	russia	0	0	0	0	0	
+D	arthur-leclerc	arthur-leclerc	Arthur Leclerc	monaco	0	0	0	0	0	
+D	arthur-legat	arthur-legat	Arthur Legat	belgium	2	0	0	0	0	
+D	arthur-owen	arthur-owen	Arthur Owen	united-kingdom	1	0	0	0	0	
 D	arthur_leclerc	arthur-leclerc	Arthur Leclerc	monaco	0	0	0	0	0	
+D	arturo-merzario	arturo-merzario	Arturo Merzario	italy	85	0	0	0	0	
 D	arundell	peter-arundell	Peter Arundell	united-kingdom	13	0	2	0	0	
+D	arvid-lindblad	arvid-lindblad	Arvid Lindblad	united-kingdom	9	0	0	0	0	
 D	ascari	alberto-ascari	Alberto Ascari	italy	36	13	17	14	2	
+D	asdrubal-fontes-bayardo	asdrubal-fontes-bayardo	Asdrúbal Fontes Bayardo	uruguay	1	0	0	0	0	
 D	ashdown	peter-ashdown	Peter Ashdown	united-kingdom	1	0	0	0	0	
 D	ashley	ian-ashley	Ian Ashley	united-kingdom	11	0	0	0	0	
 D	ashmore	gerry-ashmore	Gerry Ashmore	united-kingdom	4	0	0	0	0	
 D	aston	bill-aston	Bill Aston	united-kingdom	3	0	0	0	0	
 D	attwood	richard-attwood	Richard Attwood	united-kingdom	18	0	1	0	0	
+D	ayrton-senna	ayrton-senna	Ayrton Senna	brazil	162	41	80	65	3	
 D	ayulo	manny-ayulo	Manny Ayulo	united-states-of-america	4	0	1	0	0	
+D	ayumu-iwasa	ayumu-iwasa	Ayumu Iwasa	japan	0	0	0	0	0	
 D	ayumu_iwasa	ayumu-iwasa	Ayumu Iwasa	japan	0	0	0	0	0	
 D	badoer	luca-badoer	Luca Badoer	italy	58	0	0	0	0	
 D	baghetti	giancarlo-baghetti	Giancarlo Baghetti	italy	21	1	1	0	0	
@@ -283,9 +552,12 @@ D	barilla	paolo-barilla	Paolo Barilla	italy	15	0	0	0	0
 D	barrichello	rubens-barrichello	Rubens Barrichello	brazil	326	11	68	14	0	
 D	bartels	michael-bartels	Michael Bartels	germany	4	0	0	0	0	
 D	barth	edgar-barth	Edgar Barth	germany	5	0	0	0	0	
+D	bas-leinders	bas-leinders	Bas Leinders	belgium	0	0	0	0	0	
+D	basil-van-rooyen	basil-van-rooyen	Basil van Rooyen	south-africa	2	0	0	0	0	
 D	bassi	giorgio-bassi	Giorgio Bassi	italy	1	0	0	0	0	
 D	bauer	erwin-bauer	Erwin Bauer	germany	1	0	0	0	0	
 D	baumgartner	zsolt-baumgartner	Zsolt Baumgartner	hungary	20	0	0	0	0	
+D	bayliss-levrett	bayliss-levrett	Bayliss Levrett	united-states-of-america	1	0	0	0	0	
 D	bayol	elie-bayol	Élie Bayol	france	8	0	0	0	0	
 D	beaufort	carel-godin-de-beaufort	Carel Godin de Beaufort	netherlands	31	0	0	0	0	
 D	beauman	don-beauman	Don Beauman	united-kingdom	1	0	0	0	0	
@@ -295,26 +567,62 @@ D	bellof	stefan-bellof	Stefan Bellof	germany	22	0	0	0	0
 D	belmondo	paul-belmondo	Paul Belmondo	france	27	0	0	0	0	
 D	belso	tom-belso	Tom Belsø	denmark	5	0	0	0	0	
 D	beltoise	jean-pierre-beltoise	Jean-Pierre Beltoise	france	88	1	8	0	0	
+D	ben-pon	ben-pon	Ben Pon	netherlands	1	0	0	0	0	
+D	beppe-gabbiani	beppe-gabbiani	Beppe Gabbiani	italy	17	0	0	0	0	
 D	beretta	olivier-beretta	Olivier Beretta	monaco	10	0	0	0	0	
 D	berg	allen-berg	Allen Berg	canada	9	0	0	0	0	
 D	berger	gerhard-berger	Gerhard Berger	austria	210	10	48	12	0	
 D	bernard	eric-bernard	Éric Bernard	france	47	0	1	0	0	
+D	bernard-collomb	bernard-collomb	Bernard Collomb	france	6	0	0	0	0	
+D	bernard-de-dryver	bernard-de-dryver	Bernard de Dryver	belgium	2	0	0	0	0	
+D	bernd-schneider	bernd-schneider	Bernd Schneider	germany	34	0	0	0	0	
+D	bernie-ecclestone	bernie-ecclestone	Bernie Ecclestone	united-kingdom	1	0	0	0	0	
 D	bernoldi	enrique-bernoldi	Enrique Bernoldi	brazil	29	0	0	0	0	
 D	bertaggia	enrico-bertaggia	Enrico Bertaggia	italy	7	0	0	0	0	
+D	bertil-roos	bertil-roos	Bertil Roos	sweden	1	0	0	0	0	
+D	bertrand-gachot	bertrand-gachot	Bertrand Gachot	france	84	0	0	0	0	
 D	bettenhausen	tony-bettenhausen	Tony Bettenhausen	united-states-of-america	13	0	1	0	0	
 D	beuttler	mike-beuttler	Mike Beuttler	united-kingdom	29	0	0	0	0	
 D	bianchi	lucien-bianchi	Lucien Bianchi	belgium	19	0	1	0	0	
 D	bianco	gino-bianco	Gino Bianco	brazil	4	0	0	0	0	
+D	bill-aston	bill-aston	Bill Aston	united-kingdom	3	0	0	0	0	
+D	bill-brack	bill-brack	Bill Brack	canada	3	0	0	0	0	
+D	bill-cantrell	bill-cantrell	Bill Cantrell	united-states-of-america	1	0	0	0	0	
+D	bill-cheesbourg	bill-cheesbourg	Bill Cheesbourg	united-states-of-america	3	0	0	0	0	
+D	bill-holland	bill-holland	Bill Holland	united-states-of-america	2	0	1	0	0	
+D	bill-homeier	bill-homeier	Bill Homeier	united-states-of-america	4	0	0	0	0	
+D	bill-mackey	bill-mackey	Bill Mackey	united-states-of-america	1	0	0	0	0	
+D	bill-moss	bill-moss	Bill Moss	united-kingdom	1	0	0	0	0	
+D	bill-schindler	bill-schindler	Bill Schindler	united-states-of-america	3	0	0	0	0	
+D	bill-vukovich	bill-vukovich	Bill Vukovich	united-states-of-america	5	2	2	1	0	
+D	bill-whitehouse	bill-whitehouse	Bill Whitehouse	united-kingdom	1	0	0	0	0	
 D	bill_moss	bill-moss	Bill Moss	united-kingdom	1	0	0	0	0	
+D	billy-garrett	billy-garrett	Billy Garrett	united-states-of-america	2	0	0	0	0	
 D	binder	hans-binder	Hans Binder	austria	15	0	0	0	0	
 D	biondetti	clemente-biondetti	Clemente Biondetti	italy	1	0	0	0	0	
+D	birabongse-bhanudej	birabongse-bhanudej	Birabongse Bhanudej	thailand	19	0	0	0	0	
 D	birger	pablo-birger	Pablo Birger	argentina	2	0	0	0	0	
 D	bisch	art-bisch	Art Bisch	united-states-of-america	1	0	0	0	0	
+D	bjorn-wirdheim	bjorn-wirdheim	Björn Wirdheim	sweden	0	0	0	0	0	
 D	blanchard	harry-blanchard	Harry Blanchard	united-states-of-america	1	0	0	0	0	
 D	bleekemolen	michael-bleekemolen	Michael Bleekemolen	netherlands	5	0	0	0	0	
 D	blokdyk	trevor-blokdyk	Trevor Blokdyk	south-africa	2	0	0	0	0	
 D	blundell	mark-blundell	Mark Blundell	united-kingdom	63	0	3	0	0	
+D	bob-anderson	bob-anderson	Bob Anderson	united-kingdom	29	0	1	0	0	
+D	bob-bondurant	bob-bondurant	Bob Bondurant	united-states-of-america	9	0	0	0	0	
+D	bob-christie	bob-christie	Bob Christie	united-states-of-america	5	0	0	0	0	
+D	bob-drake	bob-drake	Bob Drake	united-states-of-america	1	0	0	0	0	
+D	bob-evans	bob-evans	Bob Evans	united-kingdom	12	0	0	0	0	
+D	bob-gerard	bob-gerard	Bob Gerard	united-kingdom	8	0	0	0	0	
+D	bob-said	bob-said	Bob Said	united-states-of-america	1	0	0	0	0	
+D	bob-scott	bob-scott	Bob Scott	united-states-of-america	5	0	0	0	0	
+D	bob-sweikert	bob-sweikert	Bob Sweikert	united-states-of-america	5	1	1	0	0	
+D	bob-veith	bob-veith	Bob Veith	united-states-of-america	5	0	0	0	0	
 D	bob_scott	bob-scott	Bob Scott	united-states-of-america	5	0	0	0	0	
+D	bobby-ball	bobby-ball	Bobby Ball	united-states-of-america	2	0	0	0	0	
+D	bobby-grim	bobby-grim	Bobby Grim	united-states-of-america	2	0	0	0	0	
+D	bobby-rahal	bobby-rahal	Bobby Rahal	united-states-of-america	2	0	0	0	0	
+D	bobby-unser	bobby-unser	Bobby Unser	united-states-of-america	2	0	0	0	0	
 D	boesel	raul-boesel	Raul Boesel	brazil	30	0	0	0	0	
 D	bondurant	bob-bondurant	Bob Bondurant	united-states-of-america	9	0	0	0	0	
 D	bonetto	felice-bonetto	Felice Bonetto	italy	17	0	2	0	0	
@@ -326,6 +634,7 @@ D	botha	luki-botha	Luki Botha	south-africa	1	0	0	0	0
 D	boullion	jean-christophe-boullion	Jean-Christophe Boullion	france	11	0	0	0	0	
 D	bourdais	sebastien-bourdais	Sébastien Bourdais	france	27	0	0	0	0	
 D	boutsen	thierry-boutsen	Thierry Boutsen	belgium	164	3	15	1	0	
+D	boy-hayje	boy-hayje	Boy Hayje	netherlands	7	0	0	0	0	
 D	boyd	johnny-boyd	Johnny Boyd	united-states-of-america	6	0	1	0	0	
 D	brabham	david-brabham	David Brabham	australia	30	0	0	0	0	
 D	brack	bill-brack	Bill Brack	canada	3	0	0	0	0	
@@ -334,20 +643,37 @@ D	branca	toni-branca	Toni Branca	switzerland	3	0	0	0	0
 D	brancatelli	gianfranco-brancatelli	Gianfranco Brancatelli	italy	3	0	0	0	0	
 D	brandon	eric-brandon	Eric Brandon	united-kingdom	5	0	0	0	0	
 D	branson	don-branson	Don Branson	united-states-of-america	2	0	0	0	0	
+D	brausch-niemann	brausch-niemann	Brausch Niemann	south-africa	2	0	0	0	0	
+D	brendon-hartley	brendon-hartley	Brendon Hartley	new-zealand	25	0	0	0	0	
 D	brendon_hartley	brendon-hartley	Brendon Hartley	new-zealand	25	0	0	0	0	
+D	brett-lunger	brett-lunger	Brett Lunger	united-states-of-america	43	0	0	0	0	
+D	brian-gubby	brian-gubby	Brian Gubby	united-kingdom	1	0	0	0	0	
+D	brian-hart	brian-hart	Brian Hart	united-kingdom	1	0	0	0	0	
+D	brian-henton	brian-henton	Brian Henton	united-kingdom	37	0	0	0	0	
+D	brian-mcguire	brian-mcguire	Brian McGuire	australia	1	0	0	0	0	
+D	brian-naylor	brian-naylor	Brian Naylor	united-kingdom	8	0	0	0	0	
+D	brian-redman	brian-redman	Brian Redman	united-kingdom	15	0	1	0	0	
+D	brian-shawe-taylor	brian-shawe-taylor	Brian Shawe-Taylor	united-kingdom	2	0	0	0	0	
 D	bridger	tom-bridger	Tom Bridger	united-kingdom	1	0	0	0	0	
 D	brise	tony-brise	Tony Brise	united-kingdom	10	0	0	0	0	
 D	bristow	chris-bristow	Chris Bristow	united-kingdom	4	0	0	0	0	
 D	broeker	peter-broeker	Peter Broeker	canada	1	0	0	0	0	
 D	brooks	tony-brooks	Tony Brooks	united-kingdom	41	6	10	2	0	
 D	brown	warwick-brown	Warwick Brown	australia	1	0	0	0	0	
+D	bruce-halford	bruce-halford	Bruce Halford	united-kingdom	9	0	0	0	0	
+D	bruce-johnstone	bruce-johnstone	Bruce Johnstone	south-africa	1	0	0	0	0	
+D	bruce-kessler	bruce-kessler	Bruce Kessler	united-states-of-america	1	0	0	0	0	
+D	bruce-mclaren	bruce-mclaren	Bruce McLaren	new-zealand	104	4	27	0	0	
 D	brudes	adolf-brudes	Adolf Brudes	germany	1	0	0	0	0	
 D	brundle	martin-brundle	Martin Brundle	united-kingdom	165	0	9	0	0	
 D	bruni	gianmaria-bruni	Gianmaria Bruni	italy	18	0	0	0	0	
+D	bruno-giacomelli	bruno-giacomelli	Bruno Giacomelli	italy	82	0	1	1	0	
+D	bruno-senna	bruno-senna	Bruno Senna	brazil	46	0	0	0	0	
 D	bruno_senna	bruno-senna	Bruno Senna	brazil	46	0	0	0	0	
 D	bryan	jimmy-bryan	Jimmy Bryan	united-states-of-america	9	1	3	0	0	
 D	bucci	clemar-bucci	Clemar Bucci	argentina	5	0	0	0	0	
 D	bucknum	ronnie-bucknum	Ronnie Bucknum	united-states-of-america	11	0	0	0	0	
+D	bud-tingelstad	bud-tingelstad	Bud Tingelstad	united-states-of-america	1	0	0	0	0	
 D	bueb	ivor-bueb	Ivor Bueb	united-kingdom	6	0	0	0	0	
 D	buemi	sebastien-buemi	Sébastien Buemi	switzerland	55	0	0	0	0	
 D	bueno	luiz-bueno	Luiz Bueno	brazil	1	0	0	0	0	
@@ -360,44 +686,95 @@ D	cabianca	giulio-cabianca	Giulio Cabianca	italy	4	0	0	0	0
 D	cabral	mario-de-araujo-cabral	Mário de Araújo Cabral	portugal	5	0	0	0	0	
 D	cade	phil-cade	Phil Cade	united-states-of-america	1	0	0	0	0	
 D	caffi	alex-caffi	Alex Caffi	italy	76	0	0	0	0	
+D	cal-niday	cal-niday	Cal Niday	united-states-of-america	3	0	0	0	0	
+D	callum-ilott	callum-ilott	Callum Ilott	united-kingdom	0	0	0	0	0	
 D	campbell-jones	john-campbell-jones	John Campbell-Jones	united-kingdom	2	0	0	0	0	
 D	campos	adrian-campos	Adrián Campos	spain	21	0	0	0	0	
 D	cantoni	eitel-cantoni	Eitel Cantoni	uruguay	3	0	0	0	0	
 D	cantrell	bill-cantrell	Bill Cantrell	united-states-of-america	1	0	0	0	0	
 D	capelli	ivan-capelli	Ivan Capelli	italy	98	0	3	0	0	
+D	carel-godin-de-beaufort	carel-godin-de-beaufort	Carel Godin de Beaufort	netherlands	31	0	0	0	0	
 D	carini	piero-carini	Piero Carini	italy	3	0	0	0	0	
+D	carl-forberg	carl-forberg	Carl Forberg	united-states-of-america	1	0	0	0	0	
+D	carl-scarborough	carl-scarborough	Carl Scarborough	united-states-of-america	2	0	0	0	0	
+D	carlo-facetti	carlo-facetti	Carlo Facetti	italy	1	0	0	0	0	
+D	carlo-franchi	carlo-franchi	Carlo Franchi	italy	1	0	0	0	0	
+D	carlos-menditeguy	carlos-menditeguy	Carlos Menditéguy	argentina	12	0	1	0	0	
+D	carlos-pace	carlos-pace	Carlos Pace	brazil	73	1	6	1	0	
+D	carlos-reutemann	carlos-reutemann	Carlos Reutemann	argentina	146	12	45	6	0	
+D	carlos-sainz-jr	carlos-sainz-jr	Carlos Sainz Jr.	spain	241	4	29	5	0	
+D	carroll-shelby	carroll-shelby	Carroll Shelby	united-states-of-america	9	0	0	0	0	
 D	castellotti	eugenio-castellotti	Eugenio Castellotti	italy	18	0	3	1	0	
+D	cecil-green	cecil-green	Cecil Green	united-states-of-america	2	0	0	0	0	
 D	cecotto	johnny-cecotto	Johnny Cecotto	venezuela	23	0	0	0	0	
+D	cesare-perdisa	cesare-perdisa	Cesare Perdisa	italy	9	0	2	0	0	
 D	cesaris	andrea-de-cesaris	Andrea de Cesaris	italy	214	0	5	1	0	
 D	cevert	francois-cevert	François Cevert	france	48	1	13	0	0	
 D	chaboud	eugene-chaboud	Eugène Chaboud	france	4	0	0	0	0	
 D	chamberlain	jay-chamberlain	Jay Chamberlain	united-states-of-america	3	0	0	0	0	
 D	chandhok	karun-chandhok	Karun Chandhok	india	11	0	0	0	0	
+D	chanoch-nissany	chanoch-nissany	Chanoch Nissany	israel	0	0	0	0	0	
 D	chapman	colin-chapman	Colin Chapman	united-kingdom	1	0	0	0	0	
+D	charles-de-tornaco	charles-de-tornaco	Charles de Tornaco	belgium	4	0	0	0	0	
+D	charles-leclerc	charles-leclerc	Charles Leclerc	monaco	182	9	53	24	0	
+D	charles-pic	charles-pic	Charles Pic	france	39	0	0	0	0	
+D	charles-pozzi	charles-pozzi	Charles Pozzi	france	1	0	0	0	0	
 D	charlton	dave-charlton	Dave Charlton	south-africa	14	0	0	0	0	
 D	charrington	robin-montgomerie-charrington	Robin Montgomerie-Charrington	united-kingdom	1	0	0	0	0	
 D	chaves	pedro-chaves	Pedro Chaves	portugal	13	0	0	0	0	
 D	cheesbourg	bill-cheesbourg	Bill Cheesbourg	united-states-of-america	3	0	0	0	0	
 D	cheever	eddie-cheever	Eddie Cheever	united-states-of-america	143	0	9	0	0	
+D	chet-miller	chet-miller	Chet Miller	united-states-of-america	2	0	0	0	0	
+D	chico-landi	chico-landi	Chico Landi	brazil	6	0	0	0	0	
+D	chico-serra	chico-serra	Chico Serra	brazil	33	0	0	0	0	
 D	chiesa	andrea-chiesa	Andrea Chiesa	switzerland	10	0	0	0	0	
 D	chilton	max-chilton	Max Chilton	united-kingdom	35	0	0	0	0	
 D	chimeri	ettore-chimeri	Ettore Chimeri	venezuela	1	0	0	0	0	
 D	chiron	louis-chiron	Louis Chiron	monaco	19	0	1	0	0	
 D	chitwood	joie-chitwood	Joie Chitwood	united-states-of-america	1	0	0	0	0	
+D	chris-amon	chris-amon	Chris Amon	new-zealand	108	0	11	5	0	
+D	chris-bristow	chris-bristow	Chris Bristow	united-kingdom	4	0	0	0	0	
+D	chris-craft	chris-craft	Chris Craft	united-kingdom	2	0	0	0	0	
+D	chris-irwin	chris-irwin	Chris Irwin	united-kingdom	10	0	0	0	0	
+D	chris-lawrence	chris-lawrence	Chris Lawrence	united-kingdom	2	0	0	0	0	
+D	christian-danner	christian-danner	Christian Danner	germany	47	0	0	0	0	
+D	christian-fittipaldi	christian-fittipaldi	Christian Fittipaldi	brazil	43	0	0	0	0	
+D	christian-goethals	christian-goethals	Christian Goethals	belgium	1	0	0	0	0	
+D	christian-klien	christian-klien	Christian Klien	austria	51	0	0	0	0	
 D	christie	bob-christie	Bob Christie	united-states-of-america	5	0	0	0	0	
+D	christijan-albers	christijan-albers	Christijan Albers	netherlands	46	0	0	0	0	
+D	christophe-bouchut	christophe-bouchut	Christophe Bouchut	france	0	0	0	0	0	
+D	chuck-arnold	chuck-arnold	Chuck Arnold	united-states-of-america	1	0	0	0	0	
+D	chuck-daigh	chuck-daigh	Chuck Daigh	united-states-of-america	6	0	0	0	0	
+D	chuck-stevenson	chuck-stevenson	Chuck Stevenson	united-states-of-america	7	0	0	0	0	
+D	chuck-weyant	chuck-weyant	Chuck Weyant	united-states-of-america	4	0	0	0	0	
+D	cian-shields	cian-shields	Cian Shields	united-kingdom	0	0	0	0	0	
 D	cian_shields	cian-shields	Cian Shields	united-kingdom	0	0	0	0	0	
 D	claes	johnny-claes	Johnny Claes	belgium	25	0	0	0	0	
 D	clark	jim-clark	Jim Clark	united-kingdom	74	25	32	33	2	
+D	claudio-langes	claudio-langes	Claudio Langes	italy	14	0	0	0	0	
+D	clay-regazzoni	clay-regazzoni	Clay Regazzoni	switzerland	139	5	28	5	0	
+D	clemar-bucci	clemar-bucci	Clemar Bucci	argentina	5	0	0	0	0	
+D	clemente-biondetti	clemente-biondetti	Clemente Biondetti	italy	1	0	0	0	0	
+D	cliff-allison	cliff-allison	Cliff Allison	united-kingdom	18	0	1	1	0	
+D	cliff-griffith	cliff-griffith	Cliff Griffith	united-states-of-america	3	0	0	0	0	
+D	clive-puzey	clive-puzey	Clive Puzey	zimbabwe	1	0	0	0	0	
 D	cogan	kevin-cogan	Kevin Cogan	united-states-of-america	2	0	0	0	0	
+D	colin-chapman	colin-chapman	Colin Chapman	united-kingdom	1	0	0	0	0	
+D	colin-davis	colin-davis	Colin Davis	united-kingdom	2	0	0	0	0	
 D	collins	peter-collins	Peter Collins	united-kingdom	39	3	9	0	0	
 D	collomb	bernard-collomb	Bernard Collomb	france	6	0	0	0	0	
 D	colombo	alberto-colombo	Alberto Colombo	italy	3	0	0	0	0	
+D	colton-herta	colton-herta	Colton Herta	united-states-of-america	0	0	0	0	0	
 D	colton_herta	colton-herta	Colton Herta	united-states-of-america	0	0	0	0	0	
 D	comas	erik-comas	Érik Comas	france	63	0	0	0	0	
 D	comotti	franco-comotti	Franco Comotti	italy	2	0	0	0	0	
 D	connor	pat-oconnor	Pat O'Connor	united-states-of-america	5	0	0	1	0	
+D	conny-andersson	conny-andersson	Conny Andersson	sweden	5	0	0	0	0	
+D	consalvo-sanesi	consalvo-sanesi	Consalvo Sanesi	italy	5	0	0	0	0	
 D	constantine	george-constantine	George Constantine	united-states-of-america	1	0	0	0	0	
 D	cordts	john-cordts	John Cordts	canada	1	0	0	0	0	
+D	corrado-fabi	corrado-fabi	Corrado Fabi	italy	18	0	0	0	0	
 D	corrado_fabi	corrado-fabi	Corrado Fabi	italy	18	0	0	0	0	
 D	coulthard	david-coulthard	David Coulthard	united-kingdom	247	13	62	12	0	
 D	courage	piers-courage	Piers Courage	united-kingdom	30	0	2	0	0	
@@ -405,71 +782,174 @@ D	craft	chris-craft	Chris Craft	united-kingdom	2	0	0	0	0
 D	crawford	jim-crawford	Jim Crawford	united-kingdom	2	0	0	0	0	
 D	crespo	alberto-crespo	Alberto Crespo	argentina	1	0	0	0	0	
 D	creus	antonio-creus	Antonio Creus	spain	1	0	0	0	0	
+D	cristiano-da-matta	cristiano-da-matta	Cristiano da Matta	brazil	28	0	0	0	0	
 D	crockett	larry-crockett	Larry Crockett	united-states-of-america	1	0	0	0	0	
 D	crook	tony-crook	Tony Crook	united-kingdom	2	0	0	0	0	
 D	cross	art-cross	Art Cross	united-states-of-america	4	0	1	0	0	
 D	crossley	geoffrey-crossley	Geoffrey Crossley	united-kingdom	2	0	0	0	0	
+D	cuth-harrison	cuth-harrison	Cuth Harrison	united-kingdom	3	0	0	0	0	
 D	daigh	chuck-daigh	Chuck Daigh	united-states-of-america	6	0	0	0	0	
 D	dalmas	yannick-dalmas	Yannick Dalmas	france	50	0	0	0	0	
 D	daly	derek-daly	Derek Daly	ireland	64	0	0	0	0	
+D	damien-magee	damien-magee	Damien Magee	united-kingdom	2	0	0	0	0	
+D	damon-hill	damon-hill	Damon Hill	united-kingdom	122	22	42	20	1	
 D	damon_hill	damon-hill	Damon Hill	united-kingdom	122	22	42	20	1	
+D	dan-gurney	dan-gurney	Dan Gurney	united-states-of-america	87	4	19	3	0	
+D	dani-clos	dani-clos	Dani Clos	spain	0	0	0	0	0	
+D	daniel-juncadella	daniel-juncadella	Daniel Juncadella	spain	0	0	0	0	0	
+D	daniel-ricciardo	daniel-ricciardo	Daniel Ricciardo	australia	257	8	32	3	0	
+D	daniil-kvyat	daniil-kvyat	Daniil Kvyat	russia	112	0	3	0	0	
 D	danner	christian-danner	Christian Danner	germany	47	0	0	0	0	
+D	danny-kladis	danny-kladis	Danny Kladis	united-states-of-america	1	0	0	0	0	
+D	danny-ongais	danny-ongais	Danny Ongais	united-states-of-america	6	0	0	0	0	
+D	danny-sullivan	danny-sullivan	Danny Sullivan	united-states-of-america	15	0	0	0	0	
 D	daponte	jorge-daponte	Jorge Daponte	argentina	2	0	0	0	0	
 D	darter	duane-carter	Duane Carter	united-states-of-america	10	0	1	0	0	
+D	dave-charlton	dave-charlton	Dave Charlton	south-africa	14	0	0	0	0	
+D	dave-morgan	dave-morgan	Dave Morgan	united-kingdom	1	0	0	0	0	
+D	david-brabham	david-brabham	David Brabham	australia	30	0	0	0	0	
+D	david-coulthard	david-coulthard	David Coulthard	united-kingdom	247	13	62	12	0	
+D	david-hampshire	david-hampshire	David Hampshire	united-kingdom	2	0	0	0	0	
+D	david-hobbs	david-hobbs	David Hobbs	united-kingdom	7	0	0	0	0	
+D	david-kennedy	david-kennedy	David Kennedy	ireland	7	0	0	0	0	
+D	david-murray	david-murray	David Murray	united-kingdom	5	0	0	0	0	
+D	david-piper	david-piper	David Piper	united-kingdom	3	0	0	0	0	
+D	david-prophet	david-prophet	David Prophet	united-kingdom	2	0	0	0	0	
+D	david-purley	david-purley	David Purley	united-kingdom	11	0	0	0	0	
+D	david-walker	david-walker	David Walker	australia	11	0	0	0	0	
+D	davide-valsecchi	davide-valsecchi	Davide Valsecchi	italy	0	0	0	0	0	
 D	davidson	anthony-davidson	Anthony Davidson	united-kingdom	24	0	0	0	0	
 D	davies	jimmy-davies	Jimmy Davies	united-states-of-america	6	0	1	0	0	
 D	davis	colin-davis	Colin Davis	united-kingdom	2	0	0	0	0	
 D	daywalt	jimmy-daywalt	Jimmy Daywalt	united-states-of-america	6	0	0	0	0	
 D	de_vries	nyck-de-vries	Nyck de Vries	netherlands	11	0	0	0	0	
 D	deletraz	jean-denis-deletraz	Jean-Denis Délétraz	switzerland	3	0	0	0	0	
+D	dempsey-wilson	dempsey-wilson	Dempsey Wilson	united-states-of-america	2	0	0	0	0	
 D	dempsey_wilson	dempsey-wilson	Dempsey Wilson	united-states-of-america	2	0	0	0	0	
+D	dennis-poore	dennis-poore	Dennis Poore	united-kingdom	2	0	0	0	0	
+D	dennis-taylor	dennis-taylor	Dennis Taylor	united-kingdom	1	0	0	0	0	
 D	dennis_taylor	dennis-taylor	Dennis Taylor	united-kingdom	1	0	0	0	0	
+D	denny-hulme	denny-hulme	Denny Hulme	new-zealand	112	8	33	1	1	
 D	depailler	patrick-depailler	Patrick Depailler	france	95	2	19	1	0	
+D	derek-bell	derek-bell	Derek Bell	united-kingdom	16	0	0	0	0	
+D	derek-daly	derek-daly	Derek Daly	ireland	64	0	0	0	0	
+D	derek-warwick	derek-warwick	Derek Warwick	united-kingdom	162	0	4	0	0	
+D	desire-wilson	desire-wilson	Desiré Wilson	south-africa	1	0	0	0	0	
 D	desire_wilson	desire-wilson	Desiré Wilson	south-africa	1	0	0	0	0	
+D	desmond-titterington	desmond-titterington	Desmond Titterington	united-kingdom	1	0	0	0	0	
+D	dick-gibson	dick-gibson	Dick Gibson	united-kingdom	2	0	0	0	0	
+D	dick-rathmann	dick-rathmann	Dick Rathmann	united-states-of-america	5	0	0	1	0	
 D	dick_rathmann	dick-rathmann	Dick Rathmann	united-states-of-america	5	0	0	1	0	
+D	didier-pironi	didier-pironi	Didier Pironi	france	72	3	13	4	0	
+D	dieter-quester	dieter-quester	Dieter Quester	austria	2	0	0	0	0	
 D	diniz	pedro-diniz	Pedro Diniz	brazil	99	0	0	0	0	
+D	dino-beganovic	dino-beganovic	Dino Beganovic	sweden	0	0	0	0	0	
 D	dino_beganovic	dino-beganovic	Dino Beganovic	sweden	0	0	0	0	0	
 D	dinsmore	duke-dinsmore	Duke Dinsmore	united-states-of-america	4	0	0	0	0	
+D	divina-galica	divina-galica	Divina Galica	united-kingdom	3	0	0	0	0	
 D	dochnal	frank-dochnal	Frank Dochnal	united-states-of-america	1	0	0	0	0	
 D	dolhem	jose-dolhem	José Dolhem	france	3	0	0	0	0	
+D	domenico-schiattarella	domenico-schiattarella	Domenico Schiattarella	italy	7	0	0	0	0	
+D	don-beauman	don-beauman	Don Beauman	united-kingdom	1	0	0	0	0	
+D	don-branson	don-branson	Don Branson	united-states-of-america	2	0	0	0	0	
+D	don-edmunds	don-edmunds	Don Edmunds	united-states-of-america	1	0	0	0	0	
+D	don-freeland	don-freeland	Don Freeland	united-states-of-america	8	0	1	0	0	
 D	donnelly	martin-donnelly	Martin Donnelly	united-kingdom	15	0	0	0	0	
 D	donohue	mark-donohue	Mark Donohue	united-states-of-america	16	0	1	0	0	
 D	doohan	jack-doohan	Jack Doohan	australia	7	0	0	0	0	
 D	doornbos	robert-doornbos	Robert Doornbos	netherlands	11	0	0	0	0	
+D	dorino-serafini	dorino-serafini	Dorino Serafini	italy	1	0	1	0	0	
+D	doug-serrurier	doug-serrurier	Doug Serrurier	south-africa	3	0	0	0	0	
 D	downing	ken-downing	Ken Downing	united-kingdom	2	0	0	0	0	
 D	drake	bob-drake	Bob Drake	united-states-of-america	1	0	0	0	0	
+D	dries-van-der-lof	dries-van-der-lof	Dries van der Lof	netherlands	1	0	0	0	0	
 D	driver	paddy-driver	Paddy Driver	south-africa	2	0	0	0	0	
 D	drogo	piero-drogo	Piero Drogo	italy	1	0	0	0	0	
 D	dryver	bernard-de-dryver	Bernard de Dryver	belgium	2	0	0	0	0	
+D	duane-carter	duane-carter	Duane Carter	united-states-of-america	10	0	1	0	0	
+D	duke-dinsmore	duke-dinsmore	Duke Dinsmore	united-states-of-america	4	0	0	0	0	
+D	duke-nalon	duke-nalon	Duke Nalon	united-states-of-america	3	0	0	1	0	
 D	dumfries	johnny-dumfries	Johnny Dumfries	united-kingdom	16	0	0	0	0	
 D	duncan	len-duncan	Len Duncan	united-states-of-america	1	0	0	0	0	
+D	duncan-hamilton	duncan-hamilton	Duncan Hamilton	united-kingdom	5	0	0	0	0	
 D	duncan_hamilton	duncan-hamilton	Duncan Hamilton	united-kingdom	5	0	0	0	0	
 D	dusio	piero-dusio	Piero Dusio	italy	1	0	0	0	0	
 D	eaton	george-eaton	George Eaton	canada	13	0	0	0	0	
 D	ecclestone	bernie-ecclestone	Bernie Ecclestone	united-kingdom	1	0	0	0	0	
+D	ed-elisian	ed-elisian	Ed Elisian	united-states-of-america	5	0	0	0	0	
+D	eddie-cheever	eddie-cheever	Eddie Cheever	united-states-of-america	143	0	9	0	0	
+D	eddie-irvine	eddie-irvine	Eddie Irvine	united-kingdom	147	4	26	0	0	
+D	eddie-johnson	eddie-johnson	Eddie Johnson	united-states-of-america	9	0	0	0	0	
+D	eddie-keizan	eddie-keizan	Eddie Keizan	south-africa	3	0	0	0	0	
+D	eddie-russo	eddie-russo	Eddie Russo	united-states-of-america	4	0	0	0	0	
+D	eddie-sachs	eddie-sachs	Eddie Sachs	united-states-of-america	4	0	0	1	0	
+D	edgar-barth	edgar-barth	Edgar Barth	germany	5	0	0	0	0	
 D	edmunds	don-edmunds	Don Edmunds	united-states-of-america	1	0	0	0	0	
 D	edwards	guy-edwards	Guy Edwards	united-kingdom	17	0	0	0	0	
+D	eitel-cantoni	eitel-cantoni	Eitel Cantoni	uruguay	3	0	0	0	0	
 D	elford	vic-elford	Vic Elford	united-kingdom	13	0	0	0	0	
+D	elie-bayol	elie-bayol	Élie Bayol	france	8	0	0	0	0	
+D	elio-de-angelis	elio-de-angelis	Elio de Angelis	italy	109	2	9	3	0	
+D	eliseo-salazar	eliseo-salazar	Eliseo Salazar	chile	37	0	0	0	0	
 D	elisian	ed-elisian	Ed Elisian	united-states-of-america	5	0	0	0	0	
+D	elmer-george	elmer-george	Elmer George	united-states-of-america	1	0	0	0	0	
+D	emanuele-naspetti	emanuele-naspetti	Emanuele Naspetti	italy	6	0	0	0	0	
+D	emanuele-pirro	emanuele-pirro	Emanuele Pirro	italy	40	0	0	0	0	
+D	emerson-fittipaldi	emerson-fittipaldi	Emerson Fittipaldi	brazil	149	14	35	6	2	
 D	emerson_fittipaldi	emerson-fittipaldi	Emerson Fittipaldi	brazil	149	14	35	6	2	
 D	emery	paul-emery	Paul Emery	united-kingdom	2	0	0	0	0	
+D	emilio-de-villota	emilio-de-villota	Emilio de Villota	spain	14	0	0	0	0	
+D	emilio-zapico	emilio-zapico	Emilio Zapico	spain	1	0	0	0	0	
+D	emmanuel-de-graffenried	emmanuel-de-graffenried	Emmanuel de Graffenried	switzerland	23	0	0	0	0	
 D	enge	tomas-enge	Tomáš Enge	czechia	3	0	0	0	0	
 D	england	paul-england	Paul England	australia	1	0	0	0	0	
+D	enrico-bertaggia	enrico-bertaggia	Enrico Bertaggia	italy	7	0	0	0	0	
+D	enrico-toccacelo	enrico-toccacelo	Enrico Toccacelo	italy	0	0	0	0	0	
+D	enrique-bernoldi	enrique-bernoldi	Enrique Bernoldi	brazil	29	0	0	0	0	
+D	eppie-wietzes	eppie-wietzes	Eppie Wietzes	canada	2	0	0	0	0	
+D	eric-bernard	eric-bernard	Éric Bernard	france	47	0	1	0	0	
+D	eric-brandon	eric-brandon	Eric Brandon	united-kingdom	5	0	0	0	0	
+D	eric-thompson	eric-thompson	Eric Thompson	united-kingdom	1	0	0	0	0	
+D	eric-van-de-poele	eric-van-de-poele	Eric van de Poele	belgium	29	0	0	0	0	
 D	ericsson	marcus-ericsson	Marcus Ericsson	sweden	97	0	0	0	0	
+D	erik-comas	erik-comas	Érik Comas	france	63	0	0	0	0	
+D	ernesto-brambilla	ernesto-brambilla	Ernesto Brambilla	italy	2	0	0	0	0	
+D	ernesto-prinoth	ernesto-prinoth	Ernesto Prinoth	italy	1	0	0	0	0	
+D	ernesto-viso	ernesto-viso	Ernesto Viso	venezuela	0	0	0	0	0	
 D	ernesto_brambilla	ernesto-brambilla	Ernesto Brambilla	italy	2	0	0	0	0	
+D	ernie-mccoy	ernie-mccoy	Ernie McCoy	united-states-of-america	2	0	0	0	0	
+D	ernie-pieterse	ernie-pieterse	Ernie Pieterse	south-africa	3	0	0	0	0	
+D	ernst-klodwig	ernst-klodwig	Ernst Klodwig	germany	2	0	0	0	0	
+D	ernst-loof	ernst-loof	Ernst Loof	germany	1	0	0	0	0	
 D	ertl	harald-ertl	Harald Ertl	austria	29	0	0	0	0	
+D	erwin-bauer	erwin-bauer	Erwin Bauer	germany	1	0	0	0	0	
+D	esteban-gutierrez	esteban-gutierrez	Esteban Gutiérrez	mexico	59	0	0	0	0	
+D	esteban-ocon	esteban-ocon	Esteban Ocon	france	189	1	4	0	0	
+D	esteban-tuero	esteban-tuero	Esteban Tuero	argentina	16	0	0	0	0	
 D	estefano	nasif-estefano	Nasif Estéfano	argentina	2	0	0	0	0	
 D	etancelin	philippe-etancelin	Philippe Étancelin	france	12	0	0	0	0	
+D	ettore-chimeri	ettore-chimeri	Ettore Chimeri	venezuela	1	0	0	0	0	
+D	eugene-chaboud	eugene-chaboud	Eugène Chaboud	france	4	0	0	0	0	
+D	eugene-martin	eugene-martin	Eugène Martin	france	2	0	0	0	0	
+D	eugenio-castellotti	eugenio-castellotti	Eugenio Castellotti	italy	18	0	3	1	0	
 D	evans	bob-evans	Bob Evans	united-kingdom	12	0	0	0	0	
 D	fabi	teo-fabi	Teo Fabi	italy	71	0	2	3	0	
+D	fabio-leimer	fabio-leimer	Fabio Leimer	switzerland	0	0	0	0	0	
 D	fabre	pascal-fabre	Pascal Fabre	france	14	0	0	0	0	
+D	fabrizio-barbazza	fabrizio-barbazza	Fabrizio Barbazza	italy	20	0	0	0	0	
 D	facetti	carlo-facetti	Carlo Facetti	italy	1	0	0	0	0	
 D	fagioli	luigi-fagioli	Luigi Fagioli	italy	8	1	6	0	0	
 D	fairman	jack-fairman	Jack Fairman	united-kingdom	13	0	0	0	0	
+D	fairuz-fauzy	fairuz-fauzy	Fairuz Fauzy	malaysia	0	0	0	0	0	
 D	fangio	juan-manuel-fangio	Juan Manuel Fangio	argentina	58	24	35	29	5	
 D	farina	nino-farina	Nino Farina	italy	37	5	20	5	1	
 D	faulkner	walt-faulkner	Walt Faulkner	united-states-of-america	5	0	0	1	0	
+D	felice-bonetto	felice-bonetto	Felice Bonetto	italy	17	0	2	0	0	
+D	felipe-drugovich	felipe-drugovich	Felipe Drugovich	brazil	0	0	0	0	0	
+D	felipe-massa	felipe-massa	Felipe Massa	brazil	271	11	41	16	0	
+D	felipe-nasr	felipe-nasr	Felipe Nasr	brazil	40	0	0	0	0	
 D	felipe_drugovich	felipe-drugovich	Felipe Drugovich	brazil	0	0	0	0	0	
+D	fernando-alonso	fernando-alonso	Fernando Alonso	spain	437	32	106	23	2	
 D	filippis	maria-teresa-de-filippis	Maria Teresa de Filippis	italy	5	0	0	0	0	
 D	firman	ralph-firman	Ralph Firman	ireland	14	0	0	0	0	
 D	fischer	rudi-fischer	Rudi Fischer	switzerland	9	0	2	0	0	
@@ -491,15 +971,38 @@ D	force	gene-force	Gene Force	united-states-of-america	2	0	0	0	0
 D	forini	franco-forini	Franco Forini	switzerland	3	0	0	0	0	
 D	foyt	anthony-joseph-foyt	Anthony Joseph Foyt	united-states-of-america	3	0	0	0	0	
 D	francia	giorgio-francia	Giorgio Francia	italy	2	0	0	0	0	
+D	franck-lagorce	franck-lagorce	Franck Lagorce	france	2	0	0	0	0	
+D	franck-montagny	franck-montagny	Franck Montagny	france	7	0	0	0	0	
+D	franco-colapinto	franco-colapinto	Franco Colapinto	argentina	36	0	0	0	0	
+D	franco-comotti	franco-comotti	Franco Comotti	italy	2	0	0	0	0	
+D	franco-forini	franco-forini	Franco Forini	switzerland	3	0	0	0	0	
+D	franco-rol	franco-rol	Franco Rol	italy	5	0	0	0	0	
+D	francois-cevert	francois-cevert	François Cevert	france	48	1	13	0	0	
+D	francois-hesnault	francois-hesnault	François Hesnault	france	21	0	0	0	0	
+D	francois-mazet	francois-mazet	François Mazet	france	1	0	0	0	0	
+D	francois-migault	francois-migault	François Migault	france	16	0	0	0	0	
+D	francois-picard	francois-picard	François Picard	france	1	0	0	0	0	
+D	frank-armi	frank-armi	Frank Armi	united-states-of-america	1	0	0	0	0	
+D	frank-dochnal	frank-dochnal	Frank Dochnal	united-states-of-america	1	0	0	0	0	
+D	frank-gardner	frank-gardner	Frank Gardner	australia	9	0	0	0	0	
+D	fred-agabashian	fred-agabashian	Fred Agabashian	united-states-of-america	9	0	0	1	0	
+D	fred-gamble	fred-gamble	Fred Gamble	united-states-of-america	1	0	0	0	0	
+D	fred-wacker	fred-wacker	Fred Wacker	united-states-of-america	5	0	0	0	0	
+D	frederik-vesti	frederik-vesti	Frederik Vesti	denmark	0	0	0	0	0	
 D	frederik_vesti	frederik-vesti	Frederik Vesti	denmark	0	0	0	0	0	
 D	freeland	don-freeland	Don Freeland	united-states-of-america	8	0	1	0	0	
 D	frentzen	heinz-harald-frentzen	Heinz-Harald Frentzen	germany	159	3	18	2	0	
 D	frere	paul-frere	Paul Frère	belgium	11	0	1	0	0	
 D	friesacher	patrick-friesacher	Patrick Friesacher	austria	11	0	0	0	0	
+D	fritz-dorey	fritz-dorey	Fritz d'Orey	brazil	3	0	0	0	0	
+D	fritz-riess	fritz-riess	Fritz Riess	germany	1	0	0	0	0	
 D	fry	joe-fry	Joe Fry	united-kingdom	1	0	0	0	0	
 D	fushida	hiroshi-fushida	Hiroshi Fushida	japan	2	0	0	0	0	
 D	gabbiani	beppe-gabbiani	Beppe Gabbiani	italy	17	0	0	0	0	
+D	gabriel-bortoleto	gabriel-bortoleto	Gabriel Bortoleto	brazil	33	0	0	0	0	
+D	gabriele-tarquini	gabriele-tarquini	Gabriele Tarquini	italy	78	0	0	0	0	
 D	gachot	bertrand-gachot	Bertrand Gachot	france	84	0	0	0	0	
+D	gaetano-starrabba	gaetano-starrabba	Gaetano Starrabba	italy	1	0	0	0	0	
 D	gaillard	patrick-gaillard	Patrick Gaillard	france	5	0	0	0	0	
 D	galica	divina-galica	Divina Galica	united-kingdom	3	0	0	0	0	
 D	galli	nanni-galli	Nanni Galli	italy	20	0	0	0	0	
@@ -510,26 +1013,67 @@ D	garde	giedo-van-der-garde	Giedo van der Garde	netherlands	19	0	0	0	0
 D	gardner	frank-gardner	Frank Gardner	australia	9	0	0	0	0	
 D	garrett	billy-garrett	Billy Garrett	united-states-of-america	2	0	0	0	0	
 D	gartner	jo-gartner	Jo Gartner	austria	8	0	0	0	0	
+D	gary-brabham	gary-brabham	Gary Brabham	australia	2	0	0	0	0	
 D	gary_brabham	gary-brabham	Gary Brabham	australia	2	0	0	0	0	
+D	gaston-mazzacane	gaston-mazzacane	Gastón Mazzacane	argentina	21	0	0	0	0	
 D	gavin	johnny-servoz-gavin	Johnny Servoz-Gavin	france	13	0	1	0	0	
 D	gaze	tony-gaze	Tony Gaze	australia	4	0	0	0	0	
 D	geki	giacomo-russo	Giacomo Russo	italy	3	0	0	0	0	
 D	gendebien	olivier-gendebien	Olivier Gendebien	belgium	15	0	2	0	0	
 D	gene	marc-gene	Marc Gené	spain	36	0	0	0	0	
+D	gene-force	gene-force	Gene Force	united-states-of-america	2	0	0	0	0	
+D	gene-hartley	gene-hartley	Gene Hartley	united-states-of-america	9	0	0	0	0	
+D	geoff-lees	geoff-lees	Geoff Lees	united-kingdom	12	0	0	0	0	
+D	geoffrey-crossley	geoffrey-crossley	Geoffrey Crossley	united-kingdom	2	0	0	0	0	
 D	george	elmer-george	Elmer George	united-states-of-america	1	0	0	0	0	
+D	george-abecassis	george-abecassis	George Abecassis	united-kingdom	2	0	0	0	0	
+D	george-amick	george-amick	George Amick	united-states-of-america	1	0	1	0	0	
+D	george-connor	george-connor	George Connor	united-states-of-america	3	0	0	0	0	
+D	george-constantine	george-constantine	George Constantine	united-states-of-america	1	0	0	0	0	
+D	george-eaton	george-eaton	George Eaton	canada	13	0	0	0	0	
+D	george-follmer	george-follmer	George Follmer	united-states-of-america	13	0	1	0	0	
+D	george-fonder	george-fonder	George Fonder	united-states-of-america	3	0	0	0	0	
+D	george-russell	george-russell	George Russell	united-kingdom	161	7	29	10	0	
 D	george_amick	george-amick	George Amick	united-states-of-america	1	0	1	0	0	
 D	george_connor	george-connor	George Connor	united-states-of-america	3	0	0	0	0	
+D	georges-berger	georges-berger	Georges Berger	belgium	2	0	0	0	0	
+D	georges-grignard	georges-grignard	Georges Grignard	france	1	0	0	0	0	
 D	georges_berger	georges-berger	Georges Berger	belgium	2	0	0	0	0	
 D	gerard	bob-gerard	Bob Gerard	united-kingdom	8	0	0	0	0	
+D	gerard-larrousse	gerard-larrousse	Gérard Larrousse	france	2	0	0	0	0	
+D	gerhard-berger	gerhard-berger	Gerhard Berger	austria	210	10	48	12	0	
+D	gerhard-mitter	gerhard-mitter	Gerhard Mitter	germany	7	0	0	0	0	
 D	gerini	gerino-gerini	Gerino Gerini	italy	7	0	0	0	0	
+D	gerino-gerini	gerino-gerini	Gerino Gerini	italy	7	0	0	0	0	
+D	gerry-ashmore	gerry-ashmore	Gerry Ashmore	united-kingdom	4	0	0	0	0	
 D	gethin	peter-gethin	Peter Gethin	united-kingdom	31	1	1	0	0	
 D	ghinzani	piercarlo-ghinzani	Piercarlo Ghinzani	italy	111	0	0	0	0	
 D	giacomelli	bruno-giacomelli	Bruno Giacomelli	italy	82	0	1	1	0	
+D	giacomo-russo	giacomo-russo	Giacomo Russo	italy	3	0	0	0	0	
+D	giancarlo-baghetti	giancarlo-baghetti	Giancarlo Baghetti	italy	21	1	1	0	0	
+D	giancarlo-fisichella	giancarlo-fisichella	Giancarlo Fisichella	italy	231	3	19	4	0	
+D	gianfranco-brancatelli	gianfranco-brancatelli	Gianfranco Brancatelli	italy	3	0	0	0	0	
+D	gianmaria-bruni	gianmaria-bruni	Gianmaria Bruni	italy	18	0	0	0	0	
+D	gianni-morbidelli	gianni-morbidelli	Gianni Morbidelli	italy	70	0	1	0	0	
 D	gibson	dick-gibson	Dick Gibson	united-kingdom	2	0	0	0	0	
+D	giedo-van-der-garde	giedo-van-der-garde	Giedo van der Garde	netherlands	19	0	0	0	0	
+D	gijs-van-lennep	gijs-van-lennep	Gijs van Lennep	netherlands	10	0	0	0	0	
+D	gilles-villeneuve	gilles-villeneuve	Gilles Villeneuve	canada	68	6	13	2	0	
 D	gilles_villeneuve	gilles-villeneuve	Gilles Villeneuve	canada	68	6	13	2	0	
 D	gimax	carlo-franchi	Carlo Franchi	italy	1	0	0	0	0	
+D	gino-bianco	gino-bianco	Gino Bianco	brazil	4	0	0	0	0	
+D	gino-munaron	gino-munaron	Gino Munaron	italy	5	0	0	0	0	
 D	ginther	richie-ginther	Richie Ginther	united-states-of-america	54	1	14	0	0	
+D	giorgio-bassi	giorgio-bassi	Giorgio Bassi	italy	1	0	0	0	0	
+D	giorgio-francia	giorgio-francia	Giorgio Francia	italy	2	0	0	0	0	
+D	giorgio-mondini	giorgio-mondini	Giorgio Mondini	switzerland	0	0	0	0	0	
+D	giorgio-pantano	giorgio-pantano	Giorgio Pantano	italy	14	0	0	0	0	
+D	giorgio-scarlatti	giorgio-scarlatti	Giorgio Scarlatti	italy	15	0	0	0	0	
+D	giovanna-amati	giovanna-amati	Giovanna Amati	italy	3	0	0	0	0	
+D	giovanni-de-riu	giovanni-de-riu	Giovanni de Riu	italy	1	0	0	0	0	
+D	giovanni-lavaggi	giovanni-lavaggi	Giovanni Lavaggi	italy	10	0	0	0	0	
 D	giovinazzi	antonio-giovinazzi	Antonio Giovinazzi	italy	62	0	0	0	0	
+D	giulio-cabianca	giulio-cabianca	Giulio Cabianca	italy	4	0	0	0	0	
 D	giunti	ignazio-giunti	Ignazio Giunti	italy	4	0	0	0	0	
 D	glock	timo-glock	Timo Glock	germany	95	0	3	0	0	
 D	godia	paco-godia	Paco Godia	spain	14	0	0	0	0	
@@ -539,23 +1083,35 @@ D	gonzalez	jose-froilan-gonzalez	José Froilán González	argentina	29	2	15	3	0
 D	gordini	aldo-gordini	Aldo Gordini	france	1	0	0	0	0	
 D	gould	horace-gould	Horace Gould	united-kingdom	18	0	0	0	0	
 D	gounon	jean-marc-gounon	Jean-Marc Gounon	france	9	0	0	0	0	
+D	graham-hill	graham-hill	Graham Hill	united-kingdom	179	14	36	13	2	
+D	graham-mcrae	graham-mcrae	Graham McRae	new-zealand	1	0	0	0	0	
+D	graham-whitehead	graham-whitehead	Graham Whitehead	united-kingdom	1	0	0	0	0	
 D	graham_whitehead	graham-whitehead	Graham Whitehead	united-kingdom	1	0	0	0	0	
 D	grassi	lucas-di-grassi	Lucas di Grassi	brazil	19	0	0	0	0	
 D	green	cecil-green	Cecil Green	united-states-of-america	2	0	0	0	0	
 D	greene	keith-greene	Keith Greene	united-kingdom	5	0	0	0	0	
+D	gregor-foitek	gregor-foitek	Gregor Foitek	switzerland	22	0	0	0	0	
 D	gregory	masten-gregory	Masten Gregory	united-states-of-america	44	0	3	0	0	
 D	griffith	cliff-griffith	Cliff Griffith	united-states-of-america	3	0	0	0	0	
 D	grignard	georges-grignard	Georges Grignard	france	1	0	0	0	0	
 D	grim	bobby-grim	Bobby Grim	united-states-of-america	2	0	0	0	0	
 D	grosjean	romain-grosjean	Romain Grosjean	france	181	0	10	0	0	
 D	grouillard	olivier-grouillard	Olivier Grouillard	france	62	0	0	0	0	
+D	guanyu-zhou	guanyu-zhou	Guanyu Zhou	china	68	0	0	0	0	
 D	gubby	brian-gubby	Brian Gubby	united-kingdom	1	0	0	0	0	
 D	guelfi	andre-guelfi	André Guelfi	france	1	0	0	0	0	
 D	guerra	miguel-angel-guerra	Miguel Ángel Guerra	argentina	4	0	0	0	0	
 D	guerrero	roberto-guerrero	Roberto Guerrero	colombia	28	0	0	0	0	
 D	gugelmin	mauricio-gugelmin	Maurício Gugelmin	brazil	80	0	1	0	0	
+D	gunnar-nilsson	gunnar-nilsson	Gunnar Nilsson	sweden	32	1	4	0	0	
+D	gunther-seiffert	gunther-seiffert	Günther Seiffert	germany	1	0	0	0	0	
 D	gurney	dan-gurney	Dan Gurney	united-states-of-america	87	4	19	3	0	
+D	gus-hutchison	gus-hutchison	Gus Hutchison	united-states-of-america	1	0	0	0	0	
 D	gutierrez	esteban-gutierrez	Esteban Gutiérrez	mexico	59	0	0	0	0	
+D	guy-edwards	guy-edwards	Guy Edwards	united-kingdom	17	0	0	0	0	
+D	guy-ligier	guy-ligier	Guy Ligier	france	13	0	0	0	0	
+D	guy-mairesse	guy-mairesse	Guy Mairesse	france	3	0	0	0	0	
+D	guy-tunmer	guy-tunmer	Guy Tunmer	south-africa	1	0	0	0	0	
 D	guy_mairesse	guy-mairesse	Guy Mairesse	france	3	0	0	0	0	
 D	hahne	hubert-hahne	Hubert Hahne	germany	5	0	0	0	0	
 D	hailwood	mike-hailwood	Mike Hailwood	united-kingdom	50	0	2	0	0	
@@ -564,9 +1120,20 @@ D	halford	bruce-halford	Bruce Halford	united-kingdom	9	0	0	0	0
 D	hall	jim-hall	Jim Hall	united-states-of-america	12	0	0	0	0	
 D	hampshire	david-hampshire	David Hampshire	united-kingdom	2	0	0	0	0	
 D	hanks	sam-hanks	Sam Hanks	united-states-of-america	9	1	4	0	0	
+D	hans-binder	hans-binder	Hans Binder	austria	15	0	0	0	0	
+D	hans-herrmann	hans-herrmann	Hans Herrmann	germany	21	0	1	0	0	
+D	hans-heyer	hans-heyer	Hans Heyer	germany	1	0	0	0	0	
+D	hans-joachim-stuck	hans-joachim-stuck	Hans-Joachim Stuck	germany	81	0	2	0	0	
+D	hans-klenk	hans-klenk	Hans Klenk	germany	1	0	0	0	0	
+D	hans-stuck	hans-stuck	Hans Stuck	germany	5	0	0	0	0	
 D	hansgen	walt-hansgen	Walt Hansgen	united-states-of-america	2	0	0	0	0	
+D	hap-sharp	hap-sharp	Hap Sharp	united-states-of-america	6	0	0	0	0	
+D	harald-ertl	harald-ertl	Harald Ertl	austria	29	0	0	0	0	
 D	harris	mike-harris	Mike Harris	south-africa	1	0	0	0	0	
 D	harrison	cuth-harrison	Cuth Harrison	united-kingdom	3	0	0	0	0	
+D	harry-blanchard	harry-blanchard	Harry Blanchard	united-states-of-america	1	0	0	0	0	
+D	harry-merkel	harry-merkel	Harry Merkel	germany	1	0	0	0	0	
+D	harry-schell	harry-schell	Harry Schell	united-states-of-america	64	0	2	0	0	
 D	hart	brian-hart	Brian Hart	united-kingdom	1	0	0	0	0	
 D	hartley	gene-hartley	Gene Hartley	united-states-of-america	9	0	0	0	0	
 D	haryanto	rio-haryanto	Rio Haryanto	indonesia	12	0	0	0	0	
@@ -574,71 +1141,241 @@ D	hasemi	masahiro-hasemi	Masahiro Hasemi	japan	1	0	0	0	0
 D	hattori	naoki-hattori	Naoki Hattori	japan	2	0	0	0	0	
 D	hawkins	paul-hawkins	Paul Hawkins	australia	3	0	0	0	0	
 D	hawthorn	mike-hawthorn	Mike Hawthorn	united-kingdom	49	3	18	4	1	
+D	hector-rebaque	hector-rebaque	Héctor Rebaque	mexico	58	0	0	0	0	
 D	heeks	willi-heeks	Willi Heeks	germany	2	0	0	0	0	
 D	heidfeld	nick-heidfeld	Nick Heidfeld	germany	185	0	13	1	0	
+D	heikki-kovalainen	heikki-kovalainen	Heikki Kovalainen	finland	112	1	4	1	0	
+D	heini-walter	heini-walter	Heini Walter	switzerland	1	0	0	0	0	
+D	heinz-harald-frentzen	heinz-harald-frentzen	Heinz-Harald Frentzen	germany	159	3	18	2	0	
+D	heinz-schiller	heinz-schiller	Heinz Schiller	switzerland	1	0	0	0	0	
 D	helfrich	theo-helfrich	Theo Helfrich	germany	3	0	0	0	0	
 D	hellings	mack-hellings	Mack Hellings	united-states-of-america	2	0	0	0	0	
+D	helm-glockler	helm-glockler	Helm Glöckler	germany	1	0	0	0	0	
+D	helmut-marko	helmut-marko	Helmut Marko	austria	10	0	0	0	0	
+D	helmut-niedermayr	helmut-niedermayr	Helmut Niedermayr	germany	1	0	0	0	0	
+D	helmuth-koinigg	helmuth-koinigg	Helmuth Koinigg	austria	3	0	0	0	0	
+D	henri-louveau	henri-louveau	Henri Louveau	france	2	0	0	0	0	
+D	henri-pescarolo	henri-pescarolo	Henri Pescarolo	france	64	0	1	0	0	
+D	henry-banks	henry-banks	Henry Banks	united-states-of-america	3	0	0	0	0	
+D	henry-taylor	henry-taylor	Henry Taylor	united-kingdom	11	0	0	0	0	
 D	henry_taylor	henry-taylor	Henry Taylor	united-kingdom	11	0	0	0	0	
 D	henton	brian-henton	Brian Henton	united-kingdom	37	0	0	0	0	
 D	herbert	johnny-herbert	Johnny Herbert	united-kingdom	165	3	7	0	0	
+D	herbert-mackay-fraser	herbert-mackay-fraser	Herbert MacKay-Fraser	united-states-of-america	1	0	0	0	0	
 D	herman	al-herman	Al Herman	united-states-of-america	5	0	0	0	0	
+D	hermann-lang	hermann-lang	Hermann Lang	germany	2	0	0	0	0	
+D	hermano-da-silva-ramos	hermano-da-silva-ramos	Hermano da Silva Ramos	brazil	7	0	0	0	0	
 D	herrmann	hans-herrmann	Hans Herrmann	germany	21	0	1	0	0	
 D	hesnault	francois-hesnault	François Hesnault	france	21	0	0	0	0	
 D	heyer	hans-heyer	Hans Heyer	germany	1	0	0	0	0	
+D	hideki-noda	hideki-noda	Hideki Noda	japan	3	0	0	0	0	
 D	hill	graham-hill	Graham Hill	united-kingdom	179	14	36	13	2	
+D	hiroshi-fushida	hiroshi-fushida	Hiroshi Fushida	japan	2	0	0	0	0	
 D	hirt	peter-hirt	Peter Hirt	switzerland	5	0	0	0	0	
 D	hobbs	david-hobbs	David Hobbs	united-kingdom	7	0	0	0	0	
 D	hoffmann	ingo-hoffmann	Ingo Hoffmann	brazil	6	0	0	0	0	
 D	holland	bill-holland	Bill Holland	united-states-of-america	2	0	1	0	0	
 D	holmes	jackie-holmes	Jackie Holmes	united-states-of-america	2	0	0	0	0	
 D	homeier	bill-homeier	Bill Homeier	united-states-of-america	4	0	0	0	0	
+D	horace-gould	horace-gould	Horace Gould	united-kingdom	18	0	0	0	0	
 D	hoshino	kazuyoshi-hoshino	Kazuyoshi Hoshino	japan	2	0	0	0	0	
+D	howden-ganley	howden-ganley	Howden Ganley	new-zealand	41	0	0	0	0	
 D	hoyt	jerry-hoyt	Jerry Hoyt	united-states-of-america	5	0	0	1	0	
+D	hubert-hahne	hubert-hahne	Hubert Hahne	germany	5	0	0	0	0	
 D	hulme	denny-hulme	Denny Hulme	new-zealand	112	8	33	1	1	
 D	hunt	james-hunt	James Hunt	united-kingdom	93	10	23	14	1	
 D	hurtubise	jim-hurtubise	Jim Hurtubise	united-states-of-america	1	0	0	0	0	
 D	hutchison	gus-hutchison	Gus Hutchison	united-states-of-america	1	0	0	0	0	
+D	huub-rothengatter	huub-rothengatter	Huub Rothengatter	netherlands	30	0	0	0	0	
+D	ian-ashley	ian-ashley	Ian Ashley	united-kingdom	11	0	0	0	0	
+D	ian-burgess	ian-burgess	Ian Burgess	united-kingdom	20	0	0	0	0	
+D	ian-raby	ian-raby	Ian Raby	united-kingdom	7	0	0	0	0	
+D	ian-scheckter	ian-scheckter	Ian Scheckter	south-africa	20	0	0	0	0	
+D	ian-stewart	ian-stewart	Ian Stewart	united-kingdom	1	0	0	0	0	
 D	ian_scheckter	ian-scheckter	Ian Scheckter	south-africa	20	0	0	0	0	
 D	ian_stewart	ian-stewart	Ian Stewart	united-kingdom	1	0	0	0	0	
 D	ickx	jacky-ickx	Jacky Ickx	belgium	122	8	25	13	0	
 D	ide	yuji-ide	Yuji Ide	japan	4	0	0	0	0	
 D	iglesias	jesus-iglesias	Jesús Iglesias	argentina	1	0	0	0	0	
+D	ignazio-giunti	ignazio-giunti	Ignazio Giunti	italy	4	0	0	0	0	
+D	ingo-hoffmann	ingo-hoffmann	Ingo Hoffmann	brazil	6	0	0	0	0	
+D	innes-ireland	innes-ireland	Innes Ireland	united-kingdom	53	1	4	0	0	
 D	inoue	taki-inoue	Taki Inoue	japan	18	0	0	0	0	
 D	ireland	innes-ireland	Innes Ireland	united-kingdom	53	1	4	0	0	
 D	irvine	eddie-irvine	Eddie Irvine	united-kingdom	147	4	26	0	0	
 D	irwin	chris-irwin	Chris Irwin	united-kingdom	10	0	0	0	0	
+D	isack-hadjar	isack-hadjar	Isack Hadjar	france	33	0	1	0	0	
+D	ivan-capelli	ivan-capelli	Ivan Capelli	italy	98	0	3	0	0	
+D	ivor-bueb	ivor-bueb	Ivor Bueb	united-kingdom	6	0	0	0	0	
 D	jabouille	jean-pierre-jabouille	Jean-Pierre Jabouille	france	56	2	2	6	0	
+D	jac-nellemann	jac-nellemann	Jac Nellemann	denmark	1	0	0	0	0	
+D	jack-aitken	jack-aitken	Jack Aitken	united-kingdom	1	0	0	0	0	
+D	jack-brabham	jack-brabham	Jack Brabham	australia	129	14	31	13	3	
+D	jack-doohan	jack-doohan	Jack Doohan	australia	7	0	0	0	0	
+D	jack-fairman	jack-fairman	Jack Fairman	united-kingdom	13	0	0	0	0	
+D	jack-mcgrath	jack-mcgrath	Jack McGrath	united-states-of-america	6	0	2	1	0	
+D	jack-turner	jack-turner	Jack Turner	united-states-of-america	4	0	0	0	0	
 D	jack_brabham	jack-brabham	Jack Brabham	australia	129	14	31	13	3	
+D	jackie-holmes	jackie-holmes	Jackie Holmes	united-states-of-america	2	0	0	0	0	
+D	jackie-lewis	jackie-lewis	Jackie Lewis	united-kingdom	10	0	0	0	0	
+D	jackie-oliver	jackie-oliver	Jackie Oliver	united-kingdom	52	0	2	0	0	
+D	jackie-pretorius	jackie-pretorius	Jackie Pretorius	south-africa	4	0	0	0	0	
+D	jackie-stewart	jackie-stewart	Jackie Stewart	united-kingdom	100	27	43	17	3	
 D	jackson	jimmy-jackson	Jimmy Jackson	united-states-of-america	2	0	0	0	0	
+D	jacky-ickx	jacky-ickx	Jacky Ickx	belgium	122	8	25	13	0	
+D	jacques-laffite	jacques-laffite	Jacques Laffite	france	180	6	32	7	0	
+D	jacques-pollet	jacques-pollet	Jacques Pollet	france	5	0	0	0	0	
+D	jacques-swaters	jacques-swaters	Jacques Swaters	belgium	8	0	0	0	0	
+D	jacques-villeneuve	jacques-villeneuve	Jacques Villeneuve	canada	165	11	23	13	1	
+D	jacques-villeneuve-sr	jacques-villeneuve-sr	Jacques Villeneuve, Sr.	canada	3	0	0	0	0	
+D	jaime-alguersuari	jaime-alguersuari	Jaime Alguersuari	spain	46	0	0	0	0	
+D	jak-crawford	jak-crawford	Jak Crawford	united-states-of-america	0	0	0	0	0	
 D	jak_crawford	jak-crawford	Jak Crawford	united-states-of-america	0	0	0	0	0	
+D	jake-dennis	jake-dennis	Jake Dennis	united-kingdom	0	0	0	0	0	
 D	james	joe-james	Joe James	united-states-of-america	2	0	0	0	0	
+D	james-calado	james-calado	James Calado	united-kingdom	0	0	0	0	0	
+D	james-hunt	james-hunt	James Hunt	united-kingdom	93	10	23	14	1	
+D	jan-charouz	jan-charouz	Jan Charouz	czechia	0	0	0	0	0	
+D	jan-flinterman	jan-flinterman	Jan Flinterman	netherlands	2	0	0	0	0	
+D	jan-lammers	jan-lammers	Jan Lammers	netherlands	41	0	0	0	0	
+D	jan-magnussen	jan-magnussen	Jan Magnussen	denmark	25	0	0	0	0	
 D	jarier	jean-pierre-jarier	Jean-Pierre Jarier	france	143	0	3	3	0	
+D	jarno-trulli	jarno-trulli	Jarno Trulli	italy	256	1	11	4	0	
+D	jay-chamberlain	jay-chamberlain	Jay Chamberlain	united-states-of-america	3	0	0	0	0	
 D	jean	max-jean	Max Jean	france	1	0	0	0	0	
+D	jean-alesi	jean-alesi	Jean Alesi	france	202	1	32	2	0	
+D	jean-behra	jean-behra	Jean Behra	france	58	0	9	0	0	
+D	jean-christophe-boullion	jean-christophe-boullion	Jean-Christophe Boullion	france	11	0	0	0	0	
+D	jean-claude-rudaz	jean-claude-rudaz	Jean-Claude Rudaz	switzerland	1	0	0	0	0	
+D	jean-denis-deletraz	jean-denis-deletraz	Jean-Denis Délétraz	switzerland	3	0	0	0	0	
+D	jean-eric-vergne	jean-eric-vergne	Jean-Éric Vergne	france	58	0	0	0	0	
+D	jean-louis-schlesser	jean-louis-schlesser	Jean-Louis Schlesser	france	2	0	0	0	0	
+D	jean-lucas	jean-lucas	Jean Lucas	france	1	0	0	0	0	
+D	jean-lucienbonnet	jean-lucienbonnet	Jean Lucienbonnet	france	1	0	0	0	0	
+D	jean-marc-gounon	jean-marc-gounon	Jean-Marc Gounon	france	9	0	0	0	0	
+D	jean-pierre-beltoise	jean-pierre-beltoise	Jean-Pierre Beltoise	france	88	1	8	0	0	
+D	jean-pierre-jabouille	jean-pierre-jabouille	Jean-Pierre Jabouille	france	56	2	2	6	0	
+D	jean-pierre-jarier	jean-pierre-jarier	Jean-Pierre Jarier	france	143	0	3	3	0	
+D	jenson-button	jenson-button	Jenson Button	united-kingdom	309	15	50	8	1	
+D	jerome-dambrosio	jerome-dambrosio	Jérôme d'Ambrosio	belgium	20	0	0	0	0	
+D	jerry-hoyt	jerry-hoyt	Jerry Hoyt	united-states-of-america	5	0	0	1	0	
+D	jerry-unser-jr	jerry-unser-jr	Jerry Unser Jr.	united-states-of-america	1	0	0	0	0	
+D	jesus-iglesias	jesus-iglesias	Jesús Iglesias	argentina	1	0	0	0	0	
+D	jim-clark	jim-clark	Jim Clark	united-kingdom	74	25	32	33	2	
+D	jim-crawford	jim-crawford	Jim Crawford	united-kingdom	2	0	0	0	0	
+D	jim-hall	jim-hall	Jim Hall	united-states-of-america	12	0	0	0	0	
+D	jim-hurtubise	jim-hurtubise	Jim Hurtubise	united-states-of-america	1	0	0	0	0	
+D	jim-mcwithey	jim-mcwithey	Jim McWithey	united-states-of-america	2	0	0	0	0	
+D	jim-rathmann	jim-rathmann	Jim Rathmann	united-states-of-america	12	1	4	0	0	
+D	jim-rigsby	jim-rigsby	Jim Rigsby	united-states-of-america	1	0	0	0	0	
+D	jimmy-bryan	jimmy-bryan	Jimmy Bryan	united-states-of-america	9	1	3	0	0	
+D	jimmy-davies	jimmy-davies	Jimmy Davies	united-states-of-america	6	0	1	0	0	
+D	jimmy-daywalt	jimmy-daywalt	Jimmy Daywalt	united-states-of-america	6	0	0	0	0	
+D	jimmy-jackson	jimmy-jackson	Jimmy Jackson	united-states-of-america	2	0	0	0	0	
+D	jimmy-reece	jimmy-reece	Jimmy Reece	united-states-of-america	6	0	0	0	0	
+D	jimmy-stewart	jimmy-stewart	Jimmy Stewart	united-kingdom	1	0	0	0	0	
 D	jimmy_stewart	jimmy-stewart	Jimmy Stewart	united-kingdom	1	0	0	0	0	
+D	jj-lehto	jj-lehto	JJ Lehto	finland	70	0	1	0	0	
+D	jo-bonnier	jo-bonnier	Jo Bonnier	sweden	108	1	1	1	0	
+D	jo-gartner	jo-gartner	Jo Gartner	austria	8	0	0	0	0	
+D	jo-schlesser	jo-schlesser	Jo Schlesser	france	3	0	0	0	0	
+D	jo-siffert	jo-siffert	Jo Siffert	switzerland	100	2	6	2	0	
+D	jo-vonlanthen	jo-vonlanthen	Jo Vonlanthen	switzerland	1	0	0	0	0	
 D	jo_schlesser	jo-schlesser	Jo Schlesser	france	3	0	0	0	0	
+D	joachim-winkelhock	joachim-winkelhock	Joachim Winkelhock	germany	7	0	0	0	0	
 D	joachim_winkelhock	joachim-winkelhock	Joachim Winkelhock	germany	7	0	0	0	0	
+D	jochen-mass	jochen-mass	Jochen Mass	germany	114	1	8	0	0	
+D	jochen-rindt	jochen-rindt	Jochen Rindt	austria	62	6	13	10	1	
+D	jody-scheckter	jody-scheckter	Jody Scheckter	south-africa	113	10	33	3	1	
+D	joe-fry	joe-fry	Joe Fry	united-kingdom	1	0	0	0	0	
+D	joe-james	joe-james	Joe James	united-states-of-america	2	0	0	0	0	
+D	joe-kelly	joe-kelly	Joe Kelly	ireland	2	0	0	0	0	
 D	johansson	stefan-johansson	Stefan Johansson	sweden	103	0	12	0	0	
+D	john-barber	john-barber	John Barber	united-kingdom	1	0	0	0	0	
+D	john-campbell-jones	john-campbell-jones	John Campbell-Jones	united-kingdom	2	0	0	0	0	
+D	john-cannon	john-cannon	John Cannon	canada	1	0	0	0	0	
+D	john-cordts	john-cordts	John Cordts	canada	1	0	0	0	0	
+D	john-fitch	john-fitch	John Fitch	united-states-of-america	2	0	0	0	0	
+D	john-james	john-james	John James	united-kingdom	1	0	0	0	0	
+D	john-love	john-love	John Love	zimbabwe	10	0	1	0	0	
+D	john-miles	john-miles	John Miles	united-kingdom	15	0	0	0	0	
+D	john-nicholson	john-nicholson	John Nicholson	new-zealand	2	0	0	0	0	
+D	john-rhodes	john-rhodes	John Rhodes	united-kingdom	1	0	0	0	0	
+D	john-riseley-prichard	john-riseley-prichard	John Riseley-Prichard	united-kingdom	1	0	0	0	0	
+D	john-surtees	john-surtees	John Surtees	united-kingdom	113	6	24	8	1	
+D	john-taylor	john-taylor	John Taylor	united-kingdom	5	0	0	0	0	
+D	john-watson	john-watson	John Watson	united-kingdom	154	5	20	2	0	
 D	john_barber	john-barber	John Barber	united-kingdom	1	0	0	0	0	
 D	john_james	john-james	John James	united-kingdom	1	0	0	0	0	
+D	johnnie-parsons	johnnie-parsons	Johnnie Parsons	united-states-of-america	10	1	1	0	0	
+D	johnnie-tolan	johnnie-tolan	Johnnie Tolan	united-states-of-america	3	0	0	0	0	
+D	johnny-boyd	johnny-boyd	Johnny Boyd	united-states-of-america	6	0	1	0	0	
+D	johnny-cecotto	johnny-cecotto	Johnny Cecotto	venezuela	23	0	0	0	0	
+D	johnny-claes	johnny-claes	Johnny Claes	belgium	25	0	0	0	0	
+D	johnny-dumfries	johnny-dumfries	Johnny Dumfries	united-kingdom	16	0	0	0	0	
+D	johnny-herbert	johnny-herbert	Johnny Herbert	united-kingdom	165	3	7	0	0	
+D	johnny-mantz	johnny-mantz	Johnny Mantz	united-states-of-america	1	0	0	0	0	
+D	johnny-mcdowell	johnny-mcdowell	Johnny McDowell	united-states-of-america	3	0	0	0	0	
+D	johnny-servoz-gavin	johnny-servoz-gavin	Johnny Servoz-Gavin	france	13	0	1	0	0	
+D	johnny-thomson	johnny-thomson	Johnny Thomson	united-states-of-america	9	0	1	1	0	
 D	johnson	eddie-johnson	Eddie Johnson	united-states-of-america	9	0	0	0	0	
 D	johnstone	bruce-johnstone	Bruce Johnstone	south-africa	1	0	0	0	0	
+D	joie-chitwood	joie-chitwood	Joie Chitwood	united-states-of-america	1	0	0	0	0	
+D	jolyon-palmer	jolyon-palmer	Jolyon Palmer	united-kingdom	37	0	0	0	0	
 D	jolyon_palmer	jolyon-palmer	Jolyon Palmer	united-kingdom	37	0	0	0	0	
+D	jonathan-palmer	jonathan-palmer	Jonathan Palmer	united-kingdom	88	0	0	0	0	
+D	jonathan-williams	jonathan-williams	Jonathan Williams	united-kingdom	1	0	0	0	0	
 D	jones	alan-jones	Alan Jones	australia	117	12	24	6	1	
+D	jordan-king	jordan-king	Jordan King	united-kingdom	0	0	0	0	0	
+D	jorge-daponte	jorge-daponte	Jorge Daponte	argentina	2	0	0	0	0	
+D	jos-verstappen	jos-verstappen	Jos Verstappen	netherlands	107	0	2	0	0	
+D	jose-dolhem	jose-dolhem	José Dolhem	france	3	0	0	0	0	
+D	jose-froilan-gonzalez	jose-froilan-gonzalez	José Froilán González	argentina	29	2	15	3	0	
+D	josef-peters	josef-peters	Josef Peters	germany	1	0	0	0	0	
 D	jover	juan-jover	Juan Jover	spain	1	0	0	0	0	
+D	juan-jover	juan-jover	Juan Jover	spain	1	0	0	0	0	
+D	juan-manuel-bordeu	juan-manuel-bordeu	Juan Manuel Bordeu	argentina	1	0	0	0	0	
+D	juan-manuel-fangio	juan-manuel-fangio	Juan Manuel Fangio	argentina	58	24	35	29	5	
+D	juan-pablo-montoya	juan-pablo-montoya	Juan Pablo Montoya	colombia	95	7	30	12	0	
+D	jud-larson	jud-larson	Jud Larson	united-states-of-america	2	0	0	0	0	
+D	jules-bianchi	jules-bianchi	Jules Bianchi	france	34	0	0	0	0	
 D	jules_bianchi	jules-bianchi	Jules Bianchi	france	34	0	0	0	0	
+D	julian-bailey	julian-bailey	Julian Bailey	united-kingdom	20	0	0	0	0	
+D	juri-vips	juri-vips	Jüri Vips	estonia	0	0	0	0	0	
+D	justin-wilson	justin-wilson	Justin Wilson	united-kingdom	16	0	0	0	0	
+D	kamui-kobayashi	kamui-kobayashi	Kamui Kobayashi	japan	76	0	1	0	0	
 D	karch	oswald-karch	Oswald Karch	germany	1	0	0	0	0	
+D	karl-gunther-bechem	karl-gunther-bechem	Karl-Günther Bechem	germany	2	0	0	0	0	
+D	karl-kling	karl-kling	Karl Kling	germany	12	0	2	0	0	
+D	karl-wendlinger	karl-wendlinger	Karl Wendlinger	austria	42	0	0	0	0	
 D	karthikeyan	narain-karthikeyan	Narain Karthikeyan	india	47	0	0	0	0	
+D	karun-chandhok	karun-chandhok	Karun Chandhok	india	11	0	0	0	0	
 D	katayama	ukyo-katayama	Ukyo Katayama	japan	97	0	0	0	0	
 D	kavanagh	ken-kavanagh	Ken Kavanagh	australia	2	0	0	0	0	
+D	kazuki-nakajima	kazuki-nakajima	Kazuki Nakajima	japan	36	0	0	0	0	
+D	kazuyoshi-hoshino	kazuyoshi-hoshino	Kazuyoshi Hoshino	japan	2	0	0	0	0	
 D	keegan	rupert-keegan	Rupert Keegan	united-kingdom	37	0	0	0	0	
+D	keith-andrews	keith-andrews	Keith Andrews	united-states-of-america	2	0	0	0	0	
+D	keith-greene	keith-greene	Keith Greene	united-kingdom	5	0	0	0	0	
 D	keizan	eddie-keizan	Eddie Keizan	south-africa	3	0	0	0	0	
+D	keke-rosberg	keke-rosberg	Keke Rosberg	finland	128	5	17	5	1	
 D	keke_rosberg	keke-rosberg	Keke Rosberg	finland	128	5	17	5	1	
 D	keller	al-keller	Al Keller	united-states-of-america	5	0	0	0	0	
 D	kelly	joe-kelly	Joe Kelly	ireland	2	0	0	0	0	
+D	ken-downing	ken-downing	Ken Downing	united-kingdom	2	0	0	0	0	
+D	ken-kavanagh	ken-kavanagh	Ken Kavanagh	australia	2	0	0	0	0	
+D	ken-richardson	ken-richardson	Ken Richardson	united-kingdom	1	0	0	0	0	
+D	ken-wharton	ken-wharton	Ken Wharton	united-kingdom	16	0	0	0	0	
+D	kenneth-mcalpine	kenneth-mcalpine	Kenneth McAlpine	united-kingdom	7	0	0	0	0	
+D	kenny-acheson	kenny-acheson	Kenny Acheson	united-kingdom	10	0	0	0	0	
 D	kessel	loris-kessel	Loris Kessel	switzerland	6	0	0	0	0	
 D	kessler	bruce-kessler	Bruce Kessler	united-states-of-america	1	0	0	0	0	
+D	kevin-cogan	kevin-cogan	Kevin Cogan	united-states-of-america	2	0	0	0	0	
+D	kevin-magnussen	kevin-magnussen	Kevin Magnussen	denmark	186	0	1	1	0	
 D	kevin_magnussen	kevin-magnussen	Kevin Magnussen	denmark	186	0	1	1	0	
 D	kiesa	nicolas-kiesa	Nicolas Kiesa	denmark	5	0	0	0	0	
+D	kimi-antonelli	kimi-antonelli	Kimi Antonelli	italy	33	5	10	5	1	
+D	kimi-raikkonen	kimi-raikkonen	Kimi Räikkönen	finland	352	21	103	19	1	
 D	kinnunen	leo-kinnunen	Leo Kinnunen	finland	6	0	0	0	0	
 D	kladis	danny-kladis	Danny Kladis	united-states-of-america	1	0	0	0	0	
 D	klenk	hans-klenk	Hans Klenk	germany	1	0	0	0	0	
@@ -653,19 +1390,30 @@ D	kozarowitzky	mikko-kozarowitzky	Mikko Kozarowitzky	finland	2	0	0	0	0
 D	krause	rudolf-krause	Rudolf Krause	germany	2	0	0	0	0	
 D	kubica	robert-kubica	Robert Kubica	poland	99	1	12	1	0	
 D	kuhnke	kurt-kuhnke	Kurt Kuhnke	germany	1	0	0	0	0	
+D	kunimitsu-takahashi	kunimitsu-takahashi	Kunimitsu Takahashi	japan	1	0	0	0	0	
+D	kurt-adolff	kurt-adolff	Kurt Adolff	germany	1	0	0	0	0	
+D	kurt-ahrens-jr	kurt-ahrens-jr	Kurt Ahrens, Jr.	germany	4	0	0	0	0	
+D	kurt-kuhnke	kurt-kuhnke	Kurt Kuhnke	germany	1	0	0	0	0	
 D	kvyat	daniil-kvyat	Daniil Kvyat	russia	112	0	3	0	0	
 D	la_caze	robert-la-caze	Robert La Caze	morocco	1	0	0	0	0	
 D	laffite	jacques-laffite	Jacques Laffite	france	180	6	32	7	0	
 D	lagorce	franck-lagorce	Franck Lagorce	france	2	0	0	0	0	
+D	lamberto-leoni	lamberto-leoni	Lamberto Leoni	italy	5	0	0	0	0	
 D	lammers	jan-lammers	Jan Lammers	netherlands	41	0	0	0	0	
 D	lamy	pedro-lamy	Pedro Lamy	portugal	32	0	0	0	0	
+D	lance-macklin	lance-macklin	Lance Macklin	united-kingdom	15	0	0	0	0	
+D	lance-reventlow	lance-reventlow	Lance Reventlow	united-states-of-america	4	0	0	0	0	
+D	lance-stroll	lance-stroll	Lance Stroll	canada	201	0	3	1	0	
 D	landi	chico-landi	Chico Landi	brazil	6	0	0	0	0	
+D	lando-norris	lando-norris	Lando Norris	united-kingdom	161	11	46	16	1	
 D	lang	hermann-lang	Hermann Lang	germany	2	0	0	0	0	
 D	langes	claudio-langes	Claudio Langes	italy	14	0	0	0	0	
 D	larini	nicola-larini	Nicola Larini	italy	75	0	1	0	0	
 D	larrauri	oscar-larrauri	Oscar Larrauri	argentina	21	0	0	0	0	
 D	larreta	alberto-rodriguez-larreta	Alberto Rodriguez Larreta	argentina	1	0	0	0	0	
 D	larrousse	gerard-larrousse	Gérard Larrousse	france	2	0	0	0	0	
+D	larry-crockett	larry-crockett	Larry Crockett	united-states-of-america	1	0	0	0	0	
+D	larry-perkins	larry-perkins	Larry Perkins	australia	15	0	0	0	0	
 D	larson	jud-larson	Jud Larson	united-states-of-america	2	0	0	0	0	
 D	latifi	nicholas-latifi	Nicholas Latifi	canada	61	0	0	0	0	
 D	lauda	niki-lauda	Niki Lauda	austria	176	25	54	24	3	
@@ -674,35 +1422,71 @@ D	lavaggi	giovanni-lavaggi	Giovanni Lavaggi	italy	10	0	0	0	0
 D	lawrence	chris-lawrence	Chris Lawrence	united-kingdom	2	0	0	0	0	
 D	leclere	michel-leclere	Michel Leclère	france	8	0	0	0	0	
 D	lederle	neville-lederle	Neville Lederle	south-africa	2	0	0	0	0	
+D	lee-wallard	lee-wallard	Lee Wallard	united-states-of-america	2	1	1	0	0	
 D	lees	geoff-lees	Geoff Lees	united-kingdom	12	0	0	0	0	
 D	legat	arthur-legat	Arthur Legat	belgium	2	0	0	0	0	
+D	lella-lombardi	lella-lombardi	Lella Lombardi	italy	17	0	0	0	0	
+D	len-duncan	len-duncan	Len Duncan	united-states-of-america	1	0	0	0	0	
+D	len-sutton	len-sutton	Len Sutton	united-states-of-america	3	0	0	0	0	
 D	lennep	gijs-van-lennep	Gijs van Lennep	netherlands	10	0	0	0	0	
+D	leo-kinnunen	leo-kinnunen	Leo Kinnunen	finland	6	0	0	0	0	
+D	leonardo-fornaroli	leonardo-fornaroli	Leonardo Fornaroli	italy	0	0	0	0	0	
 D	leonardo_fornaroli	leonardo-fornaroli	Leonardo Fornaroli	italy	0	0	0	0	0	
 D	leoni	lamberto-leoni	Lamberto Leoni	italy	5	0	0	0	0	
+D	les-leston	les-leston	Les Leston	united-kingdom	3	0	0	0	0	
+D	leslie-johnson	leslie-johnson	Leslie Johnson	united-kingdom	1	0	0	0	0	
+D	leslie-marr	leslie-marr	Leslie Marr	united-kingdom	2	0	0	0	0	
+D	leslie-thorne	leslie-thorne	Leslie Thorne	united-kingdom	1	0	0	0	0	
 D	leslie_johnson	leslie-johnson	Leslie Johnson	united-kingdom	1	0	0	0	0	
 D	leston	les-leston	Les Leston	united-kingdom	3	0	0	0	0	
 D	levegh	pierre-levegh	Pierre Levegh	france	6	0	0	0	0	
 D	levrett	bayliss-levrett	Bayliss Levrett	united-states-of-america	1	0	0	0	0	
 D	lewis	jackie-lewis	Jackie Lewis	united-kingdom	10	0	0	0	0	
 D	lewis-evans	stuart-lewis-evans	Stuart Lewis-Evans	united-kingdom	14	0	2	2	0	
+D	lewis-hamilton	lewis-hamilton	Lewis Hamilton	united-kingdom	389	106	207	105	7	
+D	liam-lawson	liam-lawson	Liam Lawson	new-zealand	44	0	0	0	0	
 D	ligier	guy-ligier	Guy Ligier	france	13	0	0	0	0	
 D	linden	andy-linden	Andy Linden	united-states-of-america	11	0	0	0	0	
 D	lippi	roberto-lippi	Roberto Lippi	italy	3	0	0	0	0	
 D	liuzzi	vitantonio-liuzzi	Vitantonio Liuzzi	italy	80	0	0	0	0	
+D	lloyd-ruby	lloyd-ruby	Lloyd Ruby	united-states-of-america	2	0	0	0	0	
 D	lof	dries-van-der-lof	Dries van der Lof	netherlands	1	0	0	0	0	
+D	logan-sargeant	logan-sargeant	Logan Sargeant	united-states-of-america	36	0	0	0	0	
 D	lombardi	lella-lombardi	Lella Lombardi	italy	17	0	0	0	0	
 D	londono	ricardo-londono	Ricardo Londoño	colombia	1	0	0	0	0	
 D	loof	ernst-loof	Ernst Loof	germany	1	0	0	0	0	
+D	lorenzo-bandini	lorenzo-bandini	Lorenzo Bandini	italy	42	1	8	1	0	
+D	loris-kessel	loris-kessel	Loris Kessel	switzerland	6	0	0	0	0	
 D	lotterer	andre-lotterer	André Lotterer	germany	1	0	0	0	0	
+D	louis-chiron	louis-chiron	Louis Chiron	monaco	19	0	1	0	0	
+D	louis-rosier	louis-rosier	Louis Rosier	france	39	0	2	0	0	
 D	louveau	henri-louveau	Henri Louveau	france	2	0	0	0	0	
 D	love	john-love	John Love	zimbabwe	10	0	1	0	0	
 D	lovely	pete-lovely	Pete Lovely	united-states-of-america	11	0	0	0	0	
 D	loyer	roger-loyer	Roger Loyer	france	1	0	0	0	0	
+D	luca-badoer	luca-badoer	Luca Badoer	italy	58	0	0	0	0	
 D	lucas	jean-lucas	Jean Lucas	france	1	0	0	0	0	
+D	lucas-di-grassi	lucas-di-grassi	Lucas di Grassi	brazil	19	0	0	0	0	
+D	luciano-burti	luciano-burti	Luciano Burti	brazil	15	0	0	0	0	
+D	lucien-bianchi	lucien-bianchi	Lucien Bianchi	belgium	19	0	1	0	0	
 D	lucienbonnet	jean-lucienbonnet	Jean Lucienbonnet	france	1	0	0	0	0	
+D	ludovico-scarfiotti	ludovico-scarfiotti	Ludovico Scarfiotti	italy	12	1	1	0	0	
+D	ludwig-fischer	ludwig-fischer	Ludwig Fischer	germany	1	0	0	0	0	
+D	luigi-fagioli	luigi-fagioli	Luigi Fagioli	italy	8	1	6	0	0	
+D	luigi-musso	luigi-musso	Luigi Musso	italy	26	1	7	0	0	
+D	luigi-piotti	luigi-piotti	Luigi Piotti	italy	9	0	0	0	0	
+D	luigi-taramazzo	luigi-taramazzo	Luigi Taramazzo	italy	1	0	0	0	0	
+D	luigi-villoresi	luigi-villoresi	Luigi Villoresi	italy	35	0	8	0	0	
+D	luis-perez-sala	luis-perez-sala	Luis Pérez-Sala	spain	32	0	0	0	0	
+D	luiz-bueno	luiz-bueno	Luiz Bueno	brazil	1	0	0	0	0	
+D	luiz-razia	luiz-razia	Luiz Razia	brazil	0	0	0	0	0	
+D	luke-browning	luke-browning	Luke Browning	united-kingdom	0	0	0	0	0	
 D	luke_browning	luke-browning	Luke Browning	united-kingdom	0	0	0	0	0	
+D	luki-botha	luki-botha	Luki Botha	south-africa	1	0	0	0	0	
 D	lunger	brett-lunger	Brett Lunger	united-states-of-america	43	0	0	0	0	
+D	ma-qinghua	ma-qinghua	Qing Hua Ma	china	0	0	0	0	0	
 D	macdowel	mike-macdowel	Mike MacDowel	united-kingdom	1	0	0	0	0	
+D	mack-hellings	mack-hellings	Mack Hellings	united-states-of-america	2	0	0	0	0	
 D	mackay-fraser	herbert-mackay-fraser	Herbert MacKay-Fraser	united-states-of-america	1	0	0	0	0	
 D	mackey	bill-mackey	Bill Mackey	united-states-of-america	1	0	0	0	0	
 D	macklin	lance-macklin	Lance Macklin	united-kingdom	15	0	0	0	0	
@@ -713,23 +1497,54 @@ D	maglioli	umberto-maglioli	Umberto Maglioli	italy	10	0	2	0	0
 D	magnussen	jan-magnussen	Jan Magnussen	denmark	25	0	0	0	0	
 D	mairesse	willy-mairesse	Willy Mairesse	belgium	13	0	1	0	0	
 D	maldonado	pastor-maldonado	Pastor Maldonado	venezuela	96	1	1	1	0	
+D	manfred-winkelhock	manfred-winkelhock	Manfred Winkelhock	germany	56	0	0	0	0	
 D	manfred_winkelhock	manfred-winkelhock	Manfred Winkelhock	germany	56	0	0	0	0	
+D	manny-ayulo	manny-ayulo	Manny Ayulo	united-states-of-america	4	0	1	0	0	
 D	mansell	nigel-mansell	Nigel Mansell	united-kingdom	191	31	59	32	1	
 D	mantovani	sergio-mantovani	Sergio Mantovani	italy	9	0	0	0	0	
 D	mantz	johnny-mantz	Johnny Mantz	united-states-of-america	1	0	0	0	0	
 D	manzon	robert-manzon	Robert Manzon	france	29	0	2	0	0	
+D	marc-gene	marc-gene	Marc Gené	spain	36	0	0	0	0	
+D	marc-surer	marc-surer	Marc Surer	switzerland	88	0	0	0	0	
+D	marcel-balsa	marcel-balsa	Marcel Balsa	france	1	0	0	0	0	
+D	marco-apicella	marco-apicella	Marco Apicella	italy	1	0	0	0	0	
+D	marcus-ericsson	marcus-ericsson	Marcus Ericsson	sweden	97	0	0	0	0	
+D	maria-teresa-de-filippis	maria-teresa-de-filippis	Maria Teresa de Filippis	italy	5	0	0	0	0	
 D	marimon	onofre-marimon	Onofre Marimón	argentina	12	0	2	0	0	
+D	mario-andretti	mario-andretti	Mario Andretti	united-states-of-america	131	12	19	18	1	
+D	mario-de-araujo-cabral	mario-de-araujo-cabral	Mário de Araújo Cabral	portugal	5	0	0	0	0	
 D	mario_andretti	mario-andretti	Mario Andretti	united-states-of-america	131	12	19	18	1	
+D	mark-blundell	mark-blundell	Mark Blundell	united-kingdom	63	0	3	0	0	
+D	mark-donohue	mark-donohue	Mark Donohue	united-states-of-america	16	0	1	0	0	
+D	mark-webber	mark-webber	Mark Webber	australia	217	9	42	12	0	
 D	marko	helmut-marko	Helmut Marko	austria	10	0	0	0	0	
+D	markus-winkelhock	markus-winkelhock	Markus Winkelhock	germany	1	0	0	0	0	
 D	markus_winkelhock	markus-winkelhock	Markus Winkelhock	germany	1	0	0	0	0	
 D	marques	tarso-marques	Tarso Marques	brazil	26	0	0	0	0	
 D	marr	leslie-marr	Leslie Marr	united-kingdom	2	0	0	0	0	
 D	marsh	tony-marsh	Tony Marsh	united-kingdom	5	0	0	0	0	
+D	marshall-teague	marshall-teague	Marshall Teague	united-states-of-america	4	0	0	0	0	
 D	martin	eugene-martin	Eugène Martin	france	2	0	0	0	0	
+D	martin-brundle	martin-brundle	Martin Brundle	united-kingdom	165	0	9	0	0	
+D	martin-donnelly	martin-donnelly	Martin Donnelly	united-kingdom	15	0	0	0	0	
 D	martini	pierluigi-martini	Pierluigi Martini	italy	124	0	0	0	0	
+D	masahiro-hasemi	masahiro-hasemi	Masahiro Hasemi	japan	1	0	0	0	0	
+D	masami-kuwashima	masami-kuwashima	Masami Kuwashima	japan	1	0	0	0	0	
 D	mass	jochen-mass	Jochen Mass	germany	114	1	8	0	0	
 D	massa	felipe-massa	Felipe Massa	brazil	271	11	41	16	0	
+D	massimo-natili	massimo-natili	Massimo Natili	italy	2	0	0	0	0	
+D	masten-gregory	masten-gregory	Masten Gregory	united-states-of-america	44	0	3	0	0	
 D	matta	cristiano-da-matta	Cristiano da Matta	brazil	28	0	0	0	0	
+D	matteo-bobbi	matteo-bobbi	Matteo Bobbi	italy	0	0	0	0	0	
+D	mauri-rose	mauri-rose	Mauri Rose	united-states-of-america	2	0	1	0	0	
+D	maurice-trintignant	maurice-trintignant	Maurice Trintignant	france	86	2	10	0	0	
+D	mauricio-gugelmin	mauricio-gugelmin	Maurício Gugelmin	brazil	80	0	1	0	0	
+D	mauro-baldi	mauro-baldi	Mauro Baldi	italy	41	0	0	0	0	
+D	max-chilton	max-chilton	Max Chilton	united-kingdom	35	0	0	0	0	
+D	max-de-terra	max-de-terra	Max de Terra	switzerland	2	0	0	0	0	
+D	max-jean	max-jean	Max Jean	france	1	0	0	0	0	
+D	max-papis	max-papis	Max Papis	italy	7	0	0	0	0	
+D	max-verstappen	max-verstappen	Max Verstappen	netherlands	242	71	129	52	4	
 D	may	michael-may	Michael May	switzerland	3	0	0	0	0	
 D	mayer	timmy-mayer	Timmy Mayer	united-states-of-america	1	0	0	0	0	
 D	mazepin	nikita-mazepin	Nikita Mazepin	russia	22	0	0	0	0	
@@ -747,16 +1562,44 @@ D	mcwithey	jim-mcwithey	Jim McWithey	united-states-of-america	2	0	0	0	0
 D	menditeguy	carlos-menditeguy	Carlos Menditéguy	argentina	12	0	1	0	0	
 D	merhi	roberto-merhi	Roberto Merhi	spain	14	0	0	0	0	
 D	merzario	arturo-merzario	Arturo Merzario	italy	85	0	0	0	0	
+D	michael-ammermuller	michael-ammermuller	Michael Ammermüller	germany	0	0	0	0	0	
+D	michael-andretti	michael-andretti	Michael Andretti	united-states-of-america	13	0	1	0	0	
+D	michael-bartels	michael-bartels	Michael Bartels	germany	4	0	0	0	0	
+D	michael-bleekemolen	michael-bleekemolen	Michael Bleekemolen	netherlands	5	0	0	0	0	
+D	michael-may	michael-may	Michael May	switzerland	3	0	0	0	0	
+D	michael-schumacher	michael-schumacher	Michael Schumacher	germany	308	91	155	69	7	
 D	michael_schumacher	michael-schumacher	Michael Schumacher	germany	308	91	155	69	7	
+D	michel-leclere	michel-leclere	Michel Leclère	france	8	0	0	0	0	
+D	michele-alboreto	michele-alboreto	Michele Alboreto	italy	215	5	23	2	0	
+D	mick-schumacher	mick-schumacher	Mick Schumacher	germany	44	0	0	0	0	
 D	mick_schumacher	mick-schumacher	Mick Schumacher	germany	44	0	0	0	0	
 D	mieres	roberto-mieres	Roberto Mieres	argentina	17	0	0	0	0	
 D	migault	francois-migault	François Migault	france	16	0	0	0	0	
+D	miguel-angel-guerra	miguel-angel-guerra	Miguel Ángel Guerra	argentina	4	0	0	0	0	
+D	mika-hakkinen	mika-hakkinen	Mika Häkkinen	finland	165	20	51	26	2	
+D	mika-salo	mika-salo	Mika Salo	finland	111	0	2	0	0	
+D	mike-beuttler	mike-beuttler	Mike Beuttler	united-kingdom	29	0	0	0	0	
+D	mike-fisher	mike-fisher	Mike Fisher	united-states-of-america	2	0	0	0	0	
+D	mike-hailwood	mike-hailwood	Mike Hailwood	united-kingdom	50	0	2	0	0	
+D	mike-harris	mike-harris	Mike Harris	south-africa	1	0	0	0	0	
+D	mike-hawthorn	mike-hawthorn	Mike Hawthorn	united-kingdom	49	3	18	4	1	
+D	mike-macdowel	mike-macdowel	Mike MacDowel	united-kingdom	1	0	0	0	0	
+D	mike-magill	mike-magill	Mike Magill	united-states-of-america	3	0	0	0	0	
+D	mike-nazaruk	mike-nazaruk	Mike Nazaruk	united-states-of-america	3	0	1	0	0	
+D	mike-parkes	mike-parkes	Mike Parkes	united-kingdom	7	0	2	1	0	
+D	mike-sparken	mike-sparken	Mike Sparken	france	1	0	0	0	0	
+D	mike-spence	mike-spence	Mike Spence	united-kingdom	38	0	1	0	0	
+D	mike-taylor	mike-taylor	Mike Taylor	united-kingdom	2	0	0	0	0	
+D	mike-thackwell	mike-thackwell	Mike Thackwell	new-zealand	5	0	0	0	0	
+D	mike-wilds	mike-wilds	Mike Wilds	united-kingdom	8	0	0	0	0	
 D	mike_taylor	mike-taylor	Mike Taylor	united-kingdom	2	0	0	0	0	
+D	mikko-kozarowitzky	mikko-kozarowitzky	Mikko Kozarowitzky	finland	2	0	0	0	0	
 D	miles	john-miles	John Miles	united-kingdom	15	0	0	0	0	
 D	milhoux	andre-milhoux	André Milhoux	belgium	1	0	0	0	0	
 D	miller	chet-miller	Chet Miller	united-states-of-america	2	0	0	0	0	
 D	mitter	gerhard-mitter	Gerhard Mitter	germany	7	0	0	0	0	
 D	modena	stefano-modena	Stefano Modena	italy	81	0	2	0	0	
+D	moises-solana	moises-solana	Moisés Solana	mexico	8	0	0	0	0	
 D	montagny	franck-montagny	Franck Montagny	france	7	0	0	0	0	
 D	monteiro	tiago-monteiro	Tiago Monteiro	portugal	37	0	1	0	0	
 D	montermini	andrea-montermini	Andrea Montermini	italy	28	0	0	0	0	
@@ -769,61 +1612,162 @@ D	moss	stirling-moss	Stirling Moss	united-kingdom	73	16	24	16	0
 D	munaron	gino-munaron	Gino Munaron	italy	5	0	0	0	0	
 D	murray	david-murray	David Murray	united-kingdom	5	0	0	0	0	
 D	musso	luigi-musso	Luigi Musso	italy	26	1	7	0	0	
+D	myron-fohr	myron-fohr	Myron Fohr	united-states-of-america	1	0	0	0	0	
 D	nakajima	kazuki-nakajima	Kazuki Nakajima	japan	36	0	0	0	0	
 D	nakano	shinji-nakano	Shinji Nakano	japan	33	0	0	0	0	
 D	nalon	duke-nalon	Duke Nalon	united-states-of-america	3	0	0	1	0	
+D	nanni-galli	nanni-galli	Nanni Galli	italy	20	0	0	0	0	
 D	nannini	alessandro-nannini	Alessandro Nannini	italy	78	1	9	0	0	
+D	naoki-hattori	naoki-hattori	Naoki Hattori	japan	2	0	0	0	0	
+D	naoki-yamamoto	naoki-yamamoto	Naoki Yamamoto	japan	0	0	0	0	0	
+D	narain-karthikeyan	narain-karthikeyan	Narain Karthikeyan	india	47	0	0	0	0	
+D	nasif-estefano	nasif-estefano	Nasif Estéfano	argentina	2	0	0	0	0	
 D	naspetti	emanuele-naspetti	Emanuele Naspetti	italy	6	0	0	0	0	
 D	nasr	felipe-nasr	Felipe Nasr	brazil	40	0	0	0	0	
 D	natili	massimo-natili	Massimo Natili	italy	2	0	0	0	0	
 D	naylor	brian-naylor	Brian Naylor	united-kingdom	8	0	0	0	0	
 D	nazaruk	mike-nazaruk	Mike Nazaruk	united-states-of-america	3	0	1	0	0	
 D	needell	tiff-needell	Tiff Needell	united-kingdom	2	0	0	0	0	
+D	neel-jani	neel-jani	Neel Jani	switzerland	0	0	0	0	0	
+D	nello-pagani	nello-pagani	Nello Pagani	italy	1	0	0	0	0	
+D	nelson-piquet	nelson-piquet	Nelson Piquet	brazil	207	23	60	24	3	
+D	nelson-piquet-jr	nelson-piquet-jr	Nelson Piquet Jr.	brazil	28	0	1	0	0	
 D	neve	patrick-neve	Patrick Nève	belgium	14	0	0	0	0	
+D	neville-lederle	neville-lederle	Neville Lederle	south-africa	2	0	0	0	0	
+D	nicholas-latifi	nicholas-latifi	Nicholas Latifi	canada	61	0	0	0	0	
 D	nicholson	john-nicholson	John Nicholson	new-zealand	2	0	0	0	0	
+D	nick-heidfeld	nick-heidfeld	Nick Heidfeld	germany	185	0	13	1	0	
+D	nico-hulkenberg	nico-hulkenberg	Nico Hülkenberg	germany	263	0	1	1	0	
+D	nico-rosberg	nico-rosberg	Nico Rosberg	germany	206	23	57	30	1	
+D	nicola-larini	nicola-larini	Nicola Larini	italy	75	0	1	0	0	
+D	nicolas-kiesa	nicolas-kiesa	Nicolas Kiesa	denmark	5	0	0	0	0	
 D	niday	cal-niday	Cal Niday	united-states-of-america	3	0	0	0	0	
 D	niedermayr	helmut-niedermayr	Helmut Niedermayr	germany	1	0	0	0	0	
 D	niemann	brausch-niemann	Brausch Niemann	south-africa	2	0	0	0	0	
+D	nigel-mansell	nigel-mansell	Nigel Mansell	united-kingdom	191	31	59	32	1	
+D	niki-lauda	niki-lauda	Niki Lauda	austria	176	25	54	24	3	
+D	nikita-mazepin	nikita-mazepin	Nikita Mazepin	russia	22	0	0	0	0	
 D	nilsson	gunnar-nilsson	Gunnar Nilsson	sweden	32	1	4	0	0	
+D	nino-farina	nino-farina	Nino Farina	italy	37	5	20	5	1	
+D	nino-vaccarella	nino-vaccarella	Nino Vaccarella	italy	5	0	0	0	0	
 D	noda	hideki-noda	Hideki Noda	japan	3	0	0	0	0	
+D	norberto-fontana	norberto-fontana	Norberto Fontana	argentina	4	0	0	0	0	
+D	noritake-takahara	noritake-takahara	Noritake Takahara	japan	2	0	0	0	0	
 D	nuckey	rodney-nuckey	Rodney Nuckey	united-kingdom	2	0	0	0	0	
+D	nyck-de-vries	nyck-de-vries	Nyck de Vries	netherlands	11	0	0	0	0	
 D	obrien	robert-obrien	Robert O'Brien	united-states-of-america	1	0	0	0	0	
 D	oliver	jackie-oliver	Jackie Oliver	united-kingdom	52	0	2	0	0	
+D	oliver-bearman	oliver-bearman	Oliver Bearman	united-kingdom	36	0	0	0	0	
+D	olivier-beretta	olivier-beretta	Olivier Beretta	monaco	10	0	0	0	0	
+D	olivier-gendebien	olivier-gendebien	Olivier Gendebien	belgium	15	0	2	0	0	
+D	olivier-grouillard	olivier-grouillard	Olivier Grouillard	france	62	0	0	0	0	
+D	olivier-panis	olivier-panis	Olivier Panis	france	158	1	5	0	0	
 D	ongais	danny-ongais	Danny Ongais	united-states-of-america	6	0	0	0	0	
+D	onofre-marimon	onofre-marimon	Onofre Marimón	argentina	12	0	2	0	0	
 D	opel	rikky-von-opel	Rikky von Opel	liechtenstein	14	0	0	0	0	
 D	orey	fritz-dorey	Fritz d'Orey	brazil	3	0	0	0	0	
+D	oscar-alfredo-galvez	oscar-alfredo-galvez	Oscar Alfredo Gálvez	argentina	1	0	0	0	0	
+D	oscar-gonzalez	oscar-gonzalez	Óscar González	uruguay	1	0	0	0	0	
+D	oscar-larrauri	oscar-larrauri	Oscar Larrauri	argentina	21	0	0	0	0	
+D	oscar-piastri	oscar-piastri	Oscar Piastri	australia	79	9	28	6	0	
 D	oscar_gonzalez	oscar-gonzalez	Óscar González	uruguay	1	0	0	0	0	
+D	oswald-karch	oswald-karch	Oswald Karch	germany	1	0	0	0	0	
+D	otto-stuppacher	otto-stuppacher	Otto Stuppacher	austria	3	0	0	0	0	
+D	ottorino-volonterio	ottorino-volonterio	Ottorino Volonterio	switzerland	3	0	0	0	0	
 D	owen	arthur-owen	Arthur Owen	united-kingdom	1	0	0	0	0	
+D	pablo-birger	pablo-birger	Pablo Birger	argentina	2	0	0	0	0	
 D	pace	carlos-pace	Carlos Pace	brazil	73	1	6	1	0	
+D	paco-godia	paco-godia	Paco Godia	spain	14	0	0	0	0	
+D	paddy-driver	paddy-driver	Paddy Driver	south-africa	2	0	0	0	0	
 D	pagani	nello-pagani	Nello Pagani	italy	1	0	0	0	0	
 D	paletti	riccardo-paletti	Riccardo Paletti	italy	8	0	0	0	0	
 D	palm	torsten-palm	Torsten Palm	sweden	2	0	0	0	0	
 D	palmer	jonathan-palmer	Jonathan Palmer	united-kingdom	88	0	0	0	0	
 D	panis	olivier-panis	Olivier Panis	france	158	1	5	0	0	
 D	pantano	giorgio-pantano	Giorgio Pantano	italy	14	0	0	0	0	
+D	paolo-barilla	paolo-barilla	Paolo Barilla	italy	15	0	0	0	0	
 D	parker	philip-fotheringham-parker	Philip Fotheringham-Parker	united-kingdom	1	0	0	0	0	
 D	parkes	mike-parkes	Mike Parkes	united-kingdom	7	0	2	1	0	
 D	parnell	tim-parnell	Tim Parnell	united-kingdom	4	0	0	0	0	
 D	parsons	johnnie-parsons	Johnnie Parsons	united-states-of-america	10	1	1	0	0	
+D	pascal-fabre	pascal-fabre	Pascal Fabre	france	14	0	0	0	0	
+D	pascal-wehrlein	pascal-wehrlein	Pascal Wehrlein	germany	39	0	0	0	0	
+D	pastor-maldonado	pastor-maldonado	Pastor Maldonado	venezuela	96	1	1	1	0	
+D	pat-flaherty	pat-flaherty	Pat Flaherty	united-states-of-america	6	1	1	1	0	
+D	pat-oconnor	pat-oconnor	Pat O'Connor	united-states-of-america	5	0	0	1	0	
 D	patrese	riccardo-patrese	Riccardo Patrese	italy	257	6	37	8	0	
+D	patricio-oward	patricio-oward	Patricio O'Ward	mexico	0	0	0	0	0	
 D	patricio_o_ward	patricio-oward	Patricio O'Ward	mexico	0	0	0	0	0	
+D	patrick-depailler	patrick-depailler	Patrick Depailler	france	95	2	19	1	0	
+D	patrick-friesacher	patrick-friesacher	Patrick Friesacher	austria	11	0	0	0	0	
+D	patrick-gaillard	patrick-gaillard	Patrick Gaillard	france	5	0	0	0	0	
+D	patrick-neve	patrick-neve	Patrick Nève	belgium	14	0	0	0	0	
+D	patrick-tambay	patrick-tambay	Patrick Tambay	france	123	2	11	5	0	
+D	paul-aron	paul-aron	Paul Aron	estonia	0	0	0	0	0	
+D	paul-belmondo	paul-belmondo	Paul Belmondo	france	27	0	0	0	0	
+D	paul-di-resta	paul-di-resta	Paul di Resta	united-kingdom	59	0	0	0	0	
+D	paul-emery	paul-emery	Paul Emery	united-kingdom	2	0	0	0	0	
+D	paul-england	paul-england	Paul England	australia	1	0	0	0	0	
+D	paul-frere	paul-frere	Paul Frère	belgium	11	0	1	0	0	
+D	paul-goldsmith	paul-goldsmith	Paul Goldsmith	united-states-of-america	3	0	1	0	0	
+D	paul-hawkins	paul-hawkins	Paul Hawkins	australia	3	0	0	0	0	
+D	paul-pietsch	paul-pietsch	Paul Pietsch	germany	3	0	0	0	0	
+D	paul-russo	paul-russo	Paul Russo	united-states-of-america	9	0	1	0	0	
 D	paul_aron	paul-aron	Paul Aron	estonia	0	0	0	0	0	
 D	paul_russo	paul-russo	Paul Russo	united-states-of-america	9	0	1	0	0	
 D	pease	al-pease	Al Pease	canada	3	0	0	0	0	
+D	pedro-chaves	pedro-chaves	Pedro Chaves	portugal	13	0	0	0	0	
+D	pedro-de-la-rosa	pedro-de-la-rosa	Pedro de la Rosa	spain	107	0	1	0	0	
+D	pedro-diniz	pedro-diniz	Pedro Diniz	brazil	99	0	0	0	0	
+D	pedro-lamy	pedro-lamy	Pedro Lamy	portugal	32	0	0	0	0	
+D	pedro-rodriguez	pedro-rodriguez	Pedro Rodríguez	mexico	55	2	7	0	0	
 D	penske	roger-penske	Roger Penske	united-states-of-america	2	0	0	0	0	
 D	perdisa	cesare-perdisa	Cesare Perdisa	italy	9	0	2	0	0	
 D	perkins	larry-perkins	Larry Perkins	australia	15	0	0	0	0	
+D	perry-mccarthy	perry-mccarthy	Perry McCarthy	united-kingdom	7	0	0	0	0	
 D	pescarolo	henri-pescarolo	Henri Pescarolo	france	64	0	1	0	0	
 D	pesenti_rossi	alessandro-pesenti-rossi	Alessandro Pesenti-Rossi	italy	4	0	0	0	0	
+D	pete-lovely	pete-lovely	Pete Lovely	united-states-of-america	11	0	0	0	0	
+D	peter-arundell	peter-arundell	Peter Arundell	united-kingdom	13	0	2	0	0	
+D	peter-ashdown	peter-ashdown	Peter Ashdown	united-kingdom	1	0	0	0	0	
+D	peter-broeker	peter-broeker	Peter Broeker	canada	1	0	0	0	0	
+D	peter-collins	peter-collins	Peter Collins	united-kingdom	39	3	9	0	0	
+D	peter-de-klerk	peter-de-klerk	Peter de Klerk	south-africa	4	0	0	0	0	
+D	peter-gethin	peter-gethin	Peter Gethin	united-kingdom	31	1	1	0	0	
+D	peter-hirt	peter-hirt	Peter Hirt	switzerland	5	0	0	0	0	
+D	peter-revson	peter-revson	Peter Revson	united-states-of-america	32	2	8	1	0	
+D	peter-ryan	peter-ryan	Peter Ryan	canada	1	0	0	0	0	
+D	peter-walker	peter-walker	Peter Walker	united-kingdom	4	0	0	0	0	
+D	peter-westbury	peter-westbury	Peter Westbury	united-kingdom	2	0	0	0	0	
+D	peter-whitehead	peter-whitehead	Peter Whitehead	united-kingdom	12	0	1	0	0	
 D	peter_walker	peter-walker	Peter Walker	united-kingdom	4	0	0	0	0	
 D	peters	josef-peters	Josef Peters	germany	1	0	0	0	0	
 D	peterson	ronnie-peterson	Ronnie Peterson	sweden	123	10	26	14	0	
 D	petrov	vitaly-petrov	Vitaly Petrov	russia	58	0	1	0	0	
+D	phil-cade	phil-cade	Phil Cade	united-states-of-america	1	0	0	0	0	
+D	phil-hill	phil-hill	Phil Hill	united-states-of-america	52	3	16	6	1	
 D	phil_hill	phil-hill	Phil Hill	united-states-of-america	52	3	16	6	1	
+D	philip-fotheringham-parker	philip-fotheringham-parker	Philip Fotheringham-Parker	united-kingdom	1	0	0	0	0	
+D	philippe-adams	philippe-adams	Philippe Adams	belgium	2	0	0	0	0	
+D	philippe-alliot	philippe-alliot	Philippe Alliot	france	116	0	0	0	0	
+D	philippe-etancelin	philippe-etancelin	Philippe Étancelin	france	12	0	0	0	0	
+D	philippe-streiff	philippe-streiff	Philippe Streiff	france	54	0	1	0	0	
 D	pian	alfredo-pian	Alfredo Pián	argentina	1	0	0	0	0	
 D	pic	charles-pic	Charles Pic	france	39	0	0	0	0	
 D	picard	francois-picard	François Picard	france	1	0	0	0	0	
+D	piercarlo-ghinzani	piercarlo-ghinzani	Piercarlo Ghinzani	italy	111	0	0	0	0	
+D	pierluigi-martini	pierluigi-martini	Pierluigi Martini	italy	124	0	0	0	0	
+D	piero-carini	piero-carini	Piero Carini	italy	3	0	0	0	0	
+D	piero-drogo	piero-drogo	Piero Drogo	italy	1	0	0	0	0	
+D	piero-dusio	piero-dusio	Piero Dusio	italy	1	0	0	0	0	
+D	piero-scotti	piero-scotti	Piero Scotti	italy	1	0	0	0	0	
+D	piero-taruffi	piero-taruffi	Piero Taruffi	italy	19	1	5	0	0	
+D	pierre-gasly	pierre-gasly	Pierre Gasly	france	187	1	6	0	0	
+D	pierre-henri-raphanel	pierre-henri-raphanel	Pierre-Henri Raphanel	france	17	0	0	0	0	
+D	pierre-levegh	pierre-levegh	Pierre Levegh	france	6	0	0	0	0	
+D	piers-courage	piers-courage	Piers Courage	united-kingdom	30	0	2	0	0	
 D	pieterse	ernie-pieterse	Ernie Pieterse	south-africa	3	0	0	0	0	
+D	pietro-fittipaldi	pietro-fittipaldi	Pietro Fittipaldi	brazil	2	0	0	0	0	
 D	pietro_fittipaldi	pietro-fittipaldi	Pietro Fittipaldi	brazil	2	0	0	0	0	
 D	pietsch	paul-pietsch	Paul Pietsch	germany	3	0	0	0	0	
 D	pilette	teddy-pilette	Teddy Pilette	belgium	4	0	0	0	0	
@@ -851,39 +1795,95 @@ D	purley	david-purley	David Purley	united-kingdom	11	0	0	0	0
 D	puzey	clive-puzey	Clive Puzey	zimbabwe	1	0	0	0	0	
 D	quester	dieter-quester	Dieter Quester	austria	2	0	0	0	0	
 D	raby	ian-raby	Ian Raby	united-kingdom	7	0	0	0	0	
+D	raffaele-marciello	raffaele-marciello	Raffaele Marciello	italy	0	0	0	0	0	
 D	rahal	bobby-rahal	Bobby Rahal	united-states-of-america	2	0	0	0	0	
 D	raikkonen	kimi-raikkonen	Kimi Räikkönen	finland	352	21	103	19	1	
+D	ralf-schumacher	ralf-schumacher	Ralf Schumacher	germany	180	6	27	6	0	
 D	ralf_schumacher	ralf-schumacher	Ralf Schumacher	germany	180	6	27	6	0	
+D	ralph-firman	ralph-firman	Ralph Firman	ireland	14	0	0	0	0	
 D	raphanel	pierre-henri-raphanel	Pierre-Henri Raphanel	france	17	0	0	0	0	
 D	rathmann	jim-rathmann	Jim Rathmann	united-states-of-america	12	1	4	0	0	
 D	ratzenberger	roland-ratzenberger	Roland Ratzenberger	austria	3	0	0	0	0	
+D	raul-boesel	raul-boesel	Raul Boesel	brazil	30	0	0	0	0	
+D	ray-crawford	ray-crawford	Ray Crawford	united-states-of-america	3	0	0	0	0	
 D	ray_crawford	ray-crawford	Ray Crawford	united-states-of-america	3	0	0	0	0	
+D	raymond-sommer	raymond-sommer	Raymond Sommer	france	5	0	0	0	0	
 D	rebaque	hector-rebaque	Héctor Rebaque	mexico	58	0	0	0	0	
+D	red-amick	red-amick	Red Amick	united-states-of-america	2	0	0	0	0	
 D	redman	brian-redman	Brian Redman	united-kingdom	15	0	1	0	0	
 D	reece	jimmy-reece	Jimmy Reece	united-states-of-america	6	0	0	0	0	
 D	rees	alan-rees	Alan Rees	united-kingdom	3	0	0	0	0	
+D	reg-parnell	reg-parnell	Reg Parnell	united-kingdom	7	0	1	0	0	
 D	reg_parnell	reg-parnell	Reg Parnell	united-kingdom	7	0	1	0	0	
 D	regazzoni	clay-regazzoni	Clay Regazzoni	switzerland	139	5	28	5	0	
+D	reine-wisell	reine-wisell	Reine Wisell	sweden	23	0	1	0	0	
+D	renato-pirocchi	renato-pirocchi	Renato Pirocchi	italy	1	0	0	0	0	
+D	rene-arnoux	rene-arnoux	René Arnoux	france	164	7	22	18	0	
+D	renzo-zorzi	renzo-zorzi	Renzo Zorzi	italy	7	0	0	0	0	
 D	resta	paul-di-resta	Paul di Resta	united-kingdom	59	0	0	0	0	
 D	reutemann	carlos-reutemann	Carlos Reutemann	argentina	146	12	45	6	0	
 D	reventlow	lance-reventlow	Lance Reventlow	united-states-of-america	4	0	0	0	0	
 D	revson	peter-revson	Peter Revson	united-states-of-america	32	2	8	1	0	
 D	rhodes	john-rhodes	John Rhodes	united-kingdom	1	0	0	0	0	
 D	ribeiro	alex-ribeiro	Alex Ribeiro	brazil	20	0	0	0	0	
+D	ricardo-londono	ricardo-londono	Ricardo Londoño	colombia	1	0	0	0	0	
+D	ricardo-rodriguez	ricardo-rodriguez	Ricardo Rodríguez	mexico	6	0	0	0	0	
+D	ricardo-rosset	ricardo-rosset	Ricardo Rosset	brazil	33	0	0	0	0	
+D	ricardo-zonta	ricardo-zonta	Ricardo Zonta	brazil	38	0	0	0	0	
+D	ricardo-zunino	ricardo-zunino	Ricardo Zunino	argentina	11	0	0	0	0	
 D	ricardo_rodriguez	ricardo-rodriguez	Ricardo Rodríguez	mexico	6	0	0	0	0	
+D	riccardo-paletti	riccardo-paletti	Riccardo Paletti	italy	8	0	0	0	0	
+D	riccardo-patrese	riccardo-patrese	Riccardo Patrese	italy	257	6	37	8	0	
 D	ricciardo	daniel-ricciardo	Daniel Ricciardo	australia	257	8	32	3	0	
+D	richard-attwood	richard-attwood	Richard Attwood	united-kingdom	18	0	1	0	0	
+D	richard-robarts	richard-robarts	Richard Robarts	united-kingdom	4	0	0	0	0	
 D	richardson	ken-richardson	Ken Richardson	united-kingdom	1	0	0	0	0	
+D	richie-ginther	richie-ginther	Richie Ginther	united-states-of-america	54	1	14	0	0	
 D	riess	fritz-riess	Fritz Riess	germany	1	0	0	0	0	
 D	rigsby	jim-rigsby	Jim Rigsby	united-states-of-america	1	0	0	0	0	
+D	rikky-von-opel	rikky-von-opel	Rikky von Opel	liechtenstein	14	0	0	0	0	
 D	rindt	jochen-rindt	Jochen Rindt	austria	62	6	13	10	1	
+D	rio-haryanto	rio-haryanto	Rio Haryanto	indonesia	12	0	0	0	0	
 D	riseley_prichard	john-riseley-prichard	John Riseley-Prichard	united-kingdom	1	0	0	0	0	
 D	riu	giovanni-de-riu	Giovanni de Riu	italy	1	0	0	0	0	
+D	rob-schroeder	rob-schroeder	Rob Schroeder	united-states-of-america	1	0	0	0	0	
 D	robarts	richard-robarts	Richard Robarts	united-kingdom	4	0	0	0	0	
+D	robert-doornbos	robert-doornbos	Robert Doornbos	netherlands	11	0	0	0	0	
+D	robert-kubica	robert-kubica	Robert Kubica	poland	99	1	12	1	0	
+D	robert-la-caze	robert-la-caze	Robert La Caze	morocco	1	0	0	0	0	
+D	robert-manzon	robert-manzon	Robert Manzon	france	29	0	2	0	0	
+D	robert-obrien	robert-obrien	Robert O'Brien	united-states-of-america	1	0	0	0	0	
+D	robert-shwartzman	robert-shwartzman	Robert Shwartzman	russia	0	0	0	0	0	
+D	robert-wickens	robert-wickens	Robert Wickens	canada	0	0	0	0	0	
+D	roberto-bonomi	roberto-bonomi	Roberto Bonomi	argentina	1	0	0	0	0	
+D	roberto-bussinello	roberto-bussinello	Roberto Bussinello	italy	3	0	0	0	0	
+D	roberto-guerrero	roberto-guerrero	Roberto Guerrero	colombia	28	0	0	0	0	
+D	roberto-lippi	roberto-lippi	Roberto Lippi	italy	3	0	0	0	0	
+D	roberto-merhi	roberto-merhi	Roberto Merhi	spain	14	0	0	0	0	
+D	roberto-mieres	roberto-mieres	Roberto Mieres	argentina	17	0	0	0	0	
+D	roberto-moreno	roberto-moreno	Roberto Moreno	brazil	75	0	1	0	0	
+D	robin-frijns	robin-frijns	Robin Frijns	netherlands	0	0	0	0	0	
+D	robin-montgomerie-charrington	robin-montgomerie-charrington	Robin Montgomerie-Charrington	united-kingdom	1	0	0	0	0	
+D	robin-widdows	robin-widdows	Robin Widdows	united-kingdom	1	0	0	0	0	
+D	rodger-ward	rodger-ward	Rodger Ward	united-states-of-america	12	1	2	0	0	
+D	rodney-nuckey	rodney-nuckey	Rodney Nuckey	united-kingdom	2	0	0	0	0	
+D	rodolfo-gonzalez	rodolfo-gonzalez	Rodolfo González	venezuela	0	0	0	0	0	
 D	rodriguez	pedro-rodriguez	Pedro Rodríguez	mexico	55	2	7	0	0	
+D	roelof-wunderink	roelof-wunderink	Roelof Wunderink	netherlands	6	0	0	0	0	
+D	roger-laurent	roger-laurent	Roger Laurent	belgium	2	0	0	0	0	
+D	roger-loyer	roger-loyer	Roger Loyer	france	1	0	0	0	0	
+D	roger-penske	roger-penske	Roger Penske	united-states-of-america	2	0	0	0	0	
+D	roger-williamson	roger-williamson	Roger Williamson	united-kingdom	2	0	0	0	0	
 D	roig	alex-soler-roig	Alex Soler-Roig	spain	10	0	0	0	0	
 D	rol	franco-rol	Franco Rol	italy	5	0	0	0	0	
+D	roland-ratzenberger	roland-ratzenberger	Roland Ratzenberger	austria	3	0	0	0	0	
+D	rolf-stommelen	rolf-stommelen	Rolf Stommelen	germany	64	0	1	0	0	
 D	rollinson	alan-rollinson	Alan Rollinson	united-kingdom	1	0	0	0	0	
 D	rolt	tony-rolt	Tony Rolt	united-kingdom	3	0	0	0	0	
+D	romain-grosjean	romain-grosjean	Romain Grosjean	france	181	0	10	0	0	
+D	ron-flockhart	ron-flockhart	Ron Flockhart	united-kingdom	14	0	1	0	0	
+D	ronnie-bucknum	ronnie-bucknum	Ronnie Bucknum	united-states-of-america	11	0	0	0	0	
+D	ronnie-peterson	ronnie-peterson	Ronnie Peterson	sweden	123	10	26	14	0	
 D	roos	bertil-roos	Bertil Roos	sweden	1	0	0	0	0	
 D	rooyen	basil-van-rooyen	Basil van Rooyen	south-africa	2	0	0	0	0	
 D	rosa	pedro-de-la-rosa	Pedro de la Rosa	spain	107	0	1	0	0	
@@ -893,22 +1893,37 @@ D	rosier	louis-rosier	Louis Rosier	france	39	0	2	0	0
 D	rosset	ricardo-rosset	Ricardo Rosset	brazil	33	0	0	0	0	
 D	rossi	alexander-rossi	Alexander Rossi	united-states-of-america	5	0	0	0	0	
 D	rothengatter	huub-rothengatter	Huub Rothengatter	netherlands	30	0	0	0	0	
+D	roy-nissany	roy-nissany	Roy Nissany	israel	0	0	0	0	0	
+D	roy-salvadori	roy-salvadori	Roy Salvadori	united-kingdom	50	0	2	0	0	
+D	rubens-barrichello	rubens-barrichello	Rubens Barrichello	brazil	326	11	68	14	0	
 D	ruby	lloyd-ruby	Lloyd Ruby	united-states-of-america	2	0	0	0	0	
+D	rudi-fischer	rudi-fischer	Rudi Fischer	switzerland	9	0	2	0	0	
+D	rudolf-krause	rudolf-krause	Rudolf Krause	germany	2	0	0	0	0	
+D	rudolf-schoeller	rudolf-schoeller	Rudolf Schoeller	switzerland	1	0	0	0	0	
+D	rupert-keegan	rupert-keegan	Rupert Keegan	united-kingdom	37	0	0	0	0	
 D	russo	eddie-russo	Eddie Russo	united-states-of-america	4	0	0	0	0	
 D	ruttman	troy-ruttman	Troy Ruttman	united-states-of-america	9	1	1	0	0	
 D	ryan	peter-ryan	Peter Ryan	canada	1	0	0	0	0	
+D	ryan-briscoe	ryan-briscoe	Ryan Briscoe	australia	0	0	0	0	0	
+D	ryo-hirakawa	ryo-hirakawa	Ryō Hirakawa	japan	0	0	0	0	0	
 D	ryo_hirakawa	ryo-hirakawa	Ryō Hirakawa	japan	0	0	0	0	0	
 D	sachs	eddie-sachs	Eddie Sachs	united-states-of-america	4	0	0	1	0	
 D	said	bob-said	Bob Said	united-states-of-america	1	0	0	0	0	
+D	sakon-yamamoto	sakon-yamamoto	Sakon Yamamoto	japan	21	0	0	0	0	
 D	sala	luis-perez-sala	Luis Pérez-Sala	spain	32	0	0	0	0	
 D	salazar	eliseo-salazar	Eliseo Salazar	chile	37	0	0	0	0	
 D	salo	mika-salo	Mika Salo	finland	111	0	2	0	0	
 D	salvadori	roy-salvadori	Roy Salvadori	united-kingdom	50	0	2	0	0	
+D	sam-hanks	sam-hanks	Sam Hanks	united-states-of-america	9	1	4	0	0	
+D	sam-posey	sam-posey	Sam Posey	united-states-of-america	2	0	0	0	0	
+D	sam-tingle	sam-tingle	Sam Tingle	zimbabwe	5	0	0	0	0	
 D	sanesi	consalvo-sanesi	Consalvo Sanesi	italy	5	0	0	0	0	
 D	sargeant	logan-sargeant	Logan Sargeant	united-states-of-america	36	0	0	0	0	
 D	sarrazin	stephane-sarrazin	Stéphane Sarrazin	france	1	0	0	0	0	
 D	sato	takuma-sato	Takuma Sato	japan	91	0	1	0	0	
+D	satoru-nakajima	satoru-nakajima	Satoru Nakajima	japan	80	0	0	0	0	
 D	satoru_nakajima	satoru-nakajima	Satoru Nakajima	japan	80	0	0	0	0	
+D	satoshi-motoyama	satoshi-motoyama	Satoshi Motoyama	japan	0	0	0	0	0	
 D	scarborough	carl-scarborough	Carl Scarborough	united-states-of-america	2	0	0	0	0	
 D	scarfiotti	ludovico-scarfiotti	Ludovico Scarfiotti	italy	12	1	1	0	0	
 D	scarlatti	giorgio-scarlatti	Giorgio Scarlatti	italy	15	0	0	0	0	
@@ -924,12 +1939,20 @@ D	schneider	bernd-schneider	Bernd Schneider	germany	34	0	0	0	0
 D	schoeller	rudolf-schoeller	Rudolf Schoeller	switzerland	1	0	0	0	0	
 D	schroeder	rob-schroeder	Rob Schroeder	united-states-of-america	1	0	0	0	0	
 D	schuppan	vern-schuppan	Vern Schuppan	australia	13	0	0	0	0	
+D	scott-speed	scott-speed	Scott Speed	united-states-of-america	28	0	0	0	0	
 D	scott_Brown	archie-scott-brown	Archie Scott Brown	united-kingdom	1	0	0	0	0	
 D	scotti	piero-scotti	Piero Scotti	italy	1	0	0	0	0	
+D	sean-gelael	sean-gelael	Sean Gelael	indonesia	0	0	0	0	0	
+D	sebastian-vettel	sebastian-vettel	Sebastian Vettel	germany	300	53	122	57	4	
+D	sebastien-bourdais	sebastien-bourdais	Sébastien Bourdais	france	27	0	0	0	0	
+D	sebastien-buemi	sebastien-buemi	Sébastien Buemi	switzerland	55	0	0	0	0	
 D	seidel	wolfgang-seidel	Wolfgang Seidel	germany	13	0	0	0	0	
 D	seiffert	gunther-seiffert	Günther Seiffert	germany	1	0	0	0	0	
 D	senna	ayrton-senna	Ayrton Senna	brazil	162	41	80	65	3	
 D	serafini	dorino-serafini	Dorino Serafini	italy	1	0	1	0	0	
+D	sergey-sirotkin	sergey-sirotkin	Sergey Sirotkin	russia	21	0	0	0	0	
+D	sergio-mantovani	sergio-mantovani	Sergio Mantovani	italy	9	0	0	0	0	
+D	sergio-perez	sergio-perez	Sergio Pérez	mexico	292	6	39	3	0	
 D	serra	chico-serra	Chico Serra	brazil	33	0	0	0	0	
 D	serrurier	doug-serrurier	Doug Serrurier	south-africa	3	0	0	0	0	
 D	settember	tony-settember	Tony Settember	united-states-of-america	7	0	0	0	0	
@@ -937,9 +1960,15 @@ D	sharp	hap-sharp	Hap Sharp	united-states-of-america	6	0	0	0	0
 D	shawe_taylor	brian-shawe-taylor	Brian Shawe-Taylor	united-kingdom	2	0	0	0	0	
 D	shelby	carroll-shelby	Carroll Shelby	united-states-of-america	9	0	0	0	0	
 D	shelly	tony-shelly	Tony Shelly	new-zealand	3	0	0	0	0	
+D	shinji-nakano	shinji-nakano	Shinji Nakano	japan	33	0	0	0	0	
+D	shorty-templeman	shorty-templeman	Shorty Templeman	united-states-of-america	3	0	0	0	0	
+D	siegfried-stohr	siegfried-stohr	Siegfried Stohr	italy	13	0	0	0	0	
 D	siffert	jo-siffert	Jo Siffert	switzerland	100	2	6	2	0	
+D	silvio-moser	silvio-moser	Silvio Moser	switzerland	20	0	0	0	0	
 D	simon	andre-simon	André Simon	france	12	0	0	0	0	
 D	sirotkin	sergey-sirotkin	Sergey Sirotkin	russia	21	0	0	0	0	
+D	skip-barber	skip-barber	Skip Barber	united-states-of-america	6	0	0	0	0	
+D	slim-borgudd	slim-borgudd	Slim Borgudd	sweden	15	0	0	0	0	
 D	solana	moises-solana	Moisés Solana	mexico	8	0	0	0	0	
 D	sommer	raymond-sommer	Raymond Sommer	france	5	0	0	0	0	
 D	sospiri	vincenzo-sospiri	Vincenzo Sospiri	italy	1	0	0	0	0	
@@ -947,19 +1976,29 @@ D	south	stephen-south	Stephen South	united-kingdom	1	0	0	0	0
 D	sparken	mike-sparken	Mike Sparken	france	1	0	0	0	0	
 D	speed	scott-speed	Scott Speed	united-states-of-america	28	0	0	0	0	
 D	spence	mike-spence	Mike Spence	united-kingdom	38	0	1	0	0	
+D	spider-webb	spider-webb	Spider Webb	united-states-of-america	4	0	0	0	0	
 D	stacey	alan-stacey	Alan Stacey	united-kingdom	7	0	0	0	0	
 D	starrabba	gaetano-starrabba	Gaetano Starrabba	italy	1	0	0	0	0	
+D	stefan-bellof	stefan-bellof	Stefan Bellof	germany	22	0	0	0	0	
+D	stefan-johansson	stefan-johansson	Stefan Johansson	sweden	103	0	12	0	0	
+D	stefano-modena	stefano-modena	Stefano Modena	italy	81	0	2	0	0	
+D	stephane-sarrazin	stephane-sarrazin	Stéphane Sarrazin	france	1	0	0	0	0	
+D	stephen-south	stephen-south	Stephen South	united-kingdom	1	0	0	0	0	
 D	stevens	will-stevens	Will Stevens	united-kingdom	20	0	0	0	0	
 D	stevenson	chuck-stevenson	Chuck Stevenson	united-states-of-america	7	0	0	0	0	
 D	stewart	jackie-stewart	Jackie Stewart	united-kingdom	100	27	43	17	3	
+D	stirling-moss	stirling-moss	Stirling Moss	united-kingdom	73	16	24	16	0	
+D	stoffel-vandoorne	stoffel-vandoorne	Stoffel Vandoorne	belgium	42	0	0	0	0	
 D	stohr	siegfried-stohr	Siegfried Stohr	italy	13	0	0	0	0	
 D	stommelen	rolf-stommelen	Rolf Stommelen	germany	64	0	1	0	0	
 D	streiff	philippe-streiff	Philippe Streiff	france	54	0	1	0	0	
+D	stuart-lewis-evans	stuart-lewis-evans	Stuart Lewis-Evans	united-kingdom	14	0	2	2	0	
 D	stuck	hans-joachim-stuck	Hans-Joachim Stuck	germany	81	0	2	0	0	
 D	stuppacher	otto-stuppacher	Otto Stuppacher	austria	3	0	0	0	0	
 D	sullivan	danny-sullivan	Danny Sullivan	united-states-of-america	15	0	0	0	0	
 D	surer	marc-surer	Marc Surer	switzerland	88	0	0	0	0	
 D	surtees	john-surtees	John Surtees	united-kingdom	113	6	24	8	1	
+D	susie-wolff	susie-wolff	Susie Wolff	united-kingdom	0	0	0	0	0	
 D	sutcliffe	andy-sutcliffe	Andy Sutcliffe	united-kingdom	1	0	0	0	0	
 D	sutil	adrian-sutil	Adrian Sutil	germany	128	0	0	0	0	
 D	sutton	len-sutton	Len Sutton	united-states-of-america	3	0	0	0	0	
@@ -969,62 +2008,121 @@ D	sweikert	bob-sweikert	Bob Sweikert	united-states-of-america	5	1	1	0	0
 D	takagi	toranosuke-takagi	Toranosuke Takagi	japan	32	0	0	0	0	
 D	takahara	noritake-takahara	Noritake Takahara	japan	2	0	0	0	0	
 D	takahashi	kunimitsu-takahashi	Kunimitsu Takahashi	japan	1	0	0	0	0	
+D	taki-inoue	taki-inoue	Taki Inoue	japan	18	0	0	0	0	
+D	takuma-sato	takuma-sato	Takuma Sato	japan	91	0	1	0	0	
 D	tambay	patrick-tambay	Patrick Tambay	france	123	2	11	5	0	
 D	taramazzo	luigi-taramazzo	Luigi Taramazzo	italy	1	0	0	0	0	
 D	tarquini	gabriele-tarquini	Gabriele Tarquini	italy	78	0	0	0	0	
+D	tarso-marques	tarso-marques	Tarso Marques	brazil	26	0	0	0	0	
 D	taruffi	piero-taruffi	Piero Taruffi	italy	19	1	5	0	0	
 D	taylor	john-taylor	John Taylor	united-kingdom	5	0	0	0	0	
 D	teague	marshall-teague	Marshall Teague	united-states-of-america	4	0	0	0	0	
+D	ted-whiteaway	ted-whiteaway	Ted Whiteaway	united-kingdom	1	0	0	0	0	
+D	teddy-pilette	teddy-pilette	Teddy Pilette	belgium	4	0	0	0	0	
 D	templeman	shorty-templeman	Shorty Templeman	united-states-of-america	3	0	0	0	0	
+D	teo-fabi	teo-fabi	Teo Fabi	italy	71	0	2	3	0	
 D	terra	max-de-terra	Max de Terra	switzerland	2	0	0	0	0	
 D	testut	andre-testut	André Testut	monaco	2	0	0	0	0	
 D	thackwell	mike-thackwell	Mike Thackwell	new-zealand	5	0	0	0	0	
+D	theo-fitzau	theo-fitzau	Theo Fitzau	germany	1	0	0	0	0	
+D	theo-helfrich	theo-helfrich	Theo Helfrich	germany	3	0	0	0	0	
+D	theo-pourchaire	theo-pourchaire	Théo Pourchaire	france	0	0	0	0	0	
 D	thiele	alfonso-thiele	Alfonso Thiele	united-states-of-america	1	0	0	0	0	
+D	thierry-boutsen	thierry-boutsen	Thierry Boutsen	belgium	164	3	15	1	0	
 D	thompson	eric-thompson	Eric Thompson	united-kingdom	1	0	0	0	0	
 D	thomson	johnny-thomson	Johnny Thomson	united-states-of-america	9	0	1	1	0	
 D	thorne	leslie-thorne	Leslie Thorne	united-kingdom	1	0	0	0	0	
+D	tiago-monteiro	tiago-monteiro	Tiago Monteiro	portugal	37	0	1	0	0	
+D	tiff-needell	tiff-needell	Tiff Needell	united-kingdom	2	0	0	0	0	
+D	tim-parnell	tim-parnell	Tim Parnell	united-kingdom	4	0	0	0	0	
+D	tim-schenken	tim-schenken	Tim Schenken	australia	36	0	1	0	0	
+D	timmy-mayer	timmy-mayer	Timmy Mayer	united-states-of-america	1	0	0	0	0	
+D	timo-glock	timo-glock	Timo Glock	germany	95	0	3	0	0	
 D	tingelstad	bud-tingelstad	Bud Tingelstad	united-states-of-america	1	0	0	0	0	
 D	tingle	sam-tingle	Sam Tingle	zimbabwe	5	0	0	0	0	
 D	titterington	desmond-titterington	Desmond Titterington	united-kingdom	1	0	0	0	0	
 D	tolan	johnnie-tolan	Johnnie Tolan	united-states-of-america	3	0	0	0	0	
+D	tom-belso	tom-belso	Tom Belsø	denmark	5	0	0	0	0	
+D	tom-bridger	tom-bridger	Tom Bridger	united-kingdom	1	0	0	0	0	
+D	tom-jones	tom-jones	Tom Jones	united-states-of-america	1	0	0	0	0	
+D	tom-pryce	tom-pryce	Tom Pryce	united-kingdom	42	0	2	1	0	
 D	tom_jones	tom-jones	Tom Jones	united-states-of-america	1	0	0	0	0	
+D	tomas-enge	tomas-enge	Tomáš Enge	czechia	3	0	0	0	0	
+D	tommy-byrne	tommy-byrne	Tommy Byrne	ireland	5	0	0	0	0	
+D	toni-branca	toni-branca	Toni Branca	switzerland	3	0	0	0	0	
+D	toni-ulmen	toni-ulmen	Toni Ulmen	germany	2	0	0	0	0	
+D	tony-bettenhausen	tony-bettenhausen	Tony Bettenhausen	united-states-of-america	13	0	1	0	0	
+D	tony-brise	tony-brise	Tony Brise	united-kingdom	10	0	0	0	0	
+D	tony-brooks	tony-brooks	Tony Brooks	united-kingdom	41	6	10	2	0	
+D	tony-crook	tony-crook	Tony Crook	united-kingdom	2	0	0	0	0	
+D	tony-gaze	tony-gaze	Tony Gaze	australia	4	0	0	0	0	
+D	tony-maggs	tony-maggs	Tony Maggs	south-africa	27	0	3	0	0	
+D	tony-marsh	tony-marsh	Tony Marsh	united-kingdom	5	0	0	0	0	
+D	tony-rolt	tony-rolt	Tony Rolt	united-kingdom	3	0	0	0	0	
+D	tony-settember	tony-settember	Tony Settember	united-states-of-america	7	0	0	0	0	
+D	tony-shelly	tony-shelly	Tony Shelly	new-zealand	3	0	0	0	0	
+D	tony-trimmer	tony-trimmer	Tony Trimmer	united-kingdom	6	0	0	0	0	
+D	toranosuke-takagi	toranosuke-takagi	Toranosuke Takagi	japan	32	0	0	0	0	
 D	tornaco	charles-de-tornaco	Charles de Tornaco	belgium	4	0	0	0	0	
+D	torsten-palm	torsten-palm	Torsten Palm	sweden	2	0	0	0	0	
+D	toshio-suzuki	toshio-suzuki	Toshio Suzuki	japan	2	0	0	0	0	
 D	toshio_suzuki	toshio-suzuki	Toshio Suzuki	japan	2	0	0	0	0	
+D	trevor-blokdyk	trevor-blokdyk	Trevor Blokdyk	south-africa	2	0	0	0	0	
+D	trevor-taylor	trevor-taylor	Trevor Taylor	united-kingdom	29	0	1	0	0	
 D	trevor_taylor	trevor-taylor	Trevor Taylor	united-kingdom	29	0	1	0	0	
 D	trimmer	tony-trimmer	Tony Trimmer	united-kingdom	6	0	0	0	0	
 D	trintignant	maurice-trintignant	Maurice Trintignant	france	86	2	10	0	0	
 D	trips	wolfgang-von-trips	Wolfgang von Trips	germany	29	2	6	1	0	
+D	troy-ruttman	troy-ruttman	Troy Ruttman	united-states-of-america	9	1	1	0	0	
 D	trulli	jarno-trulli	Jarno Trulli	italy	256	1	11	4	0	
 D	tsunoda	yuki-tsunoda	Yuki Tsunoda	japan	114	0	0	0	0	
 D	tuero	esteban-tuero	Esteban Tuero	argentina	16	0	0	0	0	
 D	tunmer	guy-tunmer	Guy Tunmer	south-africa	1	0	0	0	0	
 D	turner	jack-turner	Jack Turner	united-states-of-america	4	0	0	0	0	
+D	ukyo-katayama	ukyo-katayama	Ukyo Katayama	japan	97	0	0	0	0	
 D	ulmen	toni-ulmen	Toni Ulmen	germany	2	0	0	0	0	
+D	umberto-maglioli	umberto-maglioli	Umberto Maglioli	italy	10	0	2	0	0	
 D	unser	bobby-unser	Bobby Unser	united-states-of-america	2	0	0	0	0	
 D	uria	alberto-uria	Alberto Uria	uruguay	2	0	0	0	0	
 D	vaccarella	nino-vaccarella	Nino Vaccarella	italy	5	0	0	0	0	
+D	valtteri-bottas	valtteri-bottas	Valtteri Bottas	finland	256	10	67	19	0	
 D	vandoorne	stoffel-vandoorne	Stoffel Vandoorne	belgium	42	0	0	0	0	
 D	veith	bob-veith	Bob Veith	united-states-of-america	5	0	0	0	0	
 D	vergne	jean-eric-vergne	Jean-Éric Vergne	france	58	0	0	0	0	
+D	vern-schuppan	vern-schuppan	Vern Schuppan	australia	13	0	0	0	0	
 D	verstappen	jos-verstappen	Jos Verstappen	netherlands	107	0	2	0	0	
 D	vettel	sebastian-vettel	Sebastian Vettel	germany	300	53	122	57	4	
+D	vic-elford	vic-elford	Vic Elford	united-kingdom	13	0	0	0	0	
+D	vic-wilson	vic-wilson	Vic Wilson	united-kingdom	2	0	0	0	0	
 D	vic_wilson	vic-wilson	Vic Wilson	united-kingdom	2	0	0	0	0	
+D	victor-martins	victor-martins	Victor Martins	france	0	0	0	0	0	
 D	victor_martins	victor-martins	Victor Martins	france	0	0	0	0	0	
 D	villeneuve	jacques-villeneuve	Jacques Villeneuve	canada	165	11	23	13	1	
 D	villeneuve_sr	jacques-villeneuve-sr	Jacques Villeneuve, Sr.	canada	3	0	0	0	0	
 D	villoresi	luigi-villoresi	Luigi Villoresi	italy	35	0	8	0	0	
 D	villota	emilio-de-villota	Emilio de Villota	spain	14	0	0	0	0	
+D	vincenzo-sospiri	vincenzo-sospiri	Vincenzo Sospiri	italy	1	0	0	0	0	
+D	vitaly-petrov	vitaly-petrov	Vitaly Petrov	russia	58	0	1	0	0	
+D	vitantonio-liuzzi	vitantonio-liuzzi	Vitantonio Liuzzi	italy	80	0	0	0	0	
+D	vittorio-brambilla	vittorio-brambilla	Vittorio Brambilla	italy	79	1	1	1	0	
+D	volker-weidler	volker-weidler	Volker Weidler	germany	10	0	0	0	0	
 D	volonterio	ottorino-volonterio	Ottorino Volonterio	switzerland	3	0	0	0	0	
 D	vonlanthen	jo-vonlanthen	Jo Vonlanthen	switzerland	1	0	0	0	0	
 D	vukovich	bill-vukovich	Bill Vukovich	united-states-of-america	5	2	2	1	0	
 D	wacker	fred-wacker	Fred Wacker	united-states-of-america	5	0	0	0	0	
 D	walker	david-walker	David Walker	australia	11	0	0	0	0	
 D	wallard	lee-wallard	Lee Wallard	united-states-of-america	2	1	1	0	0	
+D	walt-ader	walt-ader	Walt Ader	united-states-of-america	1	0	0	0	0	
+D	walt-brown	walt-brown	Walt Brown	united-states-of-america	2	0	0	0	0	
+D	walt-faulkner	walt-faulkner	Walt Faulkner	united-states-of-america	5	0	0	1	0	
+D	walt-hansgen	walt-hansgen	Walt Hansgen	united-states-of-america	2	0	0	0	0	
 D	walt_brown	walt-brown	Walt Brown	united-states-of-america	2	0	0	0	0	
 D	walter	heini-walter	Heini Walter	switzerland	1	0	0	0	0	
 D	ward	rodger-ward	Rodger Ward	united-states-of-america	12	1	2	0	0	
 D	warwick	derek-warwick	Derek Warwick	united-kingdom	162	0	4	0	0	
+D	warwick-brown	warwick-brown	Warwick Brown	australia	1	0	0	0	0	
 D	watson	john-watson	John Watson	united-kingdom	154	5	20	2	0	
+D	wayne-weiler	wayne-weiler	Wayne Weiler	united-states-of-america	1	0	0	0	0	
 D	webber	mark-webber	Mark Webber	australia	217	9	42	12	0	
 D	wehrlein	pascal-wehrlein	Pascal Wehrlein	germany	39	0	0	0	0	
 D	weidler	volker-weidler	Volker Weidler	germany	10	0	0	0	0	
@@ -1039,16 +2137,31 @@ D	whitehouse	bill-whitehouse	Bill Whitehouse	united-kingdom	1	0	0	0	0
 D	widdows	robin-widdows	Robin Widdows	united-kingdom	1	0	0	0	0	
 D	wietzes	eppie-wietzes	Eppie Wietzes	canada	2	0	0	0	0	
 D	wilds	mike-wilds	Mike Wilds	united-kingdom	8	0	0	0	0	
+D	will-stevens	will-stevens	Will Stevens	united-kingdom	20	0	0	0	0	
+D	willi-heeks	willi-heeks	Willi Heeks	germany	2	0	0	0	0	
+D	willi-krakau	willi-krakau	Willi Krakau	germany	1	0	0	0	0	
+D	william-ferguson	william-ferguson	William Ferguson	south-africa	1	0	0	0	0	
 D	williamson	roger-williamson	Roger Williamson	united-kingdom	2	0	0	0	0	
+D	willy-mairesse	willy-mairesse	Willy Mairesse	belgium	13	0	1	0	0	
 D	wilson	justin-wilson	Justin Wilson	united-kingdom	16	0	0	0	0	
+D	wilson-fittipaldi	wilson-fittipaldi	Wilson Fittipaldi	brazil	38	0	0	0	0	
 D	wilson_fittipaldi	wilson-fittipaldi	Wilson Fittipaldi	brazil	38	0	0	0	0	
 D	wisell	reine-wisell	Reine Wisell	sweden	23	0	1	0	0	
+D	wolfgang-seidel	wolfgang-seidel	Wolfgang Seidel	germany	13	0	0	0	0	
+D	wolfgang-von-trips	wolfgang-von-trips	Wolfgang von Trips	germany	29	2	6	1	0	
 D	wunderink	roelof-wunderink	Roelof Wunderink	netherlands	6	0	0	0	0	
 D	wurz	alexander-wurz	Alexander Wurz	austria	69	0	3	0	0	
+D	xavier-perrot	xavier-perrot	Xavier Perrot	switzerland	1	0	0	0	0	
 D	yamamoto	sakon-yamamoto	Sakon Yamamoto	japan	21	0	0	0	0	
+D	yannick-dalmas	yannick-dalmas	Yannick Dalmas	france	50	0	0	0	0	
 D	yoong	alex-yoong	Alex Yoong	malaysia	18	0	0	0	0	
+D	yuji-ide	yuji-ide	Yuji Ide	japan	4	0	0	0	0	
+D	yuki-tsunoda	yuki-tsunoda	Yuki Tsunoda	japan	114	0	0	0	0	
+D	yves-giraud-cabantous	yves-giraud-cabantous	Yves Giraud-Cabantous	france	13	0	0	0	0	
+D	zak-osullivan	zak-osullivan	Zak O'Sullivan	united-kingdom	0	0	0	0	0	
 D	zapico	emilio-zapico	Emilio Zapico	spain	1	0	0	0	0	
 D	zhou	guanyu-zhou	Guanyu Zhou	china	68	0	0	0	0	
 D	zonta	ricardo-zonta	Ricardo Zonta	brazil	38	0	0	0	0	
 D	zorzi	renzo-zorzi	Renzo Zorzi	italy	7	0	0	0	0	
+D	zsolt-baumgartner	zsolt-baumgartner	Zsolt Baumgartner	hungary	20	0	0	0	0	
 D	zunino	ricardo-zunino	Ricardo Zunino	argentina	11	0	0	0	0	

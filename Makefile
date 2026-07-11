@@ -27,6 +27,7 @@ $(BUILD)/$(APP): $(APP_SRCS)
 
 test: $(BUILD)/test_core
 	$(BUILD)/test_core tests/fixtures
+	python3 tests/verify_offline_seasons.py assets/baseline/seasons assets/reference/profiles.tsv
 
 tg5040-toolchain:
 	./scripts/setup_tg5040_toolchain.sh "$(TG5040_TOOLCHAIN_ROOT)"

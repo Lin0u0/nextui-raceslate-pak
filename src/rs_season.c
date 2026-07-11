@@ -109,6 +109,7 @@ bool rs_season_decode_schedule(const char *json, RsSeasonSnapshot *out) {
             event->session_count >= RS_MAX_SESSIONS) goto done;
         event->sessions[event->session_count++] = (RsSession){RS_SESSION_RACE, race_start};
         event->is_sprint_weekend = cJSON_GetObjectItemCaseSensitive(race, "Sprint") != NULL;
+        event->time_estimated = cJSON_IsTrue(cJSON_GetObjectItemCaseSensitive(race,"timeEstimated"));
         qsort(event->sessions, event->session_count, sizeof(event->sessions[0]), compare_sessions);
         index++;
     }

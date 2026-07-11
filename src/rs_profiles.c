@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "cJSON.h"
 
 static void copy_text(char *destination, size_t capacity, const char *source) {
     if (capacity == 0) return;
@@ -137,3 +138,5 @@ void rs_profiles_build_season(RsProfileCatalog *catalog,const RsStandings *stand
 }
 
 bool rs_profiles_apply_career(const char *path,RsProfileCatalog *catalog){FILE *file;char line[4096];bool matched=false;if(!path||!catalog)return false;file=fopen(path,"rb");if(!file)return false;if(!fgets(line,sizeof(line),file)){fclose(file);return false;}while(fgets(line,sizeof(line),file)){char *fields[11];RsProfileType type;RsProfile *profile;if(split_tabs(line,fields,11)!=11)continue;type=fields[0][0]=='C'?RS_PROFILE_CONSTRUCTOR:RS_PROFILE_DRIVER;profile=(RsProfile *)rs_profiles_find(catalog,type,fields[1]);if(!profile)continue;copy_text(profile->country,sizeof(profile->country),fields[4]);profile->starts=atoi(fields[5]);profile->wins=atoi(fields[6]);profile->podiums=atoi(fields[7]);profile->poles=atoi(fields[8]);profile->championships=atoi(fields[9]);profile->season_only=false;matched=true;}fclose(file);return matched;}
+
+bool rs_profiles_decode_progression(const char *json,RsProfileCatalog *catalog){cJSON *root,*groups,*series,*point;int type_index;bool applied=false;if(!json||!catalog)return false;root=cJSON_Parse(json);if(!root)return false;for(type_index=0;type_index<2;type_index++){RsProfileType type=type_index?RS_PROFILE_CONSTRUCTOR:RS_PROFILE_DRIVER;groups=cJSON_GetObjectItemCaseSensitive(root,type_index?"constructors":"drivers");if(!cJSON_IsObject(groups))continue;cJSON_ArrayForEach(series,groups){RsProfile *profile=(RsProfile *)rs_profiles_find(catalog,type,series->string);if(!profile||!cJSON_IsArray(series))continue;profile->series_count=0;cJSON_ArrayForEach(point,series){cJSON *round=cJSON_GetObjectItemCaseSensitive(point,"round"),*position=cJSON_GetObjectItemCaseSensitive(point,"position"),*points=cJSON_GetObjectItemCaseSensitive(point,"points");if(profile->series_count>=RS_MAX_PROFILE_SERIES||!cJSON_IsNumber(round)||!cJSON_IsNumber(position)||!cJSON_IsNumber(points))continue;profile->series[profile->series_count++]=(RsProfilePoint){round->valueint,position->valueint,points->valuedouble};applied=true;}}}cJSON_Delete(root);return applied;}

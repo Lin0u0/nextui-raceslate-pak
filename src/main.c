@@ -173,8 +173,8 @@ static void format_time(int64_t value, char *out, size_t size) {
     for (char *p = out; *p; p++) if (*p >= 'a' && *p <= 'z') *p = (char)(*p - 32);
 }
 
-static void format_event_time(const Runtime *rt,const RsEvent *event,int64_t value,char *out,size_t size){if(!rs_app_track_time(rt->app)){format_time(value,out,size);return;}time_t raw=(time_t)(value+rs_track_utc_offset(event->circuit_id,value));struct tm track;gmtime_r(&raw,&track);strftime(out,size,"%d %b %Y  %H:%M",&track);for(char *p=out;*p;p++)if(*p>='a'&&*p<='z')*p=(char)(*p-'a'+'A');}
-static void format_event_short_time(const Runtime *rt,const RsEvent *event,int64_t value,char *out,size_t size){time_t raw=(time_t)(value+(rs_app_track_time(rt->app)?rs_track_utc_offset(event->circuit_id,value):0));struct tm result;if(rs_app_track_time(rt->app))gmtime_r(&raw,&result);else localtime_r(&raw,&result);strftime(out,size,"%d %b  %H:%M",&result);for(char *p=out;*p;p++)if(*p>='a'&&*p<='z')*p=(char)(*p-'a'+'A');}
+static void format_event_time(const Runtime *rt,const RsEvent *event,int64_t value,char *out,size_t size){if(event->time_estimated){time_t raw=(time_t)value;struct tm date;gmtime_r(&raw,&date);strftime(out,size,"%d %b %Y  /  TIME TBD",&date);}else if(!rs_app_track_time(rt->app)){format_time(value,out,size);return;}else{time_t raw=(time_t)(value+rs_track_utc_offset(event->circuit_id,value));struct tm track;gmtime_r(&raw,&track);strftime(out,size,"%d %b %Y  %H:%M",&track);}for(char *p=out;*p;p++)if(*p>='a'&&*p<='z')*p=(char)(*p-'a'+'A');}
+static void format_event_short_time(const Runtime *rt,const RsEvent *event,int64_t value,char *out,size_t size){time_t raw=(time_t)(value+(rs_app_track_time(rt->app)?rs_track_utc_offset(event->circuit_id,value):0));struct tm result;if(event->time_estimated){gmtime_r(&raw,&result);strftime(out,size,"%d %b  TIME TBD",&result);}else{if(rs_app_track_time(rt->app))gmtime_r(&raw,&result);else localtime_r(&raw,&result);strftime(out,size,"%d %b  %H:%M",&result);}for(char *p=out;*p;p++)if(*p>='a'&&*p<='z')*p=(char)(*p-'a'+'A');}
 
 static void draw_header(Runtime *rt) {
     const char *tabs[] = {"NEXT", "CALENDAR", "STANDINGS"};
@@ -315,31 +315,34 @@ static void draw_about(Runtime *rt) {
 }
 
 static void draw_profile_chart(Runtime *rt, const RsProfile *profile, bool points_mode) {
-    const int x = 126, y = 436, width = 746, height = 130;
+    const int x = 126, y = 436, width = 746, height = 130, plot_top = y + 18, plot_bottom = y + height - 18;
     size_t index;
     double maximum = 1.0;
+    int last_round = 1;
     char label[80];
     if (!profile || profile->series_count < 2) return;
     for (index = 0; index < profile->series_count; index++) {
         double value = points_mode ? profile->series[index].points : profile->series[index].position;
         if (value > maximum) maximum = value;
+        if (profile->series[index].round > last_round) last_round = profile->series[index].round;
     }
     SDL_SetRenderDrawColor(rt->renderer, 60, 63, 70, 255);
     SDL_RenderDrawRect(rt->renderer, &(SDL_Rect){x, y, width, height});
-    SDL_SetRenderDrawColor(rt->renderer, RED.r, RED.g, RED.b, RED.a);
     for (index = 1; index < profile->series_count; index++) {
         const RsProfilePoint *previous = &profile->series[index - 1], *current = &profile->series[index];
         double pv = points_mode ? previous->points : previous->position;
         double cv = points_mode ? current->points : current->position;
-        int x1 = x + (int)((index - 1) * (size_t)width / (profile->series_count - 1));
-        int x2 = x + (int)(index * (size_t)width / (profile->series_count - 1));
-        int y1 = points_mode ? y + height - (int)(pv / maximum * height) : y + (int)((pv - 1.0) / maximum * height);
-        int y2 = points_mode ? y + height - (int)(cv / maximum * height) : y + (int)((cv - 1.0) / maximum * height);
+        int x1 = x + (previous->round - 1) * width / (last_round > 1 ? last_round - 1 : 1);
+        int x2 = x + (current->round - 1) * width / (last_round > 1 ? last_round - 1 : 1);
+        int plot_height = plot_bottom - plot_top;
+        int y1 = points_mode ? plot_bottom - (int)(pv / maximum * plot_height) : plot_top + (int)((pv - 1.0) / (maximum > 1.0 ? maximum - 1.0 : 1.0) * plot_height);
+        int y2 = points_mode ? plot_bottom - (int)(cv / maximum * plot_height) : plot_top + (int)((cv - 1.0) / (maximum > 1.0 ? maximum - 1.0 : 1.0) * plot_height);
+        SDL_SetRenderDrawColor(rt->renderer, WHITE.r, WHITE.g, WHITE.b, WHITE.a);
         SDL_RenderDrawLine(rt->renderer, x1, y1, x2, y2);
         fill(rt, x2 - 2, y2 - 2, 5, 5, WHITE);
-        { char value[24]; if(points_mode)format_points(cv,value,sizeof(value));else snprintf(value,sizeof(value),"%d",current->position);draw_text(rt,rt->small,value,x2-6,y2>y+18?y2-20:y2+5,WHITE); }
+        { char value[24]; int label_x=x2-6,label_y=(index%2)?y2-17:y2+3; if(points_mode)format_points(cv,value,sizeof(value));else snprintf(value,sizeof(value),"%d",current->position);if(label_x>x+width-28)label_x=x+width-28;if(label_y>y+height-16)label_y=y+height-16;draw_text(rt,rt->small,value,label_x,label_y,WHITE); }
     }
-    {char value[24];const RsProfilePoint *first=&profile->series[0];double fv=points_mode?first->points:first->position;int fy=points_mode?y+height-(int)(fv/maximum*height):y+(int)((fv-1.0)/maximum*height);if(points_mode)format_points(fv,value,sizeof(value));else snprintf(value,sizeof(value),"%d",first->position);fill(rt,x-2,fy-2,5,5,WHITE);draw_text(rt,rt->small,value,x,fy>y+18?fy-20:fy+5,WHITE);}
+    {char value[24];const RsProfilePoint *first=&profile->series[0];double fv=points_mode?first->points:first->position;int plot_height=plot_bottom-plot_top;int fx=x+(first->round-1)*width/(last_round>1?last_round-1:1);int fy=points_mode?plot_bottom-(int)(fv/maximum*plot_height):plot_top+(int)((fv-1.0)/(maximum>1.0?maximum-1.0:1.0)*plot_height);if(points_mode)format_points(fv,value,sizeof(value));else snprintf(value,sizeof(value),"%d",first->position);fill(rt,fx-2,fy-2,5,5,WHITE);draw_text(rt,rt->small,value,fx,fy-17,WHITE);}
     snprintf(label, sizeof(label), "%s  /  X SWITCH METRIC", points_mode ? "POINTS PROGRESSION" : "CHAMPIONSHIP POSITION");
     draw_text(rt, rt->small, label, x, y - 27, MUTED);
 }
@@ -434,25 +437,28 @@ done:cJSON_Delete(snapshot);return ok;
 }
 
 static void apply_career_profiles(Runtime *rt){char path[1024];snprintf(path,sizeof(path),"%s/reference/profiles.tsv",rt->assets);rs_profiles_apply_career(path,&rt->profiles);}
-static bool load_cached_season(Runtime *rt,int season){char path[1024],*text;bool ok;snprintf(path,sizeof(path),"%s/seasons/%d/snapshot.json",rt->data_dir,season);text=rs_store_read(path);if(!text)return false;ok=decode_snapshot_text(text,&rt->season,&rt->standings,&rt->weather,&rt->results);free(text);if(ok){rt->weather_live=false;rs_profiles_build_season(&rt->profiles,&rt->standings,&rt->results);apply_career_profiles(rt);}return ok;}
+static void apply_snapshot_progression(const char *text,RsProfileCatalog *profiles){cJSON *root;const cJSON *item;char *json;if(!text)return;root=cJSON_Parse(text);if(!root)return;item=cJSON_GetObjectItemCaseSensitive(root,"progression");if(cJSON_IsObject(item)){json=cJSON_PrintUnformatted(item);if(json){rs_profiles_decode_progression(json,profiles);free(json);}}cJSON_Delete(root);}
+static bool load_cached_season(Runtime *rt,int season){char path[1024],*text;bool ok;snprintf(path,sizeof(path),"%s/seasons/%d/snapshot.json",rt->data_dir,season);text=rs_store_read(path);if(!text){snprintf(path,sizeof(path),"%s/baseline/seasons/%d/snapshot.json",rt->assets,season);text=rs_store_read(path);}if(!text)return false;ok=decode_snapshot_text(text,&rt->season,&rt->standings,&rt->weather,&rt->results);if(ok){rt->weather_live=false;rs_profiles_build_season(&rt->profiles,&rt->standings,&rt->results);apply_career_profiles(rt);apply_snapshot_progression(text,&rt->profiles);}free(text);return ok;}
 
 static bool load_data(Runtime *rt) {
-    char snapshot_path[1024]; char *snapshot_bytes; cJSON *snapshot=NULL; char *schedule=NULL,*drivers=NULL,*constructors=NULL,*results=NULL,*qualifying=NULL,*sprint=NULL,*weather=NULL;
-    bool snapshot_valid=false;snprintf(snapshot_path,sizeof(snapshot_path),"%s/snapshot.json",rt->data_dir);
-    snapshot_bytes=rs_store_read(snapshot_path);
+    char snapshot_path[1024]; char *snapshot_bytes; cJSON *snapshot=NULL; char *schedule=NULL,*drivers=NULL,*constructors=NULL,*results=NULL,*qualifying=NULL,*sprint=NULL,*weather=NULL,*progression=NULL;
+    snprintf(snapshot_path,sizeof(snapshot_path),"%s/snapshot.json",rt->data_dir);
+    snapshot_bytes=rs_store_read(snapshot_path);if(!snapshot_bytes){snprintf(snapshot_path,sizeof(snapshot_path),"%s/baseline/seasons/2026/snapshot.json",rt->assets);snapshot_bytes=rs_store_read(snapshot_path);}
     if(snapshot_bytes){snapshot=cJSON_Parse(snapshot_bytes);free(snapshot_bytes);}
-    if(snapshot){const cJSON *s=cJSON_GetObjectItemCaseSensitive(snapshot,"schedule"),*d=cJSON_GetObjectItemCaseSensitive(snapshot,"drivers"),*c=cJSON_GetObjectItemCaseSensitive(snapshot,"constructors"),*w=cJSON_GetObjectItemCaseSensitive(snapshot,"weather");if(cJSON_IsObject(s)&&cJSON_IsObject(d)&&cJSON_IsObject(c)){snapshot_valid=true;schedule=cJSON_PrintUnformatted(s);drivers=cJSON_PrintUnformatted(d);constructors=cJSON_PrintUnformatted(c);results=cJSON_PrintUnformatted(cJSON_GetObjectItemCaseSensitive(snapshot,"results"));qualifying=cJSON_PrintUnformatted(cJSON_GetObjectItemCaseSensitive(snapshot,"qualifying"));sprint=cJSON_PrintUnformatted(cJSON_GetObjectItemCaseSensitive(snapshot,"sprint"));if(cJSON_IsObject(w))weather=cJSON_PrintUnformatted(w);}}
+    if(snapshot){const cJSON *s=cJSON_GetObjectItemCaseSensitive(snapshot,"schedule"),*d=cJSON_GetObjectItemCaseSensitive(snapshot,"drivers"),*c=cJSON_GetObjectItemCaseSensitive(snapshot,"constructors"),*w=cJSON_GetObjectItemCaseSensitive(snapshot,"weather"),*p=cJSON_GetObjectItemCaseSensitive(snapshot,"progression");if(cJSON_IsObject(s)&&cJSON_IsObject(d)&&cJSON_IsObject(c)){schedule=cJSON_PrintUnformatted(s);drivers=cJSON_PrintUnformatted(d);constructors=cJSON_PrintUnformatted(c);results=cJSON_PrintUnformatted(cJSON_GetObjectItemCaseSensitive(snapshot,"results"));qualifying=cJSON_PrintUnformatted(cJSON_GetObjectItemCaseSensitive(snapshot,"qualifying"));sprint=cJSON_PrintUnformatted(cJSON_GetObjectItemCaseSensitive(snapshot,"sprint"));if(cJSON_IsObject(w))weather=cJSON_PrintUnformatted(w);if(cJSON_IsObject(p))progression=cJSON_PrintUnformatted(p);}}
     if(!schedule)schedule=load_preferred(rt->data_dir, rt->assets, "schedule.json");
     if(!drivers)drivers=load_preferred(rt->data_dir, rt->assets, "driver_standings.json");
     if(!constructors)constructors=load_preferred(rt->data_dir, rt->assets, "constructor_standings.json");
     if(!results)results=load_preferred(rt->data_dir,rt->assets,"results.json");
     if(!qualifying)qualifying=load_preferred(rt->data_dir,rt->assets,"qualifying.json");
     if(!sprint)sprint=load_preferred(rt->data_dir,rt->assets,"sprint.json");
-    if(!weather&&!snapshot_valid)weather = load_preferred(rt->data_dir, rt->assets, "weather.json");
+    if(!weather)weather = load_preferred(rt->data_dir, rt->assets, "weather.json");
     RsStandings constructor_data;
-    bool ok = schedule && drivers && constructors && rs_season_decode_schedule(schedule, &rt->season) &&
-              rs_standings_decode_drivers(drivers, &rt->standings) &&
-              rs_standings_decode_constructors(constructors, &constructor_data);
+    bool schedule_ok=schedule&&rs_season_decode_schedule(schedule,&rt->season);
+    bool drivers_ok=drivers&&rs_standings_decode_drivers(drivers,&rt->standings);
+    bool constructors_ok=constructors&&rs_standings_decode_constructors(constructors,&constructor_data);
+    bool ok=schedule_ok&&drivers_ok&&constructors_ok;
+    if(!ok)fprintf(stderr,"decode failed: schedule=%d drivers=%d constructors=%d\n",schedule_ok,drivers_ok,constructors_ok);
     if (ok) {
         rt->standings.constructor_count = constructor_data.constructor_count;
         memcpy(rt->standings.constructors, constructor_data.constructors, sizeof(constructor_data.constructors));
@@ -460,9 +466,9 @@ static bool load_data(Runtime *rt) {
         if(results)rs_results_decode(results,RS_RESULT_RACE,&rt->results);
         if(qualifying)rs_results_decode(qualifying,RS_RESULT_QUALIFYING,&rt->results);
         if(sprint)rs_results_decode(sprint,RS_RESULT_SPRINT,&rt->results);
-        rs_profiles_build_season(&rt->profiles,&rt->standings,&rt->results);apply_career_profiles(rt);
+        rs_profiles_build_season(&rt->profiles,&rt->standings,&rt->results);apply_career_profiles(rt);if(progression)rs_profiles_decode_progression(progression,&rt->profiles);
     }
-    free(schedule); free(drivers); free(constructors); free(results); free(qualifying); free(sprint); free(weather); cJSON_Delete(snapshot);
+    free(schedule); free(drivers); free(constructors); free(results); free(qualifying); free(sprint); free(weather);free(progression); cJSON_Delete(snapshot);
     return ok;
 }
 
@@ -498,7 +504,7 @@ static bool initialize_haptics(void){if(access("/sys/class/gpio/gpio227/value",W
 static void pulse_haptic(const Runtime *rt){if(!rt->haptics||!rt->haptic_available)return;if(!write_device_value("/sys/class/gpio/gpio227/value","1"))return;SDL_Delay(24);write_device_value("/sys/class/gpio/gpio227/value","0");}
 static void save_settings(Runtime *rt){char path[1024],text[32];snprintf(path,sizeof(path),"%s/settings.txt",rt->data_dir);snprintf(text,sizeof(text),"haptics=%d\n",rt->haptics?1:0);rs_store_write_atomic(path,text);}
 static void load_settings(Runtime *rt){char path[1024],*text;rt->haptics=true;snprintf(path,sizeof(path),"%s/settings.txt",rt->data_dir);text=rs_store_read(path);if(text){if(strstr(text,"haptics=0"))rt->haptics=false;free(text);}}
-static void perform_settings_action(Runtime *rt){int cursor=rs_app_settings_cursor(rt->app);char path[1024];if(cursor==0){if(!rt->haptic_available){snprintf(rt->status,sizeof(rt->status),"HAPTICS UNSUPPORTED ON THIS DEVICE");return;}rt->haptics=!rt->haptics;save_settings(rt);snprintf(rt->status,sizeof(rt->status),"HAPTICS %s",rt->haptics?"ENABLED":"DISABLED");pulse_haptic(rt);}else if(cursor==1){int season;snprintf(path,sizeof(path),"%s/snapshot.json",rt->data_dir);unlink(path);snprintf(path,sizeof(path),"%s/weather.json",rt->data_dir);unlink(path);for(season=1950;season<=rt->latest_season;season++){snprintf(path,sizeof(path),"%s/seasons/%d/snapshot.json",rt->data_dir,season);unlink(path);snprintf(path,sizeof(path),"%s/seasons/%d",rt->data_dir,season);rmdir(path);}snprintf(path,sizeof(path),"%s/seasons",rt->data_dir);rmdir(path);snprintf(rt->status,sizeof(rt->status),"DOWNLOADED CACHE CLEARED · BASELINE KEPT");pulse_haptic(rt);}else snprintf(rt->status,sizeof(rt->status),"JOLPICA CC BY-NC-SA · F1DB/OPEN-METEO CC BY · FONTS OFL");}
+static void perform_settings_action(Runtime *rt){int cursor=rs_app_settings_cursor(rt->app);char path[1024];if(cursor==0){if(!rt->haptic_available){snprintf(rt->status,sizeof(rt->status),"HAPTICS UNSUPPORTED ON THIS DEVICE");return;}rt->haptics=!rt->haptics;save_settings(rt);snprintf(rt->status,sizeof(rt->status),"HAPTICS %s",rt->haptics?"ENABLED":"DISABLED");}else if(cursor==1){int season;snprintf(path,sizeof(path),"%s/snapshot.json",rt->data_dir);unlink(path);snprintf(path,sizeof(path),"%s/weather.json",rt->data_dir);unlink(path);for(season=1950;season<=rt->latest_season;season++){snprintf(path,sizeof(path),"%s/seasons/%d/snapshot.json",rt->data_dir,season);unlink(path);snprintf(path,sizeof(path),"%s/seasons/%d",rt->data_dir,season);rmdir(path);}snprintf(path,sizeof(path),"%s/seasons",rt->data_dir);rmdir(path);snprintf(rt->status,sizeof(rt->status),"DOWNLOADED CACHE CLEARED · BASELINE KEPT");}else snprintf(rt->status,sizeof(rt->status),"JOLPICA CC BY-NC-SA · F1DB/OPEN-METEO CC BY · FONTS OFL");}
 
 static int refresh_thread(void *context) {
     RefreshTask *task = context;
@@ -656,7 +662,8 @@ int main(int argc, char **argv) {
         snprintf(path,sizeof(path),"%s/circuits/atlas.tsv",rt.assets);
         if(!rs_circuit_atlas_load(path,&rt.circuit_atlas))return 2;
     }
-    if (!rt.window || !rt.renderer || !rt.display || !rt.heading || !rt.body || !rt.small || !rt.metric || !rt.table || !rt.app || !load_data(&rt)) return 2;
+    if (!rt.window || !rt.renderer || !rt.display || !rt.heading || !rt.body || !rt.small || !rt.metric || !rt.table || !rt.app) { fprintf(stderr,"graphics initialization failed: %s\n",SDL_GetError()); return 2; }
+    if(!load_data(&rt)){fprintf(stderr,"season data initialization failed\n");return 2;}
     rt.latest_season=rt.season.season;
     load_favorites(&rt);
     load_settings(&rt);
@@ -674,7 +681,7 @@ int main(int argc, char **argv) {
     while (rs_app_running(rt.app)) {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) rs_app_dispatch(rt.app, RS_ACTION_MENU);
-            else { RsAction action = map_event(&event); if (action != RS_ACTION_NONE) {RsRoute before=rs_app_route(rt.app);rs_app_dispatch(rt.app, action);if(rs_app_route(rt.app)==RS_ROUTE_NEXT&&rt.season.season!=rt.latest_season){load_data(&rt);}if(before!=RS_ROUTE_CALENDAR&&rs_app_route(rt.app)==RS_ROUTE_CALENDAR&&rt.season.season==rt.latest_season)select_upcoming_calendar(&rt);} }
+            else { RsAction action = map_event(&event); if (action != RS_ACTION_NONE) {RsRoute before=rs_app_route(rt.app);rs_app_dispatch(rt.app, action);pulse_haptic(&rt);if(rs_app_route(rt.app)==RS_ROUTE_NEXT&&rt.season.season!=rt.latest_season){load_data(&rt);}if(before!=RS_ROUTE_CALENDAR&&rs_app_route(rt.app)==RS_ROUTE_CALENDAR&&rt.season.season==rt.latest_season)select_upcoming_calendar(&rt);} }
         }
         {int season_delta=rs_app_take_season_delta(rt.app);if(season_delta)request_season(&rt,season_delta);}
         if (rs_app_take_refresh_request(rt.app)) start_refresh(&rt);

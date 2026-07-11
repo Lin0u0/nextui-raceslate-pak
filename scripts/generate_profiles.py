@@ -122,6 +122,16 @@ def main():
         if not source_id and "-" in name: source_id=constructor_names.get(normalized(name.split("-",1)[0]))
         if source_id: mappings.append(("C",provider_id,source_id,source_constructors[source_id]))
     current_ids=set(DRIVERS)|set(CONSTRUCTORS)
+    provider_keys={(kind,provider_id) for kind,provider_id,_,_ in mappings}
+    for source_id,data in source_drivers.items():
+        if ("D",source_id) not in provider_keys:mappings.append(("D",source_id,source_id,data))
+    for source_id,data in source_constructors.items():
+        if ("C",source_id) not in provider_keys:mappings.append(("C",source_id,source_id,data))
+    for path in (root / "src/data/seasons").glob("*/constructor-standings.yml"):
+        for item in load(path) or []:
+            source_id=item.get("constructorId");engine=item.get("engineManufacturerId");provider_id=f"{source_id}-{engine}" if source_id and engine and source_id!=engine else source_id
+            if item.get("position") and not str(item.get("position")).isdigit():provider_id=f"{provider_id}-excluded"
+            if source_id in source_constructors and ("C",provider_id) not in provider_keys:mappings.append(("C",provider_id,source_id,source_constructors[source_id]));provider_keys.add(("C",provider_id))
     mappings.sort(key=lambda value:(value[1] not in current_ids,value[0],value[1]))
 
     output.parent.mkdir(parents=True, exist_ok=True)
