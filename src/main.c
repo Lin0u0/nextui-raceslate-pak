@@ -6,6 +6,7 @@
 #include "rs_store.h"
 #include "rs_weather.h"
 #include "rs_reference.h"
+#include "rs_results.h"
 #include "cJSON.h"
 
 #include <SDL.h>
@@ -32,6 +33,7 @@ typedef struct {
     RsSeasonSnapshot season;
     RsStandings standings;
     RsWeatherSnapshot weather;
+    RsResultsCatalog results;
 } RefreshTask;
 
 typedef struct {
@@ -45,6 +47,7 @@ typedef struct {
     RsSeasonSnapshot season;
     RsStandings standings;
     RsWeatherSnapshot weather;
+    RsResultsCatalog results;
     RsReferenceCatalog reference;
     uint32_t last_refresh_at;
     RefreshTask refresh;
@@ -235,16 +238,25 @@ static void draw_detail(Runtime *rt) {
         const RsEvent *event; const RsCircuitReference *ref;
         if (index >= (int)rt->season.event_count) index = (int)rt->season.event_count - 1;
         event = &rt->season.events[index]; ref = rs_reference_circuit(&rt->reference, event->circuit_id);
-        draw_text(rt, rt->small, "CIRCUIT / HISTORY", 126, 140, RED);
-        draw_text(rt, rt->heading, event->circuit_name, 124, 168, WHITE);
-        if (ref) {
+        if(rs_app_detail_mode(rt->app)==RS_DETAIL_HISTORY){
+         draw_text(rt, rt->small, "HISTORY  /  X NEXT VIEW", 126, 140, RED);
+         draw_text(rt, rt->heading, event->circuit_name, 124, 168, WHITE);
+         if (ref) {
             snprintf(line,sizeof(line),"%.3f KM    %d TURNS    %s",ref->length_km,ref->turns,ref->direction); draw_text(rt,rt->body,line,126,230,WHITE);
             snprintf(line,sizeof(line),"FIRST CHAMPIONSHIP RACE %d    %d RACES HELD",ref->first_year,ref->races); draw_text(rt,rt->small,line,126,274,MUTED);
             snprintf(line,sizeof(line),"RACE LAP RECORD  %s  /  %s  /  %d",ref->lap_record,ref->record_driver,ref->record_year); draw_text(rt,rt->body,line,126,320,WHITE);
             draw_text(rt,rt->small,"RECENT WINNERS",126,382,MUTED);
             snprintf(line,sizeof(line),"%s",ref->recent_winners); draw_text(rt,rt->small,line,126,416,WHITE);
+         }
+         draw_track(rt,event);
+        }else{
+         RsResultKind kind=rs_app_detail_mode(rt->app)==RS_DETAIL_RACE?RS_RESULT_RACE:rs_app_detail_mode(rt->app)==RS_DETAIL_QUALIFYING?RS_RESULT_QUALIFYING:RS_RESULT_SPRINT;
+         const RsClassification *classification=rs_results_find(&rt->results,event->round,kind);int cursor=rs_app_detail_cursor(rt->app),first=cursor>8?cursor-8:0,row;
+         const char *title=kind==RS_RESULT_RACE?"RACE CLASSIFICATION":kind==RS_RESULT_QUALIFYING?"QUALIFYING CLASSIFICATION":"SPRINT CLASSIFICATION";
+         draw_text(rt,rt->small,"RESULTS  /  X NEXT VIEW",126,140,RED);draw_text(rt,rt->heading,title,124,168,WHITE);
+         if(!classification)draw_text(rt,rt->body,"RESULT UNAVAILABLE",126,244,MUTED);
+         else for(row=0;row<10&&first+row<(int)classification->entry_count;row++){const RsClassificationEntry *e=&classification->entries[first+row];int y=228+row*38;if(first+row==cursor)fill(rt,116,y-3,790,34,(SDL_Color){44,46,53,255});snprintf(line,sizeof(line),"%02d  %-3s  %-24s  %-20s  %5.1f PTS  %s",e->position,e->driver_code,e->driver_name,e->constructor_name,e->points,e->status);draw_text(rt,rt->small,line,126,y,first+row==cursor?WHITE:MUTED);}
         }
-        draw_track(rt,event);
     } else if (rs_app_route(rt->app) == RS_ROUTE_STANDINGS) {
         int index=rs_app_cursor(rt->app); char line[256];
         bool constructors=rs_app_standings_mode(rt->app)==RS_STANDINGS_CONSTRUCTORS;
@@ -282,14 +294,17 @@ static char *load_preferred(const char *data_dir, const char *assets, const char
 }
 
 static bool load_data(Runtime *rt) {
-    char snapshot_path[1024]; char *snapshot_bytes; cJSON *snapshot=NULL; char *schedule=NULL,*drivers=NULL,*constructors=NULL;
+    char snapshot_path[1024]; char *snapshot_bytes; cJSON *snapshot=NULL; char *schedule=NULL,*drivers=NULL,*constructors=NULL,*results=NULL,*qualifying=NULL,*sprint=NULL;
     snprintf(snapshot_path,sizeof(snapshot_path),"%s/snapshot.json",rt->data_dir);
     snapshot_bytes=rs_store_read(snapshot_path);
     if(snapshot_bytes){snapshot=cJSON_Parse(snapshot_bytes);free(snapshot_bytes);}
-    if(snapshot){const cJSON *s=cJSON_GetObjectItemCaseSensitive(snapshot,"schedule"),*d=cJSON_GetObjectItemCaseSensitive(snapshot,"drivers"),*c=cJSON_GetObjectItemCaseSensitive(snapshot,"constructors");if(cJSON_IsObject(s)&&cJSON_IsObject(d)&&cJSON_IsObject(c)){schedule=cJSON_PrintUnformatted(s);drivers=cJSON_PrintUnformatted(d);constructors=cJSON_PrintUnformatted(c);}}
+    if(snapshot){const cJSON *s=cJSON_GetObjectItemCaseSensitive(snapshot,"schedule"),*d=cJSON_GetObjectItemCaseSensitive(snapshot,"drivers"),*c=cJSON_GetObjectItemCaseSensitive(snapshot,"constructors");if(cJSON_IsObject(s)&&cJSON_IsObject(d)&&cJSON_IsObject(c)){schedule=cJSON_PrintUnformatted(s);drivers=cJSON_PrintUnformatted(d);constructors=cJSON_PrintUnformatted(c);results=cJSON_PrintUnformatted(cJSON_GetObjectItemCaseSensitive(snapshot,"results"));qualifying=cJSON_PrintUnformatted(cJSON_GetObjectItemCaseSensitive(snapshot,"qualifying"));sprint=cJSON_PrintUnformatted(cJSON_GetObjectItemCaseSensitive(snapshot,"sprint"));}}
     if(!schedule)schedule=load_preferred(rt->data_dir, rt->assets, "schedule.json");
     if(!drivers)drivers=load_preferred(rt->data_dir, rt->assets, "driver_standings.json");
     if(!constructors)constructors=load_preferred(rt->data_dir, rt->assets, "constructor_standings.json");
+    if(!results)results=load_preferred(rt->data_dir,rt->assets,"results.json");
+    if(!qualifying)qualifying=load_preferred(rt->data_dir,rt->assets,"qualifying.json");
+    if(!sprint)sprint=load_preferred(rt->data_dir,rt->assets,"sprint.json");
     char *weather = load_preferred(rt->data_dir, rt->assets, "weather.json");
     RsStandings constructor_data;
     bool ok = schedule && drivers && constructors && rs_season_decode_schedule(schedule, &rt->season) &&
@@ -299,14 +314,18 @@ static bool load_data(Runtime *rt) {
         rt->standings.constructor_count = constructor_data.constructor_count;
         memcpy(rt->standings.constructors, constructor_data.constructors, sizeof(constructor_data.constructors));
         if (weather) rs_weather_decode(weather, &rt->weather);
+        if(results)rs_results_decode(results,RS_RESULT_RACE,&rt->results);
+        if(qualifying)rs_results_decode(qualifying,RS_RESULT_QUALIFYING,&rt->results);
+        if(sprint)rs_results_decode(sprint,RS_RESULT_SPRINT,&rt->results);
     }
-    free(schedule); free(drivers); free(constructors); free(weather); cJSON_Delete(snapshot);
+    free(schedule); free(drivers); free(constructors); free(results); free(qualifying); free(sprint); free(weather); cJSON_Delete(snapshot);
     return ok;
 }
 
 static int refresh_thread(void *context) {
     RefreshTask *task = context;
-    RsHttpResponse schedule = {0}, drivers = {0}, constructors = {0};
+    memset(&task->results,0,sizeof(task->results));
+    RsHttpResponse schedule = {0}, drivers = {0}, constructors = {0}, results={0}, qualifying={0}, sprint={0};
     RsSeasonSnapshot season;
     RsStandings driver_data, constructor_data;
     RsWeatherSnapshot weather = {0};
@@ -319,6 +338,7 @@ static int refresh_thread(void *context) {
         snprintf(url,sizeof(url),"https://api.jolpi.ca/ergast/f1/%d/constructorstandings.json?limit=100",season.season);
         ok=ok&&rs_http_get_https(url,task->ca_file,&constructors)&&rs_standings_decode_constructors(constructors.bytes,&constructor_data);
     }
+    if(ok){char url[256];SDL_Delay(300);snprintf(url,sizeof(url),"https://api.jolpi.ca/ergast/f1/%d/results.json?limit=1000",season.season);ok=rs_http_get_https(url,task->ca_file,&results)&&rs_results_decode(results.bytes,RS_RESULT_RACE,&task->results);SDL_Delay(300);snprintf(url,sizeof(url),"https://api.jolpi.ca/ergast/f1/%d/qualifying.json?limit=1000",season.season);ok=ok&&rs_http_get_https(url,task->ca_file,&qualifying)&&rs_results_decode(qualifying.bytes,RS_RESULT_QUALIFYING,&task->results);SDL_Delay(300);snprintf(url,sizeof(url),"https://api.jolpi.ca/ergast/f1/%d/sprint.json?limit=1000",season.season);if(rs_http_get_https(url,task->ca_file,&sprint))rs_results_decode(sprint.bytes,RS_RESULT_SPRINT,&task->results);}
     if (ok) {
         const RsSession *next = rs_season_next_session(&season, (int64_t)time(NULL));
         const RsEvent *event = event_for_session(&season, next);
@@ -334,9 +354,9 @@ static int refresh_thread(void *context) {
         }
     }
     if (ok) {
-        char path[1024]; size_t length=schedule.length+drivers.length+constructors.length+64; char *generation=malloc(length);
+        char path[1024]; const char *sprint_json=sprint.bytes?sprint.bytes:"{\"MRData\":{\"RaceTable\":{\"Races\":[]}}}"; size_t length=schedule.length+drivers.length+constructors.length+results.length+qualifying.length+strlen(sprint_json)+160; char *generation=malloc(length);
         if(!generation)ok=false;
-        else{snprintf(generation,length,"{\"schedule\":%s,\"drivers\":%s,\"constructors\":%s}",schedule.bytes,drivers.bytes,constructors.bytes);snprintf(path,sizeof(path),"%s/snapshot.json",task->data_dir);ok=rs_store_write_atomic(path,generation);free(generation);}
+        else{snprintf(generation,length,"{\"schedule\":%s,\"drivers\":%s,\"constructors\":%s,\"results\":%s,\"qualifying\":%s,\"sprint\":%s}",schedule.bytes,drivers.bytes,constructors.bytes,results.bytes,qualifying.bytes,sprint_json);snprintf(path,sizeof(path),"%s/snapshot.json",task->data_dir);ok=rs_store_write_atomic(path,generation);free(generation);}
     }
     SDL_LockMutex(task->mutex);
     if (ok) {
@@ -351,7 +371,7 @@ static int refresh_thread(void *context) {
     task->ready = 1;
     task->running = 0;
     SDL_UnlockMutex(task->mutex);
-    rs_http_response_dispose(&schedule); rs_http_response_dispose(&drivers); rs_http_response_dispose(&constructors);
+    rs_http_response_dispose(&schedule); rs_http_response_dispose(&drivers); rs_http_response_dispose(&constructors);rs_http_response_dispose(&results);rs_http_response_dispose(&qualifying);rs_http_response_dispose(&sprint);
     return 0;
 }
 
@@ -399,6 +419,7 @@ int main(int argc, char **argv) {
     Runtime rt = {0};
     SDL_Event event;
     const char *screenshot = NULL;
+    const char *screen=NULL,*detail=NULL; int selected=0;
     int offline = 0, i;
     snprintf(rt.assets, sizeof(rt.assets), "assets");
     snprintf(rt.data_dir, sizeof(rt.data_dir), "data");
@@ -407,6 +428,9 @@ int main(int argc, char **argv) {
         else if (!strcmp(argv[i], "--data") && i + 1 < argc) snprintf(rt.data_dir, sizeof(rt.data_dir), "%s", argv[++i]);
         else if (!strcmp(argv[i], "--now") && i + 1 < argc) rt.now_override = strtoll(argv[++i], NULL, 10);
         else if (!strcmp(argv[i], "--screenshot") && i + 1 < argc) screenshot = argv[++i];
+        else if (!strcmp(argv[i],"--screen")&&i+1<argc)screen=argv[++i];
+        else if (!strcmp(argv[i],"--detail")&&i+1<argc)detail=argv[++i];
+        else if (!strcmp(argv[i],"--select")&&i+1<argc)selected=atoi(argv[++i]);
         else if (!strcmp(argv[i], "--offline")) offline = 1;
     }
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) != 0 || TTF_Init() != 0 || curl_global_init(CURL_GLOBAL_DEFAULT) != 0) return 1;
@@ -431,6 +455,9 @@ int main(int argc, char **argv) {
     }
     if (!rt.window || !rt.renderer || !rt.display || !rt.heading || !rt.body || !rt.small || !rt.app || !load_data(&rt)) return 2;
     if (offline) snprintf(rt.status,sizeof(rt.status),"OFFLINE BASELINE DATA");
+    if(screen){if(!strcmp(screen,"calendar"))rs_app_dispatch(rt.app,RS_ACTION_R1);else if(!strcmp(screen,"standings")){rs_app_dispatch(rt.app,RS_ACTION_R1);rs_app_dispatch(rt.app,RS_ACTION_R1);}}
+    while(selected-->0)rs_app_dispatch(rt.app,RS_ACTION_DOWN);
+    if(detail){int cycles=!strcmp(detail,"race")?1:!strcmp(detail,"qualifying")?2:!strcmp(detail,"sprint")?3:0;rs_app_dispatch(rt.app,RS_ACTION_A);while(cycles-->0)rs_app_dispatch(rt.app,RS_ACTION_X);}
     render(&rt);
     if (screenshot) { SDL_Surface *shot = SDL_CreateRGBSurfaceWithFormat(0, SCREEN_W, SCREEN_H, 32, SDL_PIXELFORMAT_ARGB8888);
         SDL_RenderReadPixels(rt.renderer, NULL, SDL_PIXELFORMAT_ARGB8888, shot->pixels, shot->pitch); SDL_SaveBMP(shot, screenshot); SDL_FreeSurface(shot); rs_app_dispatch(rt.app, RS_ACTION_MENU); }
@@ -441,7 +468,7 @@ int main(int argc, char **argv) {
         }
         if (rs_app_take_refresh_request(rt.app)) start_refresh(&rt);
         SDL_LockMutex(rt.refresh.mutex);
-        if (rt.refresh.ready) { if (rt.refresh.success) { rt.season = rt.refresh.season; rt.standings = rt.refresh.standings; rt.weather = rt.refresh.weather; }
+        if (rt.refresh.ready) { if (rt.refresh.success) { rt.season = rt.refresh.season; rt.standings = rt.refresh.standings; rt.weather = rt.refresh.weather; rt.results=rt.refresh.results; }
             snprintf(rt.status, sizeof(rt.status), "%s", rt.refresh.status); rt.refresh.ready = 0; if(rt.refresh.thread){SDL_DetachThread(rt.refresh.thread);rt.refresh.thread=NULL;} }
         SDL_UnlockMutex(rt.refresh.mutex);
         render(&rt);

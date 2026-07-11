@@ -3,6 +3,7 @@
 #include "rs_standings.h"
 #include "rs_weather.h"
 #include "rs_store.h"
+#include "rs_results.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -105,6 +106,18 @@ static void a_snapshot_replaces_the_previous_generation_atomically(void) {
     unlink(path); rmdir(dir);
 }
 
+static void completed_sessions_expose_full_classifications(const char *fixtures) {
+    char path[512]; char *json; RsResultsCatalog catalog={0}; const RsClassification *race;
+    snprintf(path,sizeof(path),"%s/results.json",fixtures); json=read_file(path);
+    assert(rs_results_decode(json,RS_RESULT_RACE,&catalog)); free(json);
+    snprintf(path,sizeof(path),"%s/qualifying.json",fixtures); json=read_file(path);
+    assert(rs_results_decode(json,RS_RESULT_QUALIFYING,&catalog)); free(json);
+    race=rs_results_find(&catalog,1,RS_RESULT_RACE);
+    assert(race); assert(race->entry_count>=20); assert(race->entries[0].position==1);
+    assert(race->entries[0].driver_name[0]!='\0'); assert(race->entries[0].points>=0.0);
+    assert(rs_results_find(&catalog,1,RS_RESULT_QUALIFYING));
+}
+
 int main(int argc, char **argv) {
     assert(argc == 2);
     user_sees_the_next_session_from_a_jolpica_schedule(argv[1]);
@@ -112,6 +125,7 @@ int main(int argc, char **argv) {
     user_sees_complete_driver_standings(argv[1]);
     weather_is_aligned_to_the_nearest_session_hour(argv[1]);
     a_snapshot_replaces_the_previous_generation_atomically();
+    completed_sessions_expose_full_classifications(argv[1]);
     puts("ok: core behavior");
     return 0;
 }

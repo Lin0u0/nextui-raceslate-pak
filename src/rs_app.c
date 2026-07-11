@@ -9,6 +9,8 @@ struct RsApp {
     int cursor[3];
     bool running;
     bool refresh_requested;
+    RsDetailMode detail_mode;
+    int detail_cursor;
 };
 
 RsApp *rs_app_create(void) {
@@ -24,6 +26,9 @@ void rs_app_dispatch(RsApp *app, RsAction action) {
     if (action == RS_ACTION_MENU) { app->running = false; return; }
     if (app->overlay != RS_OVERLAY_NONE) {
         if (action == RS_ACTION_B || action == RS_ACTION_START) app->overlay = RS_OVERLAY_NONE;
+        else if(app->overlay==RS_OVERLAY_DETAIL&&action==RS_ACTION_X){app->detail_mode=(RsDetailMode)((app->detail_mode+1)%4);app->detail_cursor=0;}
+        else if(app->overlay==RS_OVERLAY_DETAIL&&action==RS_ACTION_DOWN)app->detail_cursor++;
+        else if(app->overlay==RS_OVERLAY_DETAIL&&action==RS_ACTION_UP&&app->detail_cursor>0)app->detail_cursor--;
         return;
     }
     switch (action) {
@@ -37,7 +42,9 @@ void rs_app_dispatch(RsApp *app, RsAction action) {
                     ? RS_STANDINGS_CONSTRUCTORS : RS_STANDINGS_DRIVERS;
             break;
         case RS_ACTION_Y: app->refresh_requested = true; break;
-        case RS_ACTION_A: if (app->route != RS_ROUTE_NEXT) app->overlay = RS_OVERLAY_DETAIL; break;
+        case RS_ACTION_A: if (app->route != RS_ROUTE_NEXT) {app->overlay = RS_OVERLAY_DETAIL;app->detail_mode=RS_DETAIL_HISTORY;app->detail_cursor=0;} break;
+        case RS_ACTION_L2: if(app->route==RS_ROUTE_CALENDAR&&app->cursor[app->route]>0)app->cursor[app->route]--;break;
+        case RS_ACTION_R2: if(app->route==RS_ROUTE_CALENDAR)app->cursor[app->route]++;break;
         case RS_ACTION_START: app->overlay = RS_OVERLAY_ABOUT; break;
         default: break;
     }
@@ -57,3 +64,5 @@ bool rs_app_take_refresh_request(RsApp *app) {
     app->refresh_requested = false;
     return requested;
 }
+RsDetailMode rs_app_detail_mode(const RsApp *app){return app?app->detail_mode:RS_DETAIL_HISTORY;}
+int rs_app_detail_cursor(const RsApp *app){return app?app->detail_cursor:0;}
