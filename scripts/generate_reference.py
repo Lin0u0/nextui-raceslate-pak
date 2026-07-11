@@ -22,7 +22,7 @@ def main():
         data=load(path); data["year"]=int(path.parts[-4]); data["dir"]=path.parent; races.append(data)
     current={r["circuitId"]:r for r in races if r["year"]==2026}
     with output.open("w",newline="") as f:
-        w=csv.writer(f,delimiter="\t",lineterminator="\n"); w.writerow(["provider_id","length","turns","direction","first_year","races","lap_record","record_driver","record_year","recent_winners","recent_poles","most_wins","most_poles"])
+        w=csv.writer(f,delimiter="\t",lineterminator="\n"); w.writerow(["provider_id","length","turns","direction","first_year","races","lap_record","record_driver","record_year","recent_winners","recent_poles","most_wins","most_poles","all_winners","all_poles"])
         for provider,circuit in ALIASES.items():
             venue=sorted((r for r in races if r.get("circuitId")==circuit),key=lambda r:(r["year"],r.get("round",0)))
             winners=[]; poles=[]; records=[]
@@ -45,5 +45,7 @@ def main():
             most_wins=f"{win_leader[0][0]} ({win_leader[0][1]})" if win_leader else "UNKNOWN"
             most_poles=f"{pole_leader[0][0]} ({pole_leader[0][1]})" if pole_leader else "UNKNOWN"
             r=current[circuit]
-            w.writerow([provider,r.get("courseLength",0),r.get("turns",0),r.get("direction","UNKNOWN"),venue[0]["year"] if venue else 0,len(venue),record[0],record[1],record[2],recent,recent_poles,most_wins,most_poles])
+            all_winners="|".join(f"{year} {name}" for year,name in winners[::-1]) or "NO RESULTS"
+            all_poles="|".join(f"{year} {name}" for year,name in poles[::-1]) or "NO RESULTS"
+            w.writerow([provider,r.get("courseLength",0),r.get("turns",0),r.get("direction","UNKNOWN"),venue[0]["year"] if venue else 0,len(venue),record[0],record[1],record[2],recent,recent_poles,most_wins,most_poles,all_winners,all_poles])
 if __name__=="__main__": main()

@@ -85,7 +85,7 @@ static void brick_controls_navigate_the_public_app_state(void) {
     rs_app_destroy(app);
 }
 
-static void track_time_offsets_cover_calendar_regions(void){assert(rs_track_utc_offset("spa",1784287800)==7200);assert(rs_track_utc_offset("albert_park",1774000000)==39600);assert(rs_track_utc_offset("vegas",1795200000)==-28800);}
+static void track_time_offsets_cover_calendar_regions(void){assert(rs_track_utc_offset("spa",1784287800)==7200);assert(rs_track_utc_offset("albert_park",1774000000)==39600);assert(rs_track_utc_offset("vegas",1795200000)==-28800);assert(rs_track_utc_offset("spa",1774744200)==3600);assert(rs_track_utc_offset("spa",1774747800)==7200);assert(rs_track_utc_offset("vegas",1793521800)==-25200);assert(rs_track_utc_offset("vegas",1793529000)==-28800);}
 
 static void user_sees_complete_driver_standings(const char *fixtures) {
     char path[512];

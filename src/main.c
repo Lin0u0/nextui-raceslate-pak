@@ -64,6 +64,8 @@ typedef struct {
     char favorite_constructor[48];
     bool first_launch;
     bool haptics;
+    bool haptic_available;
+    bool weather_live;
     int64_t now_override;
 } Runtime;
 
@@ -178,11 +180,10 @@ static void draw_header(Runtime *rt) {
     fill(rt, 38, 92, 948, 1, (SDL_Color){55, 58, 65, 255});
 }
 
-static void draw_track(Runtime *rt, const RsEvent *event) {
+static void draw_track(Runtime *rt, const RsEvent *event, SDL_Rect target) {
     char path[1024];
     SDL_Surface *surface;
     SDL_Texture *texture;
-    SDL_Rect target = {620, 122, 360, 360};
     snprintf(path, sizeof(path), "%s/circuits/%s.bmp", rt->assets, event->circuit_id);
     surface = SDL_LoadBMP(path);
     if (!surface) return;
@@ -219,14 +220,15 @@ static void draw_next(Runtime *rt) {
     draw_text(rt, rt->heading, countdown, 63, 514, WHITE);
     fill(rt,64,580,494,1,(SDL_Color){55,58,65,255});
     {size_t session_index;const RsSession *following=NULL;for(session_index=0;session_index<event->session_count;session_index++)if(event->sessions[session_index].starts_at_utc>next->starts_at_utc){following=&event->sessions[session_index];break;}draw_text(rt,rt->small,"FOLLOWING",64,594,MUTED);if(following){format_event_time(rt,event,following->starts_at_utc,time_text,sizeof(time_text));snprintf(line,sizeof(line),"%s  /  %s",session_name(following->kind),time_text);draw_text(rt,rt->small,line,64,620,WHITE);}else draw_text(rt,rt->small,"FINAL SESSION OF THE WEEKEND",64,620,WHITE);}
-    draw_track(rt, event);
+    draw_track(rt, event,(SDL_Rect){620,122,360,360});
     draw_text(rt, rt->small, event->circuit_name, 654, 486, WHITE);
     snprintf(line, sizeof(line), "%.4f, %.4f  /  %s", event->latitude, event->longitude,rs_app_track_time(rt->app)?"TRACK TIME":"YOUR TIME");
     draw_text(rt, rt->small, line, 654, 516, MUTED);
     {
         const RsWeatherPoint *weather = rs_weather_nearest(&rt->weather, next->starts_at_utc);
         fill(rt, 620, 558, 366, 92, PANEL);
-        draw_text(rt, rt->small, "SESSION FORECAST  /  OPEN-METEO", 640, 572, MUTED);
+        snprintf(line,sizeof(line),"SESSION FORECAST  /  OPEN-METEO  /  %s",weather?(rt->weather_live?"LIVE":"CACHED"):(rt->weather.count?"OUT OF RANGE":"NO DATA"));
+        draw_text(rt, rt->small, line, 640, 572, MUTED);
         if (weather) {
             draw_text(rt,rt->small,"TEMP",640,601,MUTED);snprintf(line, sizeof(line), "%.1f°C",weather->temperature_c);draw_text(rt,rt->metric,line,640,619,WHITE);
             draw_text(rt,rt->small,"RAIN",758,601,MUTED);snprintf(line, sizeof(line), "%d%%",weather->rain_probability);draw_text(rt,rt->metric,line,758,619,WHITE);
@@ -284,7 +286,7 @@ static void draw_about(Runtime *rt) {
     draw_text(rt, rt->heading, rt->first_launch ? "WELCOME TO RACESLATE" : "SETTINGS & ABOUT", 204, 154, WHITE);
     draw_text(rt, rt->body, "An unofficial, non-commercial season companion.", 204, 222, WHITE);
     draw_text(rt, rt->small, "Not associated with Formula 1, FIA, teams, drivers, or circuits.", 204, 264, MUTED);
-    if(!rt->first_launch){int cursor=rs_app_settings_cursor(rt->app),row;const char *labels[3]={rt->haptics?"HAPTICS                         ON":"HAPTICS                         OFF","CLEAR DOWNLOADED CACHE","LICENSES & ATTRIBUTION"};for(row=0;row<3;row++){int y=310+row*48;if(row==cursor)fill(rt,196,y-7,632,40,(SDL_Color){44,46,53,255});draw_text(rt,rt->body,labels[row],212,y,row==cursor?WHITE:MUTED);}draw_text(rt,rt->small,"A SELECT   B CLOSE",204,574,RED);return;}
+    if(!rt->first_launch){int cursor=rs_app_settings_cursor(rt->app),row;const char *haptic_label=rt->haptic_available?(rt->haptics?"HAPTICS                         ON":"HAPTICS                         OFF"):"HAPTICS                 UNSUPPORTED";const char *labels[3]={haptic_label,"CLEAR DOWNLOADED CACHE","LICENSES & ATTRIBUTION"};for(row=0;row<3;row++){int y=310+row*48;if(row==cursor)fill(rt,196,y-7,632,40,(SDL_Color){44,46,53,255});draw_text(rt,rt->body,labels[row],212,y,row==cursor?WHITE:MUTED);}draw_text(rt,rt->small,"JOLPICA CC BY-NC-SA · F1DB / OPEN-METEO CC BY · FONTS OFL",204,480,MUTED);draw_text(rt,rt->small,"A SELECT   B CLOSE",204,574,RED);return;}
     draw_text(rt, rt->small, "Race data: Jolpica-F1  /  CC BY-NC-SA 4.0", 204, 328, WHITE);
     draw_text(rt, rt->small, "Circuit assets: F1DB  /  CC BY 4.0", 204, 364, WHITE);
     draw_text(rt, rt->small, "Weather: Open-Meteo  /  CC BY 4.0", 204, 400, WHITE);
@@ -322,6 +324,9 @@ static void draw_profile_chart(Runtime *rt, const RsProfile *profile, bool point
     draw_text(rt, rt->small, label, x, y - 27, MUTED);
 }
 
+static int split_history(char *text,char **items,int capacity){int count=0;char *save=NULL,*item=strtok_r(text,"|",&save);while(item&&count<capacity){items[count++]=item;item=strtok_r(NULL,"|",&save);}return count;}
+static void draw_history_log(Runtime *rt,const RsCircuitReference *ref,int cursor){char winners[3072],poles[3072],*winner_items[96],*pole_items[96],line[64];int winner_count,pole_count,pages,page,row;snprintf(winners,sizeof(winners),"%s",ref->all_winners);snprintf(poles,sizeof(poles),"%s",ref->all_poles);winner_count=split_history(winners,winner_items,96);pole_count=split_history(poles,pole_items,96);pages=((winner_count>pole_count?winner_count:pole_count)+7)/8;if(pages<1)pages=1;page=(cursor-1)%pages;snprintf(line,sizeof(line),"VENUE ARCHIVE  /  PAGE %d OF %d  /  UP DOWN",page+1,pages);draw_text(rt,rt->small,line,126,140,RED);draw_text(rt,rt->heading,"WINNERS & POLES",124,168,WHITE);draw_text(rt,rt->small,"RACE WINNER",126,230,MUTED);draw_text(rt,rt->small,"POLE POSITION",520,230,MUTED);for(row=0;row<8;row++){int index=page*8+row,y=266+row*42;if(index<winner_count)draw_text(rt,rt->body,winner_items[index],126,y,WHITE);if(index<pole_count)draw_text(rt,rt->body,pole_items[index],520,y,WHITE);}}
+
 static void draw_detail(Runtime *rt) {
     fill(rt, 86, 108, 852, 574, (SDL_Color){18, 20, 24, 252});
     if (rs_app_route(rt->app) == RS_ROUTE_CALENDAR && rt->season.event_count) {
@@ -330,6 +335,7 @@ static void draw_detail(Runtime *rt) {
         if (index >= (int)rt->season.event_count) index = (int)rt->season.event_count - 1;
         event = &rt->season.events[index]; ref = rs_reference_circuit(&rt->reference, event->circuit_id);
         if(rs_app_detail_mode(rt->app)==RS_DETAIL_HISTORY){
+         if(ref&&rs_app_detail_cursor(rt->app)>0)draw_history_log(rt,ref,rs_app_detail_cursor(rt->app));else{
          draw_text(rt, rt->small, "HISTORY  /  X NEXT VIEW", 126, 140, RED);
          draw_text(rt, rt->heading, event->circuit_name, 124, 168, WHITE);
          if (ref) {
@@ -337,11 +343,12 @@ static void draw_detail(Runtime *rt) {
             snprintf(line,sizeof(line),"FIRST CHAMPIONSHIP RACE %d    %d RACES HELD",ref->first_year,ref->races); draw_text(rt,rt->small,line,126,274,MUTED);
             snprintf(line,sizeof(line),"RACE LAP RECORD  %s  /  %s  /  %d",ref->lap_record,ref->record_driver,ref->record_year); draw_text(rt,rt->body,line,126,320,WHITE);
             snprintf(line,sizeof(line),"MOST WINS  %s    MOST POLES  %s",ref->most_wins,ref->most_poles);draw_text(rt,rt->small,line,126,360,WHITE);
-            draw_text(rt,rt->small,"RECENT WINNERS",126,388,MUTED);
+            draw_text(rt,rt->small,"RECENT WINNERS  /  DOWN FULL ARCHIVE",126,388,MUTED);
             snprintf(line,sizeof(line),"%s",ref->recent_winners); draw_text(rt,rt->small,line,126,408,WHITE);
          }
          {size_t session_index;draw_text(rt,rt->small,"WEEKEND SCHEDULE",126,438,MUTED);for(session_index=0;session_index<event->session_count;session_index++){char when[64];const RsSession *session=&event->sessions[session_index];format_event_time(rt,event,session->starts_at_utc,when,sizeof(when));snprintf(line,sizeof(line),"%-19s  %s  /  %s",session_name(session->kind),when,session->starts_at_utc<=now_utc(rt)?"COMPLETE":"UPCOMING");draw_text(rt,rt->small,line,126,462+(int)session_index*27,session->starts_at_utc<=now_utc(rt)?MUTED:WHITE);}}
-         draw_track(rt,event);
+         draw_track(rt,event,(SDL_Rect){620,150,290,290});
+         }
         }else{
          RsResultKind kind=rs_app_detail_mode(rt->app)==RS_DETAIL_RACE?RS_RESULT_RACE:rs_app_detail_mode(rt->app)==RS_DETAIL_QUALIFYING?RS_RESULT_QUALIFYING:RS_RESULT_SPRINT;
          const RsClassification *classification=rs_results_find(&rt->results,event->round,kind);int cursor=rs_app_detail_cursor(rt->app),first=cursor>8?cursor-8:0,row;
@@ -389,18 +396,18 @@ static char *load_preferred(const char *data_dir, const char *assets, const char
 }
 
 static bool load_data(Runtime *rt) {
-    char snapshot_path[1024]; char *snapshot_bytes; cJSON *snapshot=NULL; char *schedule=NULL,*drivers=NULL,*constructors=NULL,*results=NULL,*qualifying=NULL,*sprint=NULL;
+    char snapshot_path[1024]; char *snapshot_bytes; cJSON *snapshot=NULL; char *schedule=NULL,*drivers=NULL,*constructors=NULL,*results=NULL,*qualifying=NULL,*sprint=NULL,*weather=NULL;
     snprintf(snapshot_path,sizeof(snapshot_path),"%s/snapshot.json",rt->data_dir);
     snapshot_bytes=rs_store_read(snapshot_path);
     if(snapshot_bytes){snapshot=cJSON_Parse(snapshot_bytes);free(snapshot_bytes);}
-    if(snapshot){const cJSON *s=cJSON_GetObjectItemCaseSensitive(snapshot,"schedule"),*d=cJSON_GetObjectItemCaseSensitive(snapshot,"drivers"),*c=cJSON_GetObjectItemCaseSensitive(snapshot,"constructors");if(cJSON_IsObject(s)&&cJSON_IsObject(d)&&cJSON_IsObject(c)){schedule=cJSON_PrintUnformatted(s);drivers=cJSON_PrintUnformatted(d);constructors=cJSON_PrintUnformatted(c);results=cJSON_PrintUnformatted(cJSON_GetObjectItemCaseSensitive(snapshot,"results"));qualifying=cJSON_PrintUnformatted(cJSON_GetObjectItemCaseSensitive(snapshot,"qualifying"));sprint=cJSON_PrintUnformatted(cJSON_GetObjectItemCaseSensitive(snapshot,"sprint"));}}
+    if(snapshot){const cJSON *s=cJSON_GetObjectItemCaseSensitive(snapshot,"schedule"),*d=cJSON_GetObjectItemCaseSensitive(snapshot,"drivers"),*c=cJSON_GetObjectItemCaseSensitive(snapshot,"constructors"),*w=cJSON_GetObjectItemCaseSensitive(snapshot,"weather");if(cJSON_IsObject(s)&&cJSON_IsObject(d)&&cJSON_IsObject(c)){schedule=cJSON_PrintUnformatted(s);drivers=cJSON_PrintUnformatted(d);constructors=cJSON_PrintUnformatted(c);results=cJSON_PrintUnformatted(cJSON_GetObjectItemCaseSensitive(snapshot,"results"));qualifying=cJSON_PrintUnformatted(cJSON_GetObjectItemCaseSensitive(snapshot,"qualifying"));sprint=cJSON_PrintUnformatted(cJSON_GetObjectItemCaseSensitive(snapshot,"sprint"));if(cJSON_IsObject(w))weather=cJSON_PrintUnformatted(w);}}
     if(!schedule)schedule=load_preferred(rt->data_dir, rt->assets, "schedule.json");
     if(!drivers)drivers=load_preferred(rt->data_dir, rt->assets, "driver_standings.json");
     if(!constructors)constructors=load_preferred(rt->data_dir, rt->assets, "constructor_standings.json");
     if(!results)results=load_preferred(rt->data_dir,rt->assets,"results.json");
     if(!qualifying)qualifying=load_preferred(rt->data_dir,rt->assets,"qualifying.json");
     if(!sprint)sprint=load_preferred(rt->data_dir,rt->assets,"sprint.json");
-    char *weather = load_preferred(rt->data_dir, rt->assets, "weather.json");
+    if(!weather)weather = load_preferred(rt->data_dir, rt->assets, "weather.json");
     RsStandings constructor_data;
     bool ok = schedule && drivers && constructors && rs_season_decode_schedule(schedule, &rt->season) &&
               rs_standings_decode_drivers(drivers, &rt->standings) &&
@@ -443,15 +450,17 @@ static void acknowledge_disclaimer(Runtime *rt) {
     else snprintf(rt->status,sizeof(rt->status),"ACKNOWLEDGEMENT COULD NOT BE SAVED");
 }
 
-static void pulse_haptic(const Runtime *rt){FILE *file;if(!rt->haptics)return;file=fopen("/sys/class/gpio/gpio227/value","w");if(!file)return;fputs("1",file);fflush(file);SDL_Delay(24);rewind(file);fputs("0",file);fclose(file);}
+static bool write_device_value(const char *path,const char *value){FILE *file=fopen(path,"w");int written,closed;if(!file)return false;written=fputs(value,file);closed=fclose(file);return written>=0&&closed==0;}
+static bool initialize_haptics(void){if(access("/sys/class/gpio/gpio227/value",W_OK)==0)return write_device_value("/sys/class/gpio/gpio227/direction","out")&&write_device_value("/sys/class/gpio/gpio227/value","0");if(!write_device_value("/sys/class/gpio/export","227"))return false;SDL_Delay(50);return write_device_value("/sys/class/gpio/gpio227/direction","out")&&write_device_value("/sys/class/gpio/gpio227/value","0");}
+static void pulse_haptic(const Runtime *rt){if(!rt->haptics||!rt->haptic_available)return;if(!write_device_value("/sys/class/gpio/gpio227/value","1"))return;SDL_Delay(24);write_device_value("/sys/class/gpio/gpio227/value","0");}
 static void save_settings(Runtime *rt){char path[1024],text[32];snprintf(path,sizeof(path),"%s/settings.txt",rt->data_dir);snprintf(text,sizeof(text),"haptics=%d\n",rt->haptics?1:0);rs_store_write_atomic(path,text);}
 static void load_settings(Runtime *rt){char path[1024],*text;rt->haptics=true;snprintf(path,sizeof(path),"%s/settings.txt",rt->data_dir);text=rs_store_read(path);if(text){if(strstr(text,"haptics=0"))rt->haptics=false;free(text);}}
-static void perform_settings_action(Runtime *rt){int cursor=rs_app_settings_cursor(rt->app);char path[1024];if(cursor==0){rt->haptics=!rt->haptics;save_settings(rt);snprintf(rt->status,sizeof(rt->status),"HAPTICS %s",rt->haptics?"ENABLED":"DISABLED");pulse_haptic(rt);}else if(cursor==1){snprintf(path,sizeof(path),"%s/snapshot.json",rt->data_dir);unlink(path);snprintf(path,sizeof(path),"%s/weather.json",rt->data_dir);unlink(path);snprintf(rt->status,sizeof(rt->status),"DOWNLOADED CACHE CLEARED · BASELINE KEPT");pulse_haptic(rt);}else snprintf(rt->status,sizeof(rt->status),"JOLPICA CC BY-NC-SA · F1DB/OPEN-METEO CC BY · FONTS OFL");}
+static void perform_settings_action(Runtime *rt){int cursor=rs_app_settings_cursor(rt->app);char path[1024];if(cursor==0){if(!rt->haptic_available){snprintf(rt->status,sizeof(rt->status),"HAPTICS UNSUPPORTED ON THIS DEVICE");return;}rt->haptics=!rt->haptics;save_settings(rt);snprintf(rt->status,sizeof(rt->status),"HAPTICS %s",rt->haptics?"ENABLED":"DISABLED");pulse_haptic(rt);}else if(cursor==1){snprintf(path,sizeof(path),"%s/snapshot.json",rt->data_dir);unlink(path);snprintf(path,sizeof(path),"%s/weather.json",rt->data_dir);unlink(path);snprintf(rt->status,sizeof(rt->status),"DOWNLOADED CACHE CLEARED · BASELINE KEPT");pulse_haptic(rt);}else snprintf(rt->status,sizeof(rt->status),"JOLPICA CC BY-NC-SA · F1DB/OPEN-METEO CC BY · FONTS OFL");}
 
 static int refresh_thread(void *context) {
     RefreshTask *task = context;
     memset(&task->results,0,sizeof(task->results));
-    RsHttpResponse schedule = {0}, drivers = {0}, constructors = {0}, results={0}, qualifying={0}, sprint={0};
+    RsHttpResponse schedule = {0}, drivers = {0}, constructors = {0}, results={0}, qualifying={0}, sprint={0},weather_response={0};
     RsSeasonSnapshot season;
     RsStandings driver_data, constructor_data;
     RsWeatherSnapshot weather = {0};
@@ -470,20 +479,18 @@ static int refresh_thread(void *context) {
         const RsSession *next = rs_season_next_session(&season, (int64_t)time(NULL));
         const RsEvent *event = event_for_session(&season, next);
         if (event && next) {
-            char url[768]; RsHttpResponse weather_response = {0};
+            char url[768];
             snprintf(url, sizeof(url), "https://api.open-meteo.com/v1/forecast?latitude=%.6f&longitude=%.6f&hourly=temperature_2m,precipitation_probability,wind_speed_10m&timezone=UTC&wind_speed_unit=kmh&forecast_days=16",
                      event->latitude, event->longitude);
             if (rs_http_get_https(url, task->ca_file, &weather_response) && rs_weather_decode(weather_response.bytes, &weather)) {
-                char path[1024]; snprintf(path, sizeof(path), "%s/weather.json", task->data_dir);
-                weather_ok=rs_store_write_atomic(path, weather_response.bytes);
+                weather_ok=true;
             }
-            rs_http_response_dispose(&weather_response);
         }
     }
     if (ok) {
-        char path[1024]; const char *sprint_json=sprint.bytes?sprint.bytes:"{\"MRData\":{\"RaceTable\":{\"Races\":[]}}}"; size_t length=schedule.length+drivers.length+constructors.length+results.length+qualifying.length+strlen(sprint_json)+160; char *generation=malloc(length);
+        char path[1024]; const char *sprint_json=sprint.bytes?sprint.bytes:"{\"MRData\":{\"RaceTable\":{\"Races\":[]}}}";const char *weather_json=weather_ok?weather_response.bytes:"null"; size_t length=schedule.length+drivers.length+constructors.length+results.length+qualifying.length+strlen(sprint_json)+strlen(weather_json)+192; char *generation=malloc(length);
         if(!generation)ok=false;
-        else{snprintf(generation,length,"{\"schedule\":%s,\"drivers\":%s,\"constructors\":%s,\"results\":%s,\"qualifying\":%s,\"sprint\":%s}",schedule.bytes,drivers.bytes,constructors.bytes,results.bytes,qualifying.bytes,sprint_json);snprintf(path,sizeof(path),"%s/snapshot.json",task->data_dir);ok=rs_store_write_atomic(path,generation);free(generation);}
+        else{snprintf(generation,length,"{\"schedule\":%s,\"drivers\":%s,\"constructors\":%s,\"results\":%s,\"qualifying\":%s,\"sprint\":%s,\"weather\":%s}",schedule.bytes,drivers.bytes,constructors.bytes,results.bytes,qualifying.bytes,sprint_json,weather_json);snprintf(path,sizeof(path),"%s/snapshot.json",task->data_dir);ok=rs_store_write_atomic(path,generation);free(generation);}
     }
     SDL_LockMutex(task->mutex);
     if (ok) {
@@ -498,7 +505,7 @@ static int refresh_thread(void *context) {
     task->ready = 1;
     task->running = 0;
     SDL_UnlockMutex(task->mutex);
-    rs_http_response_dispose(&schedule); rs_http_response_dispose(&drivers); rs_http_response_dispose(&constructors);rs_http_response_dispose(&results);rs_http_response_dispose(&qualifying);rs_http_response_dispose(&sprint);
+    rs_http_response_dispose(&schedule); rs_http_response_dispose(&drivers); rs_http_response_dispose(&constructors);rs_http_response_dispose(&results);rs_http_response_dispose(&qualifying);rs_http_response_dispose(&sprint);rs_http_response_dispose(&weather_response);
     return 0;
 }
 
@@ -585,6 +592,7 @@ int main(int argc, char **argv) {
     if (!rt.window || !rt.renderer || !rt.display || !rt.heading || !rt.body || !rt.small || !rt.metric || !rt.app || !load_data(&rt)) return 2;
     load_favorites(&rt);
     load_settings(&rt);
+    rt.haptic_available=initialize_haptics();
     {char path[1024];char *ack;snprintf(path,sizeof(path),"%s/acknowledged",rt.data_dir);ack=rs_store_read(path);rt.first_launch=ack==NULL&&!screenshot;free(ack);if(rt.first_launch)rs_app_show_disclaimer(rt.app);}
     if (offline) snprintf(rt.status,sizeof(rt.status),"OFFLINE BASELINE DATA");
     if(screen){if(!strcmp(screen,"calendar"))rs_app_dispatch(rt.app,RS_ACTION_R1);else if(!strcmp(screen,"standings")){rs_app_dispatch(rt.app,RS_ACTION_R1);rs_app_dispatch(rt.app,RS_ACTION_R1);}}
@@ -604,7 +612,7 @@ int main(int argc, char **argv) {
         if(rs_app_take_settings_action(rt.app))perform_settings_action(&rt);
         if (rt.first_launch && rs_app_overlay(rt.app) == RS_OVERLAY_NONE) rs_app_show_disclaimer(rt.app);
         SDL_LockMutex(rt.refresh.mutex);
-        if (rt.refresh.ready) { if (rt.refresh.success) { rt.season = rt.refresh.season; rt.standings = rt.refresh.standings; if(rt.refresh.weather.count)rt.weather = rt.refresh.weather; rt.results=rt.refresh.results;rs_profiles_rebuild_series(&rt.profiles,&rt.results); }
+        if (rt.refresh.ready) { if (rt.refresh.success) { rt.season = rt.refresh.season; rt.standings = rt.refresh.standings; if(rt.refresh.weather.count){rt.weather = rt.refresh.weather;rt.weather_live=true;} rt.results=rt.refresh.results;rs_profiles_rebuild_series(&rt.profiles,&rt.results); }
             snprintf(rt.status, sizeof(rt.status), "%s", rt.refresh.status); rt.refresh.ready = 0; if(rt.refresh.thread){SDL_DetachThread(rt.refresh.thread);rt.refresh.thread=NULL;} }
         SDL_UnlockMutex(rt.refresh.mutex);
         render(&rt);
